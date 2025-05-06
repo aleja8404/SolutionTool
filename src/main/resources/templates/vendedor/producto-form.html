@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${vendedorProducto.idVendedorProducto != null} ? 'Editar Asignación' : 'Nueva Asignación'">Formulario Producto</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .form-container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: #232f3e !important;
+            padding: 1rem 2rem;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff !important;
+        }
+
+        .navbar-toggler {
+            border: none;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .nav-link {
+            color: #fff !important;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #f0c14b !important;
+        }
+
+        .nav-link.active {
+            color: #f0c14b !important;
+            font-weight: bold;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+
+        .btn-outline-light {
+            border-color: #f0c14b;
+            color: #f0c14b;
+            font-weight: 500;
+        }
+
+        .btn-outline-light:hover {
+            background-color: #f0c14b;
+            color: #232f3e;
+        }
+
+        /* Form Styles */
+        .form-label {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #0f1111;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid #d5d9d9;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #f0c14b;
+            box-shadow: 0 0 5px rgba(240, 193, 75, 0.5);
+            outline: none;
+        }
+
+        .btn-primary {
+            background-color: #f0c14b;
+            border: 1px solid #a88734;
+            color: #0f1111;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #e6b800;
+            color: #0f1111;
+        }
+
+        .btn-secondary {
+            background-color: #565959;
+            border: 1px solid #4a4a4a;
+            color: #fff;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #4a4a4a;
+            color: #fff;
+        }
+
+        /* Product Info Styles */
+        .product-info {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .product-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 15px;
+            display: none;
+        }
+
+        .product-details {
+            flex-grow: 1;
+        }
+
+        .product-details p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #0f1111;
+        }
+
+        .product-details p strong {
+            color: #565959;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #232f3e;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 15px;
+                margin: 20px;
+            }
+
+            .form-label {
+                font-size: 0.95rem;
+            }
+
+            .form-control, .form-select {
+                font-size: 0.95rem;
+                padding: 8px;
+            }
+
+            .btn-primary, .btn-secondary {
+                padding: 7px 14px;
+                font-size: 0.95rem;
+            }
+
+            .product-image {
+                width: 80px;
+                height: 80px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .form-container {
+                padding: 10px;
+                margin: 10px;
+            }
+
+            .form-label {
+                font-size: 0.9rem;
+            }
+
+            .form-control, .form-select {
+                font-size: 0.9rem;
+                padding: 6px;
+            }
+
+            .btn-primary, .btn-secondary {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+
+            .navbar-brand {
+                font-size: 1.4rem;
+            }
+
+            .nav-link {
+                font-size: 1rem;
+            }
+
+            .product-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .product-image {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/vendedor/dashboard}">Ferretería Online</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activePage == 'dashboard'} ? 'active'" th:href="@{/vendedor/dashboard}">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activePage == 'nueva-venta'} ? 'active'" th:href="@{/vendedor/ventas/nueva}">Nueva Venta</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activePage == 'nueva-compra'} ? 'active'" th:href="@{/vendedor/compras/nueva}">Nueva Compra</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" th:classappend="${activePage == 'nuevo-producto'} ? 'active'" th:href="@{/vendedor/productos/nuevo}">Asignar Producto</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activePage == 'editar'} ? 'active'" th:href="@{/vendedor/editar}">Editar Perfil</a>
+                    </li>
+                </ul>
+                <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+    <div class="form-container">
+        <h2 class="text-center mb-4" th:text="${vendedorProducto.idVendedorProducto != null} ? 'Editar Asignación de Producto' : 'Asignar Nuevo Producto'"></h2>
+        <form th:action="${vendedorProducto.idVendedorProducto != null} ? @{/vendedor/productos/actualizar/{id}(id=${vendedorProducto.idVendedorProducto})} : @{/vendedor/productos}" 
+              th:object="${vendedorProducto}" method="post">
+            <input type="hidden" th:field="*{idVendedorProducto}" th:if="${vendedorProducto.idVendedorProducto != null}" />
+            <input type="hidden" th:field="*{vendedor}" />
+            <div class="mb-3">
+                <label for="producto" class="form-label">Producto:</label>
+                <select id="producto" th:field="*{producto}" class="form-select" required>
+                    <option value="" disabled selected>Selecciona un producto</option>
+                    <option th:each="prod : ${productos}" 
+                            th:value="${prod.idProducto}" 
+                            th:text="${prod.nombre}"
+                            th:attr="data-descripcion=${prod.descripcion},data-precio=${prod.precio},data-foto=${prod.foto != null} ? ${prod.foto} : ''"></option>
+                </select>
+            </div>
+            <div class="product-info" id="productInfo">
+                <img id="productImage" class="product-image" alt="Producto seleccionado" />
+                <div class="product-details">
+                    <p><strong>Descripción:</strong> <span id="productDescription">Selecciona un producto</span></p>
+                    <p><strong>Precio:</strong> <span id="productPrice">N/A</span></p>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="cantidad" class="form-label">Cantidad:</label>
+                <input type="number" id="cantidad" th:field="*{cantidad}" class="form-control" min="1" required />
+            </div>
+            <div class="mb-3">
+                <label for="precio" class="form-label">Precio (USD):</label>
+                <input type="number" id="precio" th:field="*{precio}" class="form-control" step="0.01" min="0" required />
+            </div>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary" 
+                        th:text="${vendedorProducto.idVendedorProducto != null} ? 'Actualizar' : 'Guardar'">Guardar</button>
+                <a th:href="@{/vendedor/dashboard}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+    <footer>
+        <p>© 2025 Ferretería Online</p>
+    </footer>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    <script th:inline="javascript">
+        $(document).ready(function() {
+            const selectProducto = $('#producto');
+            const productImage = $('#productImage');
+            const productDescription = $('#productDescription');
+            const productPrice = $('#productPrice');
+            const isEditing = [[${vendedorProducto.idVendedorProducto != null}]];
+
+            selectProducto.on('change', function() {
+                const selectedOption = $(this).find('option:selected');
+                const descripcion = selectedOption.data('descripcion') || 'Selecciona un producto';
+                const precio = selectedOption.data('precio') ? parseFloat(selectedOption.data('precio')).toFixed(2) + ' USD' : 'N/A';
+                const foto = selectedOption.data('foto') || '';
+
+                productDescription.text(descripcion);
+                productPrice.text(precio);
+
+                if (foto) {
+                    productImage.attr('src', foto).show();
+                } else {
+                    productImage.hide();
+                }
+
+                // Pre-fill the price input with the product's default price if creating a new assignment
+                if (!isEditing) {
+                    $('#precio').val(selectedOption.data('precio') || '');
+                }
+            });
+
+            // Trigger change event on page load to pre-fill data for editing
+            if (selectProducto.val()) {
+                selectProducto.trigger('change');
+            }
+        });
+    </script>
+</body>
+</html>

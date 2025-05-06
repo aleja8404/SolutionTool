@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${vendedorProducto.idVendedorProducto} != null ? 'Editar Registro' : 'Nuevo Registro'">Formulario Vendedor-Producto</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" th:href="@{/admin/dashboard}">Admin Dashboard</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/clientes}">Clientes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/usuarios}">Usuarios</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/order-items}">ordenes</a></li>
+
+                <li class="nav-item"><a class="nav-link" th:href="@{/categorias}">Categorías</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/productos}">Productos</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/ventas}">Ventas</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/compras}">Compras</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/proveedores}">Proveedores</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/vendedores}">Vendedores</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/vendedor-producto}">Vendedor Productos</a></li>
+            </ul>
+            <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <h1 th:text="${vendedorProducto.idVendedorProducto} != null ? 'Editar Registro' : 'Nuevo Registro'">Formulario Vendedor-Producto</h1>
+        <form th:action="${vendedorProducto.idVendedorProducto} != null ? @{/vendedor-producto/actualizar/{id}(id=${vendedorProducto.idVendedorProducto})} : @{/vendedor-producto}" 
+              th:object="${vendedorProducto}" method="post">
+            <!-- Campo oculto para ID (solo en edición) -->
+            <div th:if="${vendedorProducto.idVendedorProducto} != null">
+                <input type="hidden" th:field="*{idVendedorProducto}" />
+            </div>
+            <div class="mb-3">
+                <label for="vendedor" class="form-label">Vendedor:</label>
+                <select id="vendedor" th:field="*{vendedor}" class="form-select" required>
+                    <option value="">Seleccione un vendedor</option>
+                    <option th:each="vendedor : ${vendedores}" 
+                            th:value="${vendedor.idVendedor}" 
+                            th:text="${vendedor.nombre}" 
+                            th:selected="${vendedorProducto.vendedor != null and vendedorProducto.vendedor.idVendedor == vendedor.idVendedor}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="producto" class="form-label">Producto:</label>
+                <select id="producto" th:field="*{producto}" class="form-select" required>
+                    <option value="">Seleccione un producto</option>
+                    <option th:each="producto : ${productos}" 
+                            th:value="${producto.idProducto}" 
+                            th:text="${producto.nombre}" 
+                            th:selected="${vendedorProducto.producto != null and vendedorProducto.producto.idProducto == producto.idProducto}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="cantidad" class="form-label">Cantidad:</label>
+                <input type="number" id="cantidad" th:field="*{cantidad}" class="form-control" placeholder="Cantidad" required />
+            </div>
+            <div class="mb-3">
+                <label for="precio" class="form-label">Precio:</label>
+                <input type="number" id="precio" th:field="*{precio}" class="form-control" placeholder="Precio" step="0.01" required />
+            </div>
+            <button type="submit" class="btn btn-success" 
+                    th:text="${vendedorProducto.idVendedorProducto} != null ? 'Actualizar' : 'Guardar'">Guardar</button>
+            <a th:href="@{/vendedor-producto}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

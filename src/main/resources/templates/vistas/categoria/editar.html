@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Categoría</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" th:href="@{/admin/dashboard}">Admin Dashboard</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/clientes}">Clientes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/usuarios}">Usuarios</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/order-items}">ordenes</a></li>
+
+                <li class="nav-item"><a class="nav-link" th:href="@{/categorias}">Categorías</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/productos}">Productos</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/ventas}">Ventas</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/compras}">Compras</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/proveedores}">Proveedores</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/vendedores}">Vendedores</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/vendedor-producto}">Vendedor Productos</a></li>
+            </ul>
+            <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <h1>Editar Categoría</h1>
+        <form th:action="@{|/categorias/actualizar/${categoria.idCategoria}|}" th:object="${categoria}" method="post">
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre de la Categoría</label>
+                <input type="text" id="nombre" name="nombre" class="form-control" th:field="*{nombre}" required>
+            </div>
+            <!-- Agregar más campos si es necesario -->
+            <button type="submit" class="btn btn-success">Actualizar Categoría</button>
+            <a th:href="@{/categorias}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

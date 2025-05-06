@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Control - Proveedor</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Panel de Proveedor</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/proveedor/accesos/editar}">Editar Perfil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/logout}">Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Información del Proveedor -->
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h3>Información de la Cuenta</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Nombre:</strong> <span th:text="${proveedor.nombre}">Nombre</span></p>
+                        <p><strong>Email:</strong> <span th:text="${proveedor.correoElectronico}">email@ejemplo.com</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Teléfono:</strong> <span th:text="${proveedor.telefono}">123456789</span></p>
+                        <p><strong>Dirección:</strong> <span th:text="${proveedor.direccion}">Dirección</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Listado de Productos -->
+        <div class="card">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">Mis Productos</h3>
+                <a th:href="@{/proveedor/productos/nuevo}" class="btn btn-light">Nuevo Producto</a>
+            </div>
+            <div class="card-body">
+                <div th:if="${productos.empty}" class="alert alert-info">
+                    No tienes productos registrados.
+                </div>
+                <div th:unless="${productos.empty}" class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Precio</th>
+                                <th>Stock</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="producto : ${productos}">
+                                <td th:text="${producto.idProducto}">1</td>
+                                <td th:text="${producto.nombre}">Producto</td>
+                                <td th:text="${producto.descripcion}">Descripción</td>
+                                <td th:text="${producto.precio}">0.00</td>
+                                <td th:text="${producto.stock}">0</td>
+                                <td>
+                                    <a th:href="@{|/proveedor/productos/editar/${producto.idProducto}|}" 
+                                       class="btn btn-warning btn-sm">Editar</a>
+                                    <a th:href="@{|/proveedor/productos/eliminar/${producto.idProducto}|}" 
+                                       class="btn btn-danger btn-sm"
+                                       onclick="return confirm('¿Está seguro de eliminar este producto?')">Eliminar</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-light text-center py-3 mt-4">
+        <p>&copy; 2025 Panel de Proveedor. Todos los derechos reservados.</p>
+    </footer>
+
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

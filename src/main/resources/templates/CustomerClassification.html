@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Clasificación de Clientes</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+        .dashboard-container {
+            padding: 30px;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin: 0 auto;
+            max-width: 1200px; /* Increased width for horizontal layout */
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .form-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 35px 10px 12px; /* Adjusted padding for icon alignment */
+            border: 1px solid #dfe3e8;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+            outline: none;
+        }
+        .form-group i {
+            position: absolute;
+            right: 12px;
+            top: 65%; /* Adjusted for better vertical centering */
+            transform: translateY(-50%);
+            color: #888;
+            font-size: 1rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.3s ease, transform 0.2s ease;
+            width: 100%;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0056b3, #003d80);
+            transform: translateY(-2px);
+        }
+        .btn-list {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        .btn-list:hover {
+            background: linear-gradient(135deg, #495057, #343a40);
+            transform: translateY(-2px);
+        }
+        .result-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #e9f7ff;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .error {
+            color: #dc3545;
+            margin-top: 15px;
+            font-weight: 500;
+            text-align: center;
+        }
+        @media (max-width: 992px) {
+            .form-group {
+                margin-bottom: 20px;
+            }
+            .btn-primary {
+                width: 100%;
+            }
+        }
+        @media (max-width: 576px) {
+            .dashboard-container {
+                padding: 15px;
+            }
+            .card {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar remains unchanged -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" th:href="@{/admin/dashboard}">Administrador</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item"><a class="nav-link" th:href="@{/clientes}">Clientes</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/usuarios}">Usuarios</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/order-items}">Órdenes</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/categorias}">Categorías</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/productos}">Productos</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/ventas}">Ventas</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/compras}">Compras</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/proveedores}">Proveedores</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/vendedores}">Vendedores</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/vendedor-producto}">Vendedor Artículo</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/clasificacion}">Predicción</a></li>
+        </ul>
+        <a class="btn btn-outline-light" style="--bs-btn-line-height: 1.0;" th:href="@{/logout}">Cerrar Sesión</a>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+    <h1>Clasificación de Clientes</h1>
+    <a class="btn-list" th:href="@{/clasificacion/lista}">Ver Lista de Clasificaciones</a>
+    <p></p>
+    <p></p>
+    <div class="card">
+        <form th:action="@{/clasificacion/clasificar}" th:object="${customerData}" method="post">
+            <div class="row g-3">
+                <div class="col-lg-3 col-md-6">
+                    <div class="form-group">
+                        <label>Edad:</label>
+                        <input type="number" th:field="*{edad}" min="17" max="70" value="17" required>
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="form-group">
+                        <label>Frecuencia de Compra:</label>
+                        <input type="number" th:field="*{frecuenciaCompra}" min="0" max="300" value="0" required>
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="form-group">
+                        <label>Valor Total de Compra:</label>
+                        <input type="number" step="0.01" th:field="*{valorTotalCompra}" min="0" value="0" required>
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="form-group">
+                        <label>Días desde Última Compra:</label>
+                        <input type="number" th:field="*{ultimaCompra}" min="0" value="0" required>
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="form-group">
+                        <label>Método de Pago:</label>
+                        <select th:field="*{metodoPago}" required>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Tarjeta">Tarjeta</option>
+                            <option value="Transferencia">Transferencia</option>
+                        </select>
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 d-flex align-items-end">
+                    <button type="submit" class="btn-primary">Clasificar</button>
+                </div>
+            </div>
+        </form>
+
+        <div th:if="${error}" class="error">
+            <p th:text="${error}"></p>
+        </div>
+
+        <div th:if="${showResult}" class="result-section">
+            <h2>Resultado de la Clasificación</h2>
+            <p>Categoría: <strong th:text="${clasificacion}"></strong></p>
+            <p>Confianza: <strong th:text="${confianza}"></strong></p>
+            <h3>Datos Enviados</h3>
+            <p>Edad: <span th:text="${customerData.edad}"></span></p>
+            <p>Frecuencia de Compra: <span th:text="${customerData.frecuenciaCompra}"></span></p>
+            <p>Valor Total de Compra: <span th:text="${#numbers.formatDecimal(customerData.valorTotalCompra, 1, 2, 'COMMA')}"></span></p>
+            <p>Días desde Última Compra: <span th:text="${customerData.ultimaCompra}"></span></p>
+            <p>Método de Pago: <span th:text="${customerData.metodoPago}"></span></p>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

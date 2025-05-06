@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${usuario.id != null ? 'Editar Usuario' : 'Nuevo Usuario'}"></title>
+    <style>
+        .dashboard-container {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        .metrics-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .metric-card {
+            flex: 1;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+        }
+
+        .metric-card h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 1.2rem;
+        }
+
+        .metric-card p {
+            font-size: 24px;
+            margin: 0;
+            color: #000;
+        }
+
+        .metric-card span {
+            font-size: 14px;
+        }
+
+        .positive {
+            color: green;
+        }
+
+        .negative {
+            color: red;
+        }
+
+        .charts-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .chart-card {
+            flex: 1;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            min-width: 300px;
+        }
+
+        .sub-charts {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .chart-section {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        canvas {
+            max-height: 300px;
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        /* Improved Navbar Styles */
+        .navbar {
+            padding: 1rem;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .navbar-toggler {
+            border: none;
+            padding: 0.5rem;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .navbar-collapse {
+            background-color: #343a40;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            padding: 1rem;
+        }
+
+        .navbar-nav {
+            width: 100%;
+        }
+
+        .nav-item {
+            margin: 0.5rem 0;
+        }
+
+        .nav-link {
+            color: #fff !important;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .btn-outline-light {
+            width: 100%;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            font-weight: bold;
+        }
+
+        /* Enhanced Media Queries */
+        @media (min-width: 992px) {
+            .navbar-collapse {
+                background-color: transparent;
+                padding: 0;
+                margin-top: 0;
+            }
+            .nav-item {
+                margin: 0;
+            }
+            .btn-outline-light {
+                width: auto;
+                margin-top: 0;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .metrics-row {
+                gap: 15px;
+            }
+            .metric-card {
+                flex: 1 1 calc(50% - 15px);
+            }
+            .charts-row {
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .metric-card {
+                flex: 1 1 calc(50% - 15px);
+            }
+            .chart-card {
+                flex: 1 1 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .metrics-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .metric-card {
+                flex: 1 1 100%;
+                padding: 15px;
+            }
+            .charts-row {
+                flex-direction: column;
+            }
+            .chart-card {
+                margin-bottom: 15px;
+            }
+            .sub-charts {
+                flex-direction: column;
+                gap: 15px;
+            }
+            canvas {
+                max-height: 250px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dashboard-container {
+                padding: 10px;
+            }
+            .metric-card {
+                padding: 10px;
+            }
+            .metric-card p {
+                font-size: 20px;
+            }
+            .chart-card {
+                padding: 10px;
+            }
+            .chart-section {
+                min-width: 100%;
+            }
+            canvas {
+                max-height: 200px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            p {
+                font-size: 0.9rem;
+            }
+            .navbar-brand {
+                font-size: 1.25rem;
+            }
+            .nav-link {
+                font-size: 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" th:href="@{/admin/dashboard}">Administrador</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/clientes}">Clientes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/usuarios}">Usuarios</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/order-items}">Órdenes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/categorias}">Categorías</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/productos}">Productos</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/ventas}">Ventas</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/compras}">Compras</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/proveedores}">Proveedores</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/vendedores}">Vendedores</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/vendedor-producto}">Vendedor Productos</a></li>
+            </ul>
+            <a class="btn btn-outline-light" style="--bs-btn-line-height: 1.0;" th:href="@{/logout}">Cerrar Sesión</a>
+
+        </div>
+    </nav>
+
+    <div class="container mt-4 dashboard-container">
+        <h1 th:text="${usuario.id != null ? 'Editar Usuario' : 'Crear Nuevo Usuario'}"></h1>
+
+        <!-- Error message display -->
+        <div th:if="${error}" class="alert alert-danger error-message" th:text="${error}"></div>
+
+        <!-- Formulario -->
+        <form th:action="${usuario.id != null} ? @{/usuarios/actualizar/{id}(id=${usuario.id})} : @{/usuarios/guardar}" 
+              th:object="${usuario}" method="post" class="mb-4">
+            <input type="hidden" th:field="*{id}" />
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required />
+            </div>
+            <div class="mb-3">
+                <label for="apellido" class="form-label">Apellido</label>
+                <input type="text" class="form-control" id="apellido" th:field="*{apellido}" required />
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" th:field="*{email}" required />
+            </div>
+            <div class="mb-3" th:unless="${usuario.id != null}">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="password" th:field="*{password}" required />
+            </div>
+            <div class="mb-3">
+                <label for="role" class="form-label">Rol</label>
+                <select class="form-control" id="role" name="role">
+                    <option value="ROLE_ADMINISTRADOR">Administrador</option>
+                    <option value="ROLE_VENDEDOR">Vendedor</option>
+                    <option value="ROLE_CLIENTE">Cliente</option>
+                    <option value="ROLE_PROVEEDOR">Proveedor</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary me-2" 
+                    th:text="${usuario.id != null ? 'Actualizar' : 'Crear'}"></button>
+            <a th:href="@{/usuarios}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

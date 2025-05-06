@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${compra.idCompra != null} ? 'Editar Compra' : 'Nueva Compra'">Formulario Compra</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" th:href="@{/admin/dashboard}">Admin Dashboard</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/clientes}">Clientes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/usuarios}">Usuarios</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/order-items}">ordenes</a></li>
+
+                <li class="nav-item"><a class="nav-link" th:href="@{/categorias}">Categorías</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/productos}">Productos</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/ventas}">Ventas</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/compras}">Compras</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/proveedores}">Proveedores</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/vendedores}">Vendedores</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/vendedor-producto}">Vendedor Productos</a></li>
+            </ul>
+            <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <h1 th:text="${compra.idCompra != null} ? 'Editar Compra' : 'Nueva Compra'">Formulario Compra</h1>
+        <form th:action="${compra.idCompra != null} ? @{/compras/actualizar/{id}(id=${compra.idCompra})} : @{/compras}" 
+              th:object="${compra}" method="post">
+            <!-- Campo oculto para ID en edición -->
+            <div th:if="${compra.idCompra != null}">
+                <input type="hidden" th:field="*{idCompra}" />
+            </div>
+            <!-- Dropdown para Proveedor -->
+            <div class="mb-3">
+                <label for="proveedor" class="form-label">Proveedor:</label>
+                <select id="proveedor" th:field="*{proveedor}" class="form-select" required>
+                    <option value="">Seleccione un proveedor</option>
+                    <option th:each="prov : ${proveedores}" 
+                            th:value="${prov.idProveedor}" 
+                            th:text="${prov.nombre}" 
+                            th:selected="${compra.proveedor != null and compra.proveedor.idProveedor == prov.idProveedor}"></option>
+                </select>
+            </div>
+            <!-- Dropdown para Vendedor -->
+            <div class="mb-3">
+                <label for="vendedor" class="form-label">Vendedor:</label>
+                <select id="vendedor" th:field="*{vendedor}" class="form-select" required>
+                    <option value="">Seleccione un vendedor</option>
+                    <option th:each="vend : ${vendedores}" 
+                            th:value="${vend.idVendedor}" 
+                            th:text="${vend.nombre}" 
+                            th:selected="${compra.vendedor != null and compra.vendedor.idVendedor == vend.idVendedor}"></option>
+                </select>
+            </div>
+            <!-- Fecha de Compra -->
+            <div class="mb-3">
+                <label for="fechaDeCompra" class="form-label">Fecha de Compra:</label>
+                <input type="datetime-local" id="fechaDeCompra" th:field="*{fechaDeCompra}" class="form-control" required />
+            </div>
+            <!-- Importe Total -->
+            <div class="mb-3">
+                <label for="importeTotal" class="form-label">Importe Total:</label>
+                <input type="number" id="importeTotal" th:field="*{importeTotal}" class="form-control" 
+                       step="0.01" placeholder="Importe total" required />
+            </div>
+            <button type="submit" class="btn btn-success" 
+                    th:text="${compra.idCompra != null} ? 'Actualizar' : 'Guardar'">Guardar</button>
+            <a th:href="@{/compras}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

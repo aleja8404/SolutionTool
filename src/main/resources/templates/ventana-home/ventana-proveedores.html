@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToolSolutions || Proveedores</title>
+    <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
+    <link rel="stylesheet" th:href="@{/css/styleProveedor.css}"/>
+</head>
+<body>
+    <!-- Encabezado -->
+    <header class="header">
+        <div class="container">
+            <div class="menu-content">
+                <img width="70" src="/img/Imagen1.jpg" alt="Logo ToolSolutions"/>
+                <nav class="nav-principal">
+                    <ul>
+                        <li>
+                            <ion-icon name="home-outline"></ion-icon>
+                            <a th:href="@{/home}">Inicio</a>
+                        </li>
+                        <li>
+                            <ion-icon name="briefcase-outline"></ion-icon>
+                            <a th:href="@{/portfolio}">Inventario</a>
+                        </li>
+                        <li class="active">
+                            <ion-icon name="newspaper-outline"></ion-icon>
+                            <a th:href="@{/pages}">Proveedores</a>
+                        </li>
+                        <li>
+                            <ion-icon name="copy-outline"></ion-icon>
+                            <a th:href="@{/blog}">Clientes</a>
+                        </li>
+                        <li>
+                            <ion-icon name="mail-unread-outline"></ion-icon>
+                            <a th:href="@{/contact}">Contacto</a>
+                        </li>
+                        <li class="login-btn">
+                            <a th:href="@{/login}" class="btn-login">Iniciar Sesión</a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="nav-responsive">
+                    <ion-icon name="menu"></ion-icon>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Section: Proveedores -->
+    <section id="proveedores" class="proveedores-section">
+        <div class="container">
+            <div class="proveedores-header">
+                <h2 class="title-h2">NUESTROS PROVEEDORES</h2>
+                <p class="text">
+                    Conoce a los proveedores que surten nuestras ferreterías en Cartagena, Colombia, con herramientas de calidad.
+                </p>
+            </div>
+            <div class="proveedores-grid">
+                <div class="proveedor-card">
+                    <h3 class="proveedor-name">FerreHerramientas SAS</h3>
+                    <p class="proveedor-detail"><strong>Contacto:</strong> +57 310 987 6543</p>
+                    <p class="proveedor-detail"><strong>Correo:</strong> <a href="mailto:contacto@ferreherramientas.co">contacto@ferreherramientas.co</a></p>
+                    <p class="proveedor-detail"><strong>Herramientas:</strong> Taladros eléctricos, sierras, kits de herramientas</p>
+                    <button class="btn-contact">Contactar</button>
+                </div>
+                <div class="proveedor-card">
+                    <h3 class="proveedor-name">Suministros Industriales LTDA</h3>
+                    <p class="proveedor-detail"><strong>Contacto:</strong> +57 320 456 7890</p>
+                    <p class="proveedor-detail"><strong>Correo:</strong> <a href="mailto:ventas@suministrosind.co">ventas@suministrosind.co</a></p>
+                    <p class="proveedor-detail"><strong>Herramientas:</strong> Llaves inglesas, martillos, destornilladores</p>
+                    <button class="btn-contact">Contactar</button>
+                </div>
+                <div class="proveedor-card">
+                    <h3 class="proveedor-name">Herramientas del Caribe</h3>
+                    <p class="proveedor-detail"><strong>Contacto:</strong> +57 300 123 9876</p>
+                    <p class="proveedor-detail"><strong>Correo:</strong> <a href="mailto:info@herramientasdelcaribe.co">info@herramientasdelcaribe.co</a></p>
+                    <p class="proveedor-detail"><strong>Herramientas:</strong> Accesorios para herramientas, cajas de herramientas</p>
+                    <button class="btn-contact">Contactar</button>
+                </div>
+                <div class="proveedor-card">
+                    <h3 class="proveedor-name">Proveedora Ferretera Nacional</h3>
+                    <p class="proveedor-detail"><strong>Contacto:</strong> +57 315 654 3210</p>
+                    <p class="proveedor-detail"><strong>Correo:</strong> <a href="mailto:proveedora@nacional.co">proveedora@nacional.co</a></p>
+                    <p class="proveedor-detail"><strong>Herramientas:</strong> Herramientas manuales, equipos de seguridad</p>
+                    <button class="btn-contact">Contactar</button>
+                </div>
+            </div>
+            <button class="btn-load-more">Cargar Más Proveedores</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4 class="title-h4">SOBRE NOSOTROS</h4>
+                <p class="text">
+                    ToolSolutions es tu aliado estratégico en Cartagena, Colombia, especializado en la gestión eficiente de inventarios para ferreterías. Nos dedicamos a optimizar el control de herramientas, conectar proveedores y clientes, y ofrecer soluciones tecnológicas innovadoras para el sector ferretero. Con un enfoque en calidad y satisfacción, ayudamos a que tu negocio crezca con un sistema intuitivo y herramientas de última generación.
+                </p>
+            </div>
+            <div class="footer-section">
+                <h4 class="title-h4">CONTÁCTANOS</h4>
+                <ul class="contact-list">
+                    <li><strong>Teléfono:</strong> +57 300 123 4567</li>
+                    <li><strong>Correo:</strong> <a href="mailto:info@toolsolutions.co">info@toolsolutions.co</a></li>
+                    <li><strong>Soporte Técnico:</strong> <a href="mailto:support@toolsolutions.co">support@toolsolutions.co</a></li>
+                    <li><strong>Dirección:</strong> Calle 34 #12-45, Centro, Cartagena, Colombia</li>
+                    <li><strong>Horario:</strong> Lunes a Viernes, 8:00 AM - 6:00 PM</li>
+                    <li><strong>WhatsApp:</strong> <a href="https://wa.me/573001234567">+57 300 123 4567</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4 class="title-h4">ENLACES ÚTILES</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Preguntas Frecuentes</a></li>
+                    <li><a href="#">Soporte</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="sub-footer">
+            <p class="text-sm">© Copyright 2025 ToolSolutions. Todos los derechos reservados.</p>
+            <div class="social">
+                <a href="https://facebook.com/toolsolutionsco" aria-label="Facebook"><ion-icon name="logo-facebook"></ion-icon></a>
+                <a href="https://twitter.com/toolsolutionsco" aria-label="Twitter"><ion-icon name="logo-twitter"></ion-icon></a>
+                <a href="https://instagram.com/toolsolutionsco" aria-label="Instagram"><ion-icon name="logo-instagram"></ion-icon></a>
+                <a href="https://linkedin.com/company/toolsolutionsco" aria-label="LinkedIn"><ion-icon name="logo-linkedin"></ion-icon></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Responsive Menu -->
+    <script>
+        document.querySelector('.nav-responsive').addEventListener('click', () => {
+            document.querySelector('.nav-principal').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
