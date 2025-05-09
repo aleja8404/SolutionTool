@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard del Vendedor - Ferretería Online</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .dashboard-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: #232f3e !important;
+            padding: 1rem 2rem;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff !important;
+        }
+
+        .navbar-toggler {
+            border: none;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .nav-link {
+            color: #fff !important;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #f0c14b !important;
+        }
+
+        .nav-link.active {
+            color: #f0c14b !important;
+            font-weight: bold;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+
+        .btn-outline-light {
+            border-color: #f0c14b;
+            color: #f0c14b;
+            font-weight: 500;
+        }
+
+        .btn-outline-light:hover {
+            background-color: #f0c14b;
+            color: #232f3e;
+        }
+
+        /* Welcome Card */
+        .welcome-card {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .welcome-card h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0f1111;
+            margin-bottom: 10px;
+        }
+
+        .welcome-card p {
+            font-size: 1.1rem;
+            color: #565959;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .dashboard-card {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+        }
+
+        .dashboard-card h3 {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #0f1111;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .dashboard-card p {
+            font-size: 1rem;
+            color: #0f1111;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-card p strong {
+            color: #565959;
+        }
+
+        .dashboard-card .text-muted {
+            font-size: 1rem;
+            color: #888;
+        }
+
+        .table {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .table th {
+            background-color: #232f3e;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        .btn-primary {
+            background-color: #f0c14b;
+            border: 1px solid #a88734;
+            color: #0f1111;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #e6b800;
+            color: #0f1111;
+        }
+
+        .btn-warning {
+            background-color: #ff9900;
+            border: 1px solid #e68a00;
+            color: #0f1111;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+
+        .btn-warning:hover {
+            background-color: #e68a00;
+            color: #0f1111;
+        }
+
+        .btn-danger {
+            background-color: #b12704;
+            border: 1px solid #8b1f03;
+            color: #fff;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+
+        .btn-danger:hover {
+            background-color: #8b1f03;
+            color: #fff;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #232f3e;
+            color: #fff;
+            padding: 20px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .dashboard-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 15px;
+            }
+            .welcome-card {
+                padding: 15px;
+            }
+            .welcome-card h1 {
+                font-size: 1.6rem;
+            }
+            .welcome-card p {
+                font-size: 1rem;
+            }
+            .dashboard-card {
+                padding: 15px;
+            }
+            .dashboard-card h3 {
+                font-size: 1.2rem;
+            }
+            .dashboard-card p {
+                font-size: 0.95rem;
+            }
+            .btn-primary, .btn-warning, .btn-danger {
+                padding: 7px 14px;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dashboard-container {
+                padding: 10px;
+            }
+            .welcome-card {
+                padding: 10px;
+            }
+            .welcome-card h1 {
+                font-size: 1.4rem;
+            }
+            .welcome-card p {
+                font-size: 0.9rem;
+            }
+            .dashboard-card {
+                padding: 10px;
+            }
+            .dashboard-card h3 {
+                font-size: 1.1rem;
+            }
+            .dashboard-card p {
+                font-size: 0.9rem;
+            }
+            .btn-primary, .btn-warning, .btn-danger {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+            .navbar-brand {
+                font-size: 1.4rem;
+            }
+            .nav-link {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/vendedor/dashboard}">Ferretería Online</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activePage == 'dashboard'} ? 'active'" th:href="@{/vendedor/dashboard}">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activePage == 'nueva-venta'} ? 'active'" th:href="@{/vendedor/ventas/nueva}">Nueva Venta</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activePage == 'nueva-compra'} ? 'active'" th:href="@{/vendedor/compras/nueva}">Nueva Compra</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activePage == 'nuevo-producto'} ? 'active'" th:href="@{/vendedor/productos/nuevo}">Asignar Producto</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:classappend="${activePage == 'editar'} ? 'active'" th:href="@{/vendedor/editar}">Editar Perfil</a>
+                    </li>
+                </ul>
+                <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+    <div class="dashboard-container">
+        <div class="welcome-card">
+            <h1>Bienvenido, <span th:text="${vendedor?.nombre ?: 'Vendedor'}"></span>!</h1>
+            <p>Aquí puedes gestionar tus productos, ventas y compras.</p>
+        </div>
+        <div class="dashboard-row">
+            <div class="dashboard-card">
+                <h3>Información de tu Cuenta</h3>
+                <p><strong>ID:</strong> <span th:text="${vendedor?.idVendedor ?: 'N/A'}"></span></p>
+                <p><strong>Nombre:</strong> <span th:text="${vendedor?.nombre ?: 'N/A'}"></span></p>
+                <p><strong>Correo:</strong> <span th:text="${vendedor?.correoElectronico ?: 'N/A'}"></span></p>
+                <p><strong>Teléfono:</strong> <span th:text="${vendedor?.telefono ?: 'No especificado'}"></span></p>
+                <p><strong>Dirección:</strong> <span th:text="${vendedor?.direccion ?: 'No especificada'}"></span></p>
+                <a th:href="@{/vendedor/editar}" class="btn btn-warning">Editar Perfil</a>
+            </div>
+            <div class="dashboard-card">
+                <h3>Productos Asignados</h3>
+                <p th:if="${vendedorProductos == null or vendedorProductos.isEmpty()}" class="text-muted">No tienes productos asignados.</p>
+                <table th:unless="${vendedorProductos == null or vendedorProductos.isEmpty()}" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID Producto</th>
+                            <th>Nombre</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="vp : ${vendedorProductos}">
+                            <td th:text="${vp?.producto?.idProducto ?: 'N/A'}"></td>
+                            <td th:text="${vp?.producto?.nombre ?: 'N/A'}"></td>
+                            <td th:text="${vp?.cantidad ?: '0'}"></td>
+                            <td th:text="${vp?.precio != null} ? ${#numbers.formatDecimal(vp.precio, 1, 2)} + ' USD' : '0.00 USD'"></td>
+                            <td>
+                                <a th:href="@{|/vendedor/productos/editar/${vp.idVendedorProducto}|}" class="btn btn-sm btn-warning me-1">Editar</a>
+                                <a th:href="@{|/vendedor/productos/eliminar/${vp.idVendedorProducto}|}" class="btn btn-sm btn-danger"
+                                   onclick="return confirm('¿Estás seguro de eliminar este producto asignado?');">Eliminar</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <a th:href="@{/vendedor/productos/nuevo}" class="btn btn-primary">Asignar Nuevo Producto</a>
+            </div>
+        </div>
+        <div class="dashboard-row">
+            <div class="dashboard-card">
+                <h3>Tus Ventas</h3>
+                <p th:if="${ventas == null or ventas.isEmpty()}" class="text-muted">No tienes ventas registradas.</p>
+                <table th:unless="${ventas == null or ventas.isEmpty()}" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID Venta</th>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="venta : ${ventas}">
+                            <td th:text="${venta?.idVenta ?: 'N/A'}"></td>
+                            <td th:text="${venta?.cliente?.nombre ?: 'N/A'}"></td>
+                            <td th:text="${venta?.fechaDelPedido != null} ? ${#temporals.format(venta.fechaDelPedido, 'dd/MM/yyyy HH:mm')} : 'N/A'"></td>
+                            <td th:text="${venta?.total != null} ? ${#numbers.formatDecimal(venta.total, 1, 2)} + ' USD' : '0.00 USD'"></td>
+                            <td th:text="${venta?.estado ?: 'N/A'}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <a th:href="@{/vendedor/ventas/nueva}" class="btn btn-primary">Registrar Nueva Venta</a>
+            </div>
+            <div class="dashboard-card">
+                <h3>Tus Compras</h3>
+                <p th:if="${compras == null or compras.isEmpty()}" class="text-muted">No tienes compras registradas.</p>
+                <table th:unless="${compras == null or compras.isEmpty()}" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID Compra</th>
+                            <th>Proveedor</th>
+                            <th>Fecha</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="compra : ${compras}">
+                            <td th:text="${compra?.idCompra ?: 'N/A'}"></td>
+                            <td th:text="${compra?.proveedor?.nombre ?: 'N/A'}"></td>
+                            <td th:text="${compra?.fechaDeCompra != null} ? ${#temporals.format(compra.fechaDeCompra, 'dd/MM/yyyy HH:mm')} : 'N/A'"></td>
+                            <td th:text="${compra?.importeTotal != null} ? ${#numbers.formatDecimal(compra.importeTotal, 1, 2)} + ' USD' : '0.00 USD'"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <a th:href="@{/vendedor/compras/nueva}" class="btn btn-primary">Registrar Nueva Compra</a>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>© 2025 Ferretería Online</p>
+    </footer>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

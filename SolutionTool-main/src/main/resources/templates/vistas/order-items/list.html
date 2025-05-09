@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Listado de Order Items</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <style>
+        :root {
+            --sidebar-bg: #e77547;
+            --sidebar-text: white;
+            --sidebar-active: rgba(255, 255, 255, 0.2);
+            --content-bg: #f8f9fa;
+            --card-bg: white;
+            --primary-color: #3498db;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            background-color: var(--content-bg);
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-header h3 {
+            color: var(--sidebar-text);
+            margin-bottom: 0;
+            font-weight: 600;
+        }
+        
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+        
+        .nav-item {
+            margin-bottom: 5px;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            padding: 12px 20px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .nav-link:hover {
+            color: var(--sidebar-text);
+            background-color: rgba(255, 255, 255, 0.15);
+            text-decoration: none;
+        }
+        
+        .nav-link.active {
+            color: var(--sidebar-text);
+            background-color: var(--sidebar-active);
+            font-weight: 600;
+        }
+        
+        .logout-btn {
+            margin-top: auto;
+            padding: 20px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-x: auto;
+            padding: 30px;
+        }
+        
+        .card-container {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h1 i {
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+        
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 8px;
+        }
+        
+        .table {
+            width: 100%;
+            margin-bottom: 0;
+            font-size: 0.95rem;
+        }
+        
+        .table thead th {
+            background-color: #2c3e50;
+            color: white;
+            border-bottom: none;
+            font-weight: 600;
+            padding: 12px 15px;
+            vertical-align: middle;
+        }
+        
+        .table th a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .table th a:hover {
+            text-decoration: underline;
+        }
+        
+        .table tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        .table tbody tr:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+        
+        .table td {
+            vertical-align: middle;
+            padding: 12px 15px;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2188d9;
+            border-color: #1d7fcb;
+        }
+        
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+        /* Pagination Styles */
+        .pagination {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .page-link {
+            color: var(--primary-color);
+            border-radius: 6px;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .card-container {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .card-container {
+                padding: 20px 15px;
+                overflow-x: auto;
+            }
+            
+            .table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 15px;
+            }
+            
+            .btn {
+                padding: 6px 12px;
+                font-size: 0.875rem;
+            }
+            
+            .btn i {
+                margin-right: 4px;
+            }
+        }
+        
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+        
+        /* Page size selector */
+        .page-size-selector {
+            width: 80px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>Administrador</h3>
+        </div>
+        <nav class="sidebar-nav">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/clientes}">
+                        <i class="fas fa-users"></i>
+                        <span>Clientes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/usuarios}">
+                        <i class="fas fa-user-cog"></i>
+                        <span>Usuarios</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/order-items}">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Órdenes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/categorias}">
+                        <i class="fas fa-tags"></i>
+                        <span>Categorías</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/productos}">
+                        <i class="fas fa-box-open"></i>
+                        <span>Productos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/ventas}">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Ventas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/compras}">
+                        <i class="fas fa-shopping-basket"></i>
+                        <span>Compras</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/proveedores}">
+                        <i class="fas fa-truck"></i>
+                        <span>Proveedores</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/vendedores}">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Vendedores</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/vendedor-producto}">
+                        <i class="fas fa-link"></i>
+                        <span>Vendedor Artículo</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="logout-btn">
+            <a class="btn btn-outline-light btn-sm w-100" th:href="@{/logout}">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="card-container">
+            <h1><i class="fas fa-shopping-cart"></i>Listado de Order Items</h1>
+            
+            <div class="mb-4">
+                <a th:href="@{/order-items/nuevo}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Nuevo Order Item
+                </a>
+            </div>
+            
+            <div th:if="${orderItemsPage.content.isEmpty()}" class="empty-state">
+                <i class="fas fa-shopping-cart fa-3x mb-3"></i>
+                <p>No hay Order Items registrados.</p>
+            </div>
+            
+            <div th:unless="${orderItemsPage.content.isEmpty()}">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <a th:href="@{/order-items(page=${orderItemsPage.number}, size=${orderItemsPage.size}, sortBy='idPedidoArticulo', direction=${direction == 'ASC' ? 'DESC' : 'ASC'})}">ID</a>
+                            </th>
+                            <th>Venta</th>
+                            <th>Producto</th>
+                            <th>
+                                <a th:href="@{/order-items(page=${orderItemsPage.number}, size=${orderItemsPage.size}, sortBy='cantidad', direction=${direction == 'ASC' ? 'DESC' : 'ASC'})}">Cantidad</a>
+                            </th>
+                            <th>
+                                <a th:href="@{/order-items(page=${orderItemsPage.number}, size=${orderItemsPage.size}, sortBy='precio', direction=${direction == 'ASC' ? 'DESC' : 'ASC'})}">Precio</a>
+                            </th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="orderItem : ${orderItemsPage.content}">
+                            <td th:text="${orderItem.idPedidoArticulo}">1</td>
+                            <td th:text="${orderItem.venta?.idVenta != null} ? ${'Venta #' + orderItem.venta.idVenta} : 'N/A'">Venta</td>
+                            <td th:text="${orderItem.producto?.nombre} ?: 'N/A'">Producto</td>
+                            <td th:text="${orderItem.cantidad} ?: '0'">0</td>
+                            <td th:text="${orderItem.precio} ?: '0.00'">0.00</td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a th:href="@{|/order-items/editar/${orderItem.idPedidoArticulo}|}" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a th:href="@{|/order-items/eliminar/${orderItem.idPedidoArticulo}|}" class="btn btn-sm btn-danger" 
+                                       onclick="return confirm('¿Está seguro de eliminar este Order Item?');">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Paginación -->
+                <div th:if="${orderItemsPage.totalPages > 1}" class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        Mostrando página [[${orderItemsPage.number + 1}]] de [[${orderItemsPage.totalPages}]]
+                    </small>
+                    
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <li class="page-item" th:classappend="${orderItemsPage.first} ? 'disabled'">
+                                <a class="page-link" th:href="@{/order-items(page=0, size=${orderItemsPage.size}, sortBy=${sortBy}, direction=${direction})}">
+                                    <i class="fas fa-angle-double-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${!orderItemsPage.hasPrevious()} ? 'disabled'">
+                                <a class="page-link" th:href="@{/order-items(page=${orderItemsPage.number - 1}, size=${orderItemsPage.size}, sortBy=${sortBy}, direction=${direction})}">
+                                    <i class="fas fa-angle-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(orderItemsPage.number - 2 > 0 ? orderItemsPage.number - 2 : 0, orderItemsPage.number + 2 < orderItemsPage.totalPages ? orderItemsPage.number + 2 : orderItemsPage.totalPages - 1)}"
+                                th:classappend="${i == orderItemsPage.number} ? 'active'">
+                                <a class="page-link" th:href="@{/order-items(page=${i}, size=${orderItemsPage.size}, sortBy=${sortBy}, direction=${direction})}" 
+                                   th:text="${i + 1}">1</a>
+                            </li>
+                            <li class="page-item" th:classappend="${!orderItemsPage.hasNext()} ? 'disabled'">
+                                <a class="page-link" th:href="@{/order-items(page=${orderItemsPage.number + 1}, size=${orderItemsPage.size}, sortBy=${sortBy}, direction=${direction})}">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:classappend="${orderItemsPage.last} ? 'disabled'">
+                                <a class="page-link" th:href="@{/order-items(page=${orderItemsPage.totalPages - 1}, size=${orderItemsPage.size}, sortBy=${sortBy}, direction=${direction})}">
+                                    <i class="fas fa-angle-double-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                    
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-muted">Mostrar:</span>
+                        <select class="form-select form-select-sm page-size-selector" onchange="location = this.value;">
+                            <option th:each="size : ${pageSizes}"
+                                    th:value="@{/order-items(page=0, size=${size}, sortBy=${sortBy}, direction=${direction})}"
+                                    th:text="${size}"
+                                    th:selected="${orderItemsPage.size == size}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    
+    <script>
+        // Resaltar el enlace activo
+        $(document).ready(function() {
+            const currentPath = window.location.pathname;
+            $('.nav-link').each(function() {
+                if ($(this).attr('href') === currentPath) {
+                    $(this).addClass('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,354 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tus Órdenes - Ferretería Online</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .dashboard-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: #232f3e !important;
+            padding: 1rem 2rem;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff !important;
+        }
+
+        .navbar-toggler {
+            border: none;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .nav-link {
+            color: #fff !important;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #f0c14b !important;
+        }
+
+        .btn-outline-light {
+            border-color: #f0c14b;
+            color: #f0c14b;
+            font-weight: 500;
+        }
+
+        .btn-outline-light:hover {
+            background-color: #f0c14b;
+            color: #232f3e;
+        }
+
+        /* Order Items */
+        .order-items {
+            margin-top: 20px;
+        }
+
+        .order-card {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .order-id {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0f1111;
+        }
+
+        .order-date {
+            font-size: 0.9rem;
+            color: #565959;
+        }
+
+        .order-item {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f7f7f7;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item-img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            background-color: #f7f7f7;
+        }
+
+        .order-item-no-img {
+            width: 80px;
+            height: 80px;
+            background-color: #f7f7f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .order-item-details {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .order-item-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #0f1111;
+            margin-bottom: 5px;
+        }
+
+        .order-item-quantity {
+            font-size: 0.9rem;
+            color: #565959;
+        }
+
+        .order-item-price {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #b12704;
+            margin-left: auto;
+            min-width: 100px;
+            text-align: right;
+        }
+
+        .btn-details {
+            color: #007185;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .btn-details:hover {
+            color: #b12704;
+            text-decoration: underline;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            color: #565959;
+            margin-bottom: 20px;
+        }
+
+        .btn-shop {
+            background-color: #f0c14b;
+            border: 1px solid #a88734;
+            color: #0f1111;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .btn-shop:hover {
+            background-color: #e6b800;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #232f3e;
+            color: #fff;
+            padding: 20px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .order-item-price {
+                text-align: left;
+                margin-left: 0;
+                margin-top: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 15px;
+            }
+            .order-card {
+                padding: 15px;
+            }
+            .order-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            .order-id {
+                font-size: 1.1rem;
+            }
+            .order-date {
+                font-size: 0.85rem;
+            }
+            .order-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .order-item-img, .order-item-no-img {
+                width: 60px;
+                height: 60px;
+            }
+            .order-item-details {
+                min-width: 100%;
+            }
+            .order-item-title {
+                font-size: 0.9rem;
+            }
+            .order-item-quantity {
+                font-size: 0.85rem;
+            }
+            .order-item-price {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dashboard-container {
+                padding: 10px;
+            }
+            .order-card {
+                padding: 10px;
+            }
+            .order-id {
+                font-size: 1rem;
+            }
+            .order-date {
+                font-size: 0.8rem;
+            }
+            .order-item-title {
+                font-size: 0.85rem;
+            }
+            .order-item-quantity {
+                font-size: 0.8rem;
+            }
+            .order-item-price {
+                font-size: 0.85rem;
+            }
+            .empty-state {
+                padding: 20px;
+            }
+            .empty-state p {
+                font-size: 1rem;
+            }
+            .btn-shop {
+                font-size: 0.9rem;
+                padding: 8px 16px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            .navbar-brand {
+                font-size: 1.4rem;
+            }
+            .nav-link {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/cliente/dashboard}">Ferretería Online</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/perfil}">Perfil</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/ordenes}">Órdenes</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/productos}">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/carrito}">Carrito</a></li>
+                </ul>
+                <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+    <div class="dashboard-container">
+        <h1>Tus Órdenes</h1>
+        <div th:if="${ordenes.isEmpty()}">
+            <div class="empty-state">
+                <p>No tienes órdenes registradas.</p>
+                <a th:href="@{/cliente/productos}" class="btn btn-shop">Explorar Productos</a>
+            </div>
+        </div>
+        <div class="order-items" th:unless="${ordenes.isEmpty()}">
+            <div class="order-card" th:each="orden : ${ordenes}">
+                <div class="order-header">
+                    <span class="order-id" th:text="'Orden #' + ${orden.idPedidoArticulo}"></span>
+                    <span class="order-date" th:text="${orden.venta?.fechaDelPedido != null} ? ${#temporals.format(orden.venta.fechaDelPedido, 'yyyy-MM-dd HH:mm')} : 'N/A'"></span>
+                </div>
+                <div class="order-item">
+                    <div th:if="${orden.producto?.foto}">
+                        <img th:src="@{${orden.producto.foto}}" th:alt="'Foto de ' + ${orden.producto.nombre}" class="order-item-img" />
+                    </div>
+                    <div th:unless="${orden.producto?.foto}" class="order-item-no-img">
+                        Sin Imagen
+                    </div>
+                    <div class="order-item-details">
+                        <h5 class="order-item-title" th:text="${orden.producto?.nombre ?: 'N/A'}"></h5>
+                        <p class="order-item-quantity" th:text="'Cantidad: ' + ${orden.cantidad ?: '0'}"></p>
+                    </div>
+                    <div class="order-item-price" th:text="${orden.precio != null} ? ${#numbers.formatDecimal(orden.precio, 1, 2)} + ' USD' : '0.00 USD'"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>© 2025 Ferretería Online</p>
+    </footer>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

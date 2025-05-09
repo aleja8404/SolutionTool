@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Ferretería Online</title>
+    <style>
+        .dashboard-container { padding: 20px; font-family: Arial, sans-serif; max-width: 100%; overflow-x: hidden; }
+        .welcome-card { background-color: #fff; border: 1px solid #e0e0e0; border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); padding: 20px; margin-bottom: 20px; text-align: center; }
+        .welcome-card h1 { font-size: 1.8rem; font-weight: 700; color: #0f1111; margin-bottom: 10px; }
+        .welcome-card p { font-size: 1.1rem; color: #565959; }
+        .metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .metric-card { background-color: #fff; border: 1px solid #e0e0e0; border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); padding: 20px; text-align: center; transition: transform 0.3s; }
+        .metric-card:hover { transform: translateY(-4px); }
+        .metric-card h3 { font-size: 1.1rem; font-weight: 500; color: #0f1111; margin-bottom: 10px; }
+        .metric-card p { font-size: 1.8rem; font-weight: 700; color: #0f1111; margin: 0; }
+        .metric-card .growth { font-size: 0.9rem; margin-top: 5px; }
+        .positive { color: #28a745; }
+        .negative { color: #b12704; }
+        .charts-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
+        .chart-card { background-color: #fff; border: 1px solid #e0e0e0; border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); padding: 20px; }
+        .chart-card h3 { font-size: 1.2rem; font-weight: 500; color: #0f1111; margin-bottom: 15px; }
+        .sub-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .chart-section { width: 100%; }
+        canvas { max-height: 300px !important; width: 100% !important; }
+        footer { background-color: #232f3e; color: #fff; padding: 20px; margin-top: 40px; text-align: center; }
+        .navbar { padding: 1rem; }
+        .navbar-brand { font-size: 1.5rem; font-weight: bold; }
+        .navbar-toggler { border: none; padding: 0.5rem; }
+        .navbar-toggler-icon { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"); }
+        .navbar-collapse { background-color: #343a40; border-radius: 8px; margin-top: 0.5rem; padding: 1rem; }
+        .navbar-nav { width: 100%; }
+        .nav-item { margin: 0.5rem 0; }
+        .nav-link { color: #fff !important; font-size: 1.1rem; padding: 0.5rem 1rem; transition: background-color 0.3s; }
+        .nav-link:hover { background-color: rgba(255, 255, 255, 0.1); border-radius: 4px; }
+        .btn-outline-light { width: 100%; margin-top: 1rem; padding: 0.5rem; font-weight: bold; }
+        @media (min-width: 992px) {
+            .navbar-collapse { background-color: transparent; padding: 0; margin-top: 0; }
+            .nav-item { margin: 0; }
+            .btn-outline-light { width: auto; margin-top: 0; }
+        }
+        @media (max-width: 1200px) {
+            .metrics-row { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+            .charts-row { grid-template-columns: 1fr; gap: 15px; }
+        }
+        @media (max-width: 992px) {
+            .sub-charts { grid-template-columns: 1fr; }
+            .chart-card canvas { max-height: 250px !important; }
+            .metric-card { flex: 1 1 calc(50% - 15px); }
+            .chart-card { flex: 1 1 100%; }
+        }
+        @media (max-width: 768px) {
+            .metrics-row { flex-direction: column; gap: 15px; }
+            .metric-card { flex: 1 1 100%; padding: 15px; }
+            .charts-row { flex-direction: column; }
+            .chart-card { margin-bottom: 15px; }
+            .sub-charts { flex-direction: column; gap: 15px; }
+            canvas { max-height: 250px; }
+        }
+        @media (max-width: 576px) {
+            .dashboard-container { padding: 10px; }
+            .metric-card { padding: 10px; }
+            .metric-card p { font-size: 20px; }
+            .chart-card { padding: 10px; }
+            .chart-section { min-width: 100%; }
+            canvas { max-height: 200px; }
+            h1 { font-size: 1.5rem; }
+            p { font-size: 0.9rem; }
+            .navbar-brand { font-size: 1.25rem; }
+            .nav-link { font-size: 1rem; }
+        }
+    </style>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" th:href="@{/admin/dashboard}">Administrador</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item"><a class="nav-link" th:href="@{/clientes}">Clientes</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/proveedores}">Proveedores</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/vendedores}">Vendedores</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/usuarios}">Usuarios</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/order-items}">Órdenes</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/categorias}">Categorías</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/productos}">Productos</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/ventas}">Ventas</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/compras}">Compras</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/vendedor-producto}">Vendedor Artículo</a></li>
+
+            <li class="nav-item"><a class="nav-link" th:href="@{/clasificacion}">Predicción</a></li>
+        </ul>
+        <a class="btn btn-outline-light" style="--bs-btn-line-height: 1.0;" th:href="@{/logout}">Cerrar Sesión</a>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+        <span th:text="${error}"></span>
+    </div>
+    <div class="welcome-card">
+        <h1>Bienvenido, Administrador</h1>
+        <p>Gestiona usuarios, productos, ventas, compras y más desde este panel.</p>
+    </div>
+
+    <div class="metrics-row">
+        <div class="metric-card">
+            <h3>Ventas Totales</h3>
+            <p th:text="${ventasTotal} ?: '0'"></p>
+            <span class="growth" th:text="'(' + (${ventasCrecimiento} ?: '0') + '%)'"
+                  th:classappend="${ventasCrecimiento > 0 ? 'positive' : 'negative'}"></span>
+        </div>
+        <div class="metric-card">
+            <h3>Productos</h3>
+            <p th:text="${productosTotal} ?: '0'"></p>
+            <span class="growth" th:text="'(' + (${productosCrecimiento} ?: '0') + '%)'"
+                  th:classappend="${productosCrecimiento > 0 ? 'positive' : 'negative'}"></span>
+        </div>
+        <div class="metric-card">
+            <h3>Clientes</h3>
+            <p th:text="${clientesTotal} ?: '0'"></p>
+            <span class="growth" th:text="'(' + (${clientesCrecimiento} ?: '0') + '%)'"
+                  th:classappend="${clientesCrecimiento > 0 ? 'positive' : 'negative'}"></span>
+        </div>
+        <div class="metric-card">
+            <h3>Usuarios</h3>
+            <p th:text="${usuariosTotal} ?: '0'"></p>
+            <span class="growth" th:text="'(' + (${usuariosCrecimiento} ?: '0') + '%)'"
+                  th:classappend="${usuariosCrecimiento > 0 ? 'positive' : 'negative'}"></span>
+        </div>
+    </div>
+
+    <div class="charts-row">
+        <div class="chart-card">
+            <h3>Total de Ventas</h3>
+            <canvas id="salesChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <div class="sub-charts">
+                <div class="chart-section">
+                    <h3>Tráfico por Dispositivo</h3>
+                    <canvas id="trafficChart"></canvas>
+                </div>
+                <div class="chart-section">
+                    <h3>Estado de Cartera</h3>
+                    <canvas id="portfolioChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>© 2025 Ferretería Online</p>
+</footer>
+
+<script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script th:inline="javascript">
+    $(document).ready(function() {
+        // Pass Thymeleaf variables to JavaScript
+        const completadaCount = /*[[${completadaCount}]]*/ 0;
+        const pendienteCount = /*[[${pendienteCount}]]*/ 0;
+        const canceladaCount = /*[[${canceladaCount}]]*/ 0;
+        const mobileCount = /*[[${mobileCount}]]*/ 0;
+        const desktopCount = /*[[${desktopCount}]]*/ 0;
+        const tabletCount = /*[[${tabletCount}]]*/ 0;
+        const currentYearSales = /*[[${currentYearSales}]]*/ [];
+        const previousYearSales = /*[[${previousYearSales}]]*/ [];
+
+        console.log('Completada:', completadaCount, 'Pendiente:', pendienteCount, 'Cancelada:', canceladaCount);
+        console.log('Mobile:', mobileCount, 'Desktop:', desktopCount, 'Tablet:', tabletCount);
+        console.log('Current Year Sales:', currentYearSales);
+        console.log('Previous Year Sales:', previousYearSales);
+
+        // Sales Trend Chart (Line)
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        new Chart(salesCtx, {
+            type: 'line',
+            data: {
+                labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+                datasets: [{
+                    label: '2025',
+                    data: currentYearSales,
+                    borderColor: '#f0c14b',
+                    backgroundColor: 'rgba(240, 193, 75, 0.2)',
+                    fill: true,
+                    tension: 0.4
+                }, {
+                    label: '2024',
+                    data: previousYearSales,
+                    borderColor: '#007185',
+                    borderDash: [5, 5],
+                    fill: false,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Total Ventas (USD)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Mes'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: { size: 12 }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Traffic by Device (Bar Chart)
+        const trafficCtx = document.getElementById('trafficChart').getContext('2d');
+        new Chart(trafficCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Móvil', 'Escritorio', 'Tablet'],
+                datasets: [{
+                    label: 'Tráfico',
+                    data: [mobileCount, desktopCount, tabletCount],
+                    backgroundColor: ['#007185', '#f0c14b', '#28a745'],
+                    borderColor: ['#005f73', '#d39e00', '#218838'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true },
+                    x: { title: { display: true, text: 'Dispositivo' } }
+                },
+                plugins: {
+                    legend: {
+                        labels: { font: { size: 12 } }
+                    }
+                }
+            }
+        });
+
+        // Portfolio Status (Doughnut Chart)
+        const portfolioCtx = document.getElementById('portfolioChart').getContext('2d');
+        new Chart(portfolioCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Completada', 'Pendiente', 'Cancelada'],
+                datasets: [{
+                    data: [completadaCount, pendienteCount, canceladaCount],
+                    backgroundColor: ['#28a745', '#f0c14b', '#b12704']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { font: { size: 12 } }
+                    }
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

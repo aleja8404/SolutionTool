@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferretería Online - Registro</title>
+    
+    <!-- Bootstrap 5 CSS via Webjars -->
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+          integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            overflow-y: auto;
+        }
+
+        .register-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(12px);
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .logo {
+            max-width: 140px;
+            display: block;
+            margin: 0 auto 1.5rem;
+            filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.1));
+            animation: float 4s ease-in-out infinite;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #1a202c;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+            margin: 8px auto;
+            border-radius: 2px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+            z-index: 2;
+        }
+
+        .input-group:hover i {
+            color: #ff6b6b;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 0.9rem 1rem 0.9rem 2.5rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            border-color: #ff6b6b;
+            box-shadow: 0 0 10px rgba(255, 107, 107, 0.2);
+            background: white;
+            outline: none;
+        }
+
+        .form-control.is-invalid {
+            border-color: #dc3545;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .invalid-feedback {
+            font-size: 0.85rem;
+            color: #dc3545;
+            margin-top: 0.25rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6b7280;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: #ff6b6b;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            border: none;
+            padding: 0.9rem;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #ff8e53, #ff6b6b);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .alert {
+            border-radius: 10px;
+            padding: 0.8rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        .alert i {
+            margin-right: 0.5rem;
+        }
+
+        .login-link {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .login-link:hover {
+            color: #ff8e53;
+            text-decoration: underline;
+        }
+
+        footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.85rem;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @media (max-width: 576px) {
+            .register-card {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            .form-control {
+                padding: 0.8rem 1rem 0.8rem 2.5rem;
+                font-size: 0.9rem;
+            }
+            .btn-primary {
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+            .logo {
+                max-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-card">
+        <!-- Logo -->
+        <img src="/img/Imagen1.jpg" alt="Ferretería Online Logo" class="logo">
+
+        <h1>Crear Cuenta</h1>
+
+        <!-- Error Message -->
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-circle"></i><span th:text="${error}"></span>
+        </div>
+
+        <!-- Success Message -->
+        <div th:if="${param.success}" class="alert alert-success" role="alert">
+            <i class="fas fa-check-circle"></i>Registro exitoso. Por favor, inicia sesión.
+        </div>
+
+        <form th:action="@{/perform_register}" th:object="${usuario}" method="post" class="register-form" novalidate>
+            <!-- Nombre -->
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" 
+                       placeholder="Nombre completo" required>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+            </div>
+
+            <!-- Apellido -->
+            <div class="input-group">
+                <i class="fas fa-id-badge"></i>
+                <input type="text" id="apellido" th:field="*{apellido}" class="form-control" 
+                       placeholder="Apellido" required>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></div>
+            </div>
+
+            <!-- Email -->
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" th:field="*{email}" class="form-control" 
+                       placeholder="correo@ejemplo.com" required>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+            </div>
+
+            <!-- Password -->
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" th:field="*{password}" class="form-control" 
+                       placeholder="Contraseña (mín. 8 caracteres)" required>
+                <i  id="password-toggle"></i>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-user-plus me-2"></i>Crear Cuenta
+                </button>
+            </div>
+
+            <!-- Login Link -->
+            <div class="text-center mt-3">
+                <p class="mb-0">
+                    ¿Ya tienes cuenta? 
+                    <a th:href="@{/login}" class="login-link">Iniciar Sesión</a>
+                </p>
+            </div>
+        </form>
+
+        <!-- Footer -->
+        <footer>
+            <p>© 2025 Ferretería Online. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    <script>
+        // Client-side form validation
+        (function () {
+            'use strict';
+            const forms = document.querySelectorAll('.register-form');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+
+        // Password toggle functionality
+        document.getElementById('password-toggle').addEventListener('click', function () {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = this;
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        });
+    </script>
+</body>
+</html>

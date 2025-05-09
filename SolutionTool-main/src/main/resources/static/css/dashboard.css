@@ -1,0 +1,118 @@
+.dashboard-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.metrics-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.metric-card {
+    flex: 1;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.metric-card h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.metric-card p {
+    font-size: 24px;
+    margin: 0;
+    color: #000;
+}
+
+.metric-card span {
+    font-size: 14px;
+}
+
+.positive {
+    color: green;
+}
+
+.negative {
+    color: red;
+}
+
+.charts-row {
+    display: flex;
+    gap: 20px;
+}
+
+.chart-card {
+    flex: 1;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sub-charts {
+    display: flex;
+    gap: 20px;
+}
+
+.chart-section {
+    flex: 1;
+}
+
+canvas {
+    max-height: 300px;
+}
+
+/* Add media queries at end of file */
+@media (max-width: 768px) {
+    .metrics-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .metric-card {
+        width: 100%;
+        padding: 15px;
+    }
+    
+    .charts-row {
+        flex-direction: column;
+    }
+    
+    .chart-card {
+        margin-bottom: 20px;
+    }
+    
+    .sub-charts {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .navbar-nav {
+        padding-top: 10px;
+    }
+    
+    .navbar-collapse {
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 992px) {
+    .metrics-row {
+        flex-wrap: wrap;
+    }
+    
+    .metric-card {
+        flex: 1 1 45%;
+        margin-bottom: 15px;
+    }
+    
+    .chart-container {
+        position: relative;
+        height: 300px;
+    }
+}

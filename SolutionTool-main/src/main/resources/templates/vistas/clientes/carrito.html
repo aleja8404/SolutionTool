@@ -1,0 +1,379 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Carrito de Compras - Ferretería Online</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .dashboard-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: #232f3e !important;
+            padding: 1rem 2rem;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff !important;
+        }
+
+        .navbar-toggler {
+            border: none;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .nav-link {
+            color: #fff !important;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #f0c14b !important;
+        }
+
+        .btn-outline-light {
+            border-color: #f0c14b;
+            color: #f0c14b;
+            font-weight: 500;
+        }
+
+        .btn-outline-light:hover {
+            background-color: #f0c14b;
+            color: #232f3e;
+        }
+
+        /* Cart Items */
+        .cart-items {
+            margin-top: 20px;
+        }
+
+        .cart-item {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cart-item-img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            background-color: #f7f7f7;
+        }
+
+        .cart-item-no-img {
+            width: 100px;
+            height: 100px;
+            background-color: #f7f7f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .cart-item-details {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .cart-item-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #0f1111;
+            margin-bottom: 5px;
+        }
+
+        .cart-item-price {
+            font-size: 1rem;
+            color: #b12704;
+            font-weight: 500;
+        }
+
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .cart-item-quantity input {
+            width: 70px;
+            font-size: 0.9rem;
+            border-radius: 8px;
+        }
+
+        .cart-item-subtotal {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #0f1111;
+            margin-left: auto;
+            min-width: 100px;
+            text-align: right;
+        }
+
+        .btn-delete {
+            color: #007185;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .btn-delete:hover {
+            color: #b12704;
+            text-decoration: underline;
+        }
+
+        /* Summary Card */
+        .summary-card {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-top: 20px;
+            max-width: 400px;
+            margin-left: auto;
+        }
+
+        .summary-card h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #0f1111;
+            margin-bottom: 15px;
+        }
+
+        .summary-total {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #b12704;
+            margin-bottom: 20px;
+        }
+
+        .btn-checkout {
+            background-color: #f0c14b;
+            border: 1px solid #a88734;
+            color: #0f1111;
+            font-weight: 500;
+            padding: 10px;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 1.1rem;
+            transition: background-color 0.3s;
+        }
+
+        .btn-checkout:hover {
+            background-color: #e6b800;
+        }
+
+        .btn-continue {
+            background-color: #fff;
+            border: 1px solid #d5d9d9;
+            color: #0f1111;
+            font-weight: 500;
+            padding: 10px;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 1.1rem;
+            text-align: center;
+            display: inline-block;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-continue:hover {
+            background-color: #f7f7f7;
+            text-decoration: none;
+        }
+
+        /* Alerts */
+        .alert {
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #232f3e;
+            color: #fff;
+            padding: 20px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .summary-card {
+                max-width: 100%;
+            }
+            .cart-item-subtotal {
+                text-align: left;
+                margin-left: 0;
+                margin-top: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 15px;
+            }
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .cart-item-img, .cart-item-no-img {
+                width: 80px;
+                height: 80px;
+            }
+            .cart-item-details {
+                min-width: 100%;
+            }
+            .cart-item-title {
+                font-size: 1rem;
+            }
+            .cart-item-price {
+                font-size: 0.9rem;
+            }
+            .cart-item-subtotal {
+                font-size: 0.9rem;
+            }
+            .cart-item-quantity input {
+                width: 60px;
+            }
+            .summary-card h2 {
+                font-size: 1.3rem;
+            }
+            .summary-total {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dashboard-container {
+                padding: 10px;
+            }
+            .cart-item {
+                padding: 10px;
+            }
+            .cart-item-img, .cart-item-no-img {
+                width: 60px;
+                height: 60px;
+            }
+            .cart-item-title {
+                font-size: 0.9rem;
+            }
+            .cart-item-price {
+                font-size: 0.85rem;
+            }
+            .cart-item-subtotal {
+                font-size: 0.85rem;
+            }
+            .btn-checkout, .btn-continue {
+                font-size: 1rem;
+                padding: 8px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            .navbar-brand {
+                font-size: 1.4rem;
+            }
+            .nav-link {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/cliente/dashboard}">Ferretería Online</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/perfil}">Perfil</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/ordenes}">Órdenes</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/productos}">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/carrito}">Carrito</a></li>
+                </ul>
+                <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+    <div class="dashboard-container">
+        <h1>Carrito de Compras</h1>
+        <div th:if="${carrito == null or carrito.isEmpty()}">
+            <p class="text-muted">Tu carrito está vacío.</p>
+            <a th:href="@{/cliente/productos}" class="btn btn-continue">Explorar Productos</a>
+        </div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div class="cart-items" th:unless="${carrito == null or carrito.isEmpty()}">
+            <div class="cart-item" th:each="item : ${carrito}" th:if="${item != null}">
+                <div th:if="${item.producto?.foto}">
+                    <img th:src="@{${item.producto.foto}}" th:alt="'Foto de ' + ${item.producto.nombre}" class="cart-item-img" />
+                </div>
+                <div th:unless="${item.producto?.foto}" class="cart-item-no-img">
+                    Sin Imagen
+                </div>
+                <div class="cart-item-details">
+                    <h5 class="cart-item-title" th:text="${item.producto?.nombre ?: 'Producto no disponible'}"></h5>
+                    <p class="cart-item-price" th:text="${item.precio != null} ? ${#numbers.formatDecimal(item.precio, 1, 2)} + ' USD' : '0.00 USD'"></p>
+                    <div class="cart-item-quantity">
+                        <form th:action="@{/cliente/carrito/actualizar}" method="post" class="d-inline">
+                            <input type="hidden" name="productoId" th:value="${item.producto?.idProducto}" />
+                            <input type="number" name="cantidad" min="1" th:value="${item.cantidad}" class="form-control d-inline-block" style="width: 70px;" />
+                            <button type="submit" class="btn btn-link btn-sm">Actualizar</button>
+                        </form>
+                        <form th:action="@{/cliente/carrito/eliminar}" method="post" class="d-inline">
+                            <input type="hidden" name="productoId" th:value="${item.producto?.idProducto}" />
+                            <button type="submit" class="btn btn-link btn-sm btn-delete">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="cart-item-subtotal" th:text="${item.cantidad != null and item.precio != null} ? ${#numbers.formatDecimal(item.cantidad * item.precio.doubleValue(), 1, 2)} + ' USD' : '0.00 USD'"></div>
+            </div>
+        </div>
+        <div class="summary-card" th:unless="${carrito == null or carrito.isEmpty()}">
+            <h2>Resumen del Pedido</h2>
+            <p class="summary-total" th:text="${totalCarrito != null} ? ${#numbers.formatDecimal(totalCarrito, 1, 2)} + ' USD' : '0.00 USD'"></p>
+            <form th:action="@{/cliente/carrito/comprar}" method="post">
+                <button type="submit" class="btn btn-checkout">Realizar Compra</button>
+            </form>
+            <a th:href="@{/cliente/productos}" class="btn btn-continue">Seguir Comprando</a>
+        </div>
+    </div>
+    <footer>
+        <p>© 2025 Ferretería Online</p>
+    </footer>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

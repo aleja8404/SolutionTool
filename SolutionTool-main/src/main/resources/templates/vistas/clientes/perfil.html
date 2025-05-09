@@ -1,0 +1,218 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil del Cliente - Ferretería Online</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .dashboard-container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: #232f3e !important;
+            padding: 1rem 2rem;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff !important;
+        }
+
+        .navbar-toggler {
+            border: none;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .nav-link {
+            color: #fff !important;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #f0c14b !important;
+        }
+
+        .btn-outline-light {
+            border-color: #f0c14b;
+            color: #f0c14b;
+            font-weight: 500;
+        }
+
+        .btn-outline-light:hover {
+            background-color: #f0c14b;
+            color: #232f3e;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .profile-card h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0f1111;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-label {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #0f1111;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #d5d9d9;
+            padding: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #f0c14b;
+            box-shadow: 0 0 0 3px rgba(240, 193, 75, 0.2);
+        }
+
+        .btn-submit {
+            background-color: #f0c14b;
+            border: 1px solid #a88734;
+            color: #0f1111;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 1.1rem;
+            transition: background-color 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: #e6b800;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #232f3e;
+            color: #fff;
+            padding: 20px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 15px;
+            }
+            .profile-card {
+                padding: 20px;
+            }
+            .profile-card h1 {
+                font-size: 1.6rem;
+            }
+            .form-label {
+                font-size: 0.9rem;
+            }
+            .form-control {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+            .btn-submit {
+                font-size: 1rem;
+                padding: 8px 16px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dashboard-container {
+                padding: 10px;
+            }
+            .profile-card {
+                padding: 15px;
+            }
+            .profile-card h1 {
+                font-size: 1.4rem;
+            }
+            .navbar-brand {
+                font-size: 1.4rem;
+            }
+            .nav-link {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/cliente/dashboard}">Ferretería Online</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/perfil}">Perfil</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/ordenes}">Órdenes</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/productos}">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/carrito}">Carrito</a></li>
+                </ul>
+                <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+    <div class="dashboard-container">
+        <div class="profile-card">
+            <h1>Tu Perfil</h1>
+            <form th:action="@{/cliente/perfil}" th:object="${cliente}" method="post">
+                <input type="hidden" th:field="*{idCliente}" />
+                <input type="hidden" th:field="*{correoElectronico}" />
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required="required" aria-describedby="nombreHelp" />
+                    <div id="nombreHelp" class="form-text">Ingresa tu nombre completo.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="telefono" class="form-label">Teléfono</label>
+                    <input type="text" id="telefono" th:field="*{telefono}" class="form-control" aria-describedby="telefonoHelp" />
+                    <div id="telefonoHelp" class="form-text">Opcional. Ingresa un número de contacto.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="direccion" class="form-label">Dirección</label>
+                    <input type="text" id="direccion" th:field="*{direccion}" class="form-control" aria-describedby="direccionHelp" />
+                    <div id="direccionHelp" class="form-text">Opcional. Ingresa tu dirección de entrega.</div>
+                </div>
+                <button type="submit" class="btn btn-submit">Actualizar Perfil</button>
+            </form>
+        </div>
+    </div>
+    <footer>
+        <p>© 2025 Ferretería Online</p>
+    </footer>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

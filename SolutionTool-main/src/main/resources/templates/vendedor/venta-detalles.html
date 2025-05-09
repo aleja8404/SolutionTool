@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalles de la Venta</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Detalles de la Venta #<span th:text="${venta.idVenta}"></span></h1>
+        <div class="card mb-4">
+            <div class="card-body">
+                <p><strong>Cliente:</strong> <span th:text="${venta.cliente.nombre} ?: 'N/A'"></span></p>
+                <p><strong>Fecha del Pedido:</strong> <span th:text="${venta.fechaDelPedido} ?: 'N/A'"></span></p>
+                <p><strong>Total:</strong> <span th:text="${venta.total} ?: '0.00'"></span></p>
+                <p><strong>Estado:</strong> <span th:text="${venta.estado} ?: 'N/A'"></span></p>
+            </div>
+        </div>
+
+        <h2>Artículos del Pedido</h2>
+        <div th:if="${orderItems.isEmpty()}">
+            <p>No hay artículos asociados a esta venta.</p>
+        </div>
+        <table class="table table-bordered table-striped" th:unless="${orderItems.isEmpty()}">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID Artículo</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${orderItems}">
+                    <td th:text="${item.idPedidoArticulo}"></td>
+                    <td th:text="${item.producto.nombre} ?: 'N/A'"></td>
+                    <td th:text="${item.cantidad} ?: '0'"></td>
+                    <td th:text="${item.precio} ?: '0.00'"></td>
+                    <td th:text="${item.cantidad * item.precio} ?: '0.00'"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a th:href="@{/vendedor/dashboard}" class="btn btn-secondary">Volver al Dashboard</a>
+    </div>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

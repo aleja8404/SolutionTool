@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToolSolutions || Gestión de Inventario para Ferreterías</title>
+    <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="preconnect" href="https://images.unsplash.com">
+    <link rel="dns-prefetch" href="https://images.unsplash.com">
+
+    <!-- Preload critical CSS -->
+    <link rel="preload" as="style" th:href="@{/css/style.css}">
+
+    <!-- Modern image format support -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.HTMLPictureElement) {
+                const images = document.querySelectorAll('.portfolio-item img, .img-blog img');
+                images.forEach(img => {
+                    const src = img.src.replace(/\.(jpg|png)/, '.webp');
+                    img.src = src;
+                });
+            }
+        });
+    </script>
+</head>
+<style>
+    .portfolio-item {
+        transform: translate3d(0, 0, 0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+        isolation: isolate;
+    }
+
+    .portfolio-item img {
+        transform: translateZ(0);
+        transition: transform 0.15s cubic-bezier(0.22, 0.61, 0.36, 1);
+        image-rendering: -webkit-optimize-contrast;
+        content-visibility: auto;
+    }
+
+    .portfolio-item:hover img {
+        transform: scale(1.01) translateZ(0);
+    }
+
+    /* Add to existing overlay styles */
+    .overlay {
+        will-change: opacity;
+        transition: opacity 0.15s ease;
+    }
+
+    .main {
+        background-image: url('/img/2148393118.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        color: #000000;
+        text-align: center;
+        padding: 120px 20px;
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative; /* Added for wave positioning */
+        overflow: hidden; /* Ensure wave doesn't overflow */
+    }
+
+    /* Wave Container */
+    .wave-container {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+    /* Wave Layers */
+    .wave {
+        position: absolute;
+        bottom: 0;
+        width: 200%;
+        height: 100px;
+        background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113.64,28.43,1200,14.67V0Z" fill="rgba(231,117,71,0.5)"/></svg>');
+        background-size: 50% 100%;
+        animation: wave-animation 10s linear infinite;
+        transform: translate3d(0, 0, 0);
+    }
+
+    /* Individual Wave Layers */
+    .wave1 {
+        opacity: 0.5;
+        animation-duration: 12s;
+    }
+
+    .wave2 {
+        opacity: 0.3;
+        animation-duration: 15s;
+        animation-delay: -5s;
+        background-position: 10% 0;
+    }
+
+    .wave3 {
+        opacity: 0.2;
+        animation-duration: 18s;
+        animation-delay: -10s;
+        background-position: 20% 0;
+    }
+
+    /* Wave Animation */
+    @keyframes wave-animation {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-50%);
+        }
+    }
+
+    /* Header styles */
+    .header {
+        background-color: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        padding: 15px 0;
+    }
+
+    .menu-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .logo-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .brand-name {
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-left: 10px;
+        color: #e77547;
+    }
+
+    .nav-principal ul {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        gap: 20px;
+    }
+
+    .nav-principal li {
+        display: flex;
+        align-items: center;
+    }
+
+    .nav-principal a {
+        color: #333;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+        padding: 8px 0;
+        position: relative;
+    }
+
+    @media (max-width: 992px) {
+        .nav-principal {
+            position: fixed;
+            top: 80px;
+            left: -100%;
+            width: 80%;
+            height: calc(100vh - 80px);
+            background: white;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: all 0.3s ease-in-out;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .nav-principal.active {
+            left: 0;
+        }
+
+        .nav-principal ul {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .nav-principal li {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .nav-responsive {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .auth-buttons {
+            display: none;
+        }
+
+        .nav-principal.active .auth-buttons {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+            gap: 15px;
+        }
+    }
+
+    .nav-principal a:hover {
+        color: #e77547;
+    }
+
+    .nav-principal a:after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: #e77547;
+        transition: width 0.3s;
+    }
+
+    .nav-principal a:hover:after {
+        width: 100%;
+    }
+
+    .nav-principal ion-icon {
+        margin-right: 5px;
+        font-size: 1.2rem;
+    }
+
+    .auth-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-login, .btn-register {
+        padding: 14px 36px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 30px;
+        transition: all 0.3s;
+    }
+
+    .btn-login {
+        background-color: #e77547;
+        color: white;
+    }
+
+    .btn-register {
+        border: 2px solid #e77547;
+        color: #e77547;
+    }
+
+    .btn-login:hover {
+        background-color: #d66c3f;
+        transform: translateY(-2px);
+    }
+
+    .btn-register:hover {
+        background-color: #e77547;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .nav-responsive {
+        display: none;
+        font-size: 2rem;
+        cursor: pointer;
+    }
+
+    /* Portfolio items */
+    .portfolio-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        will-change: transform;
+        transform: translateZ(0);
+    }
+
+    .portfolio-item img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 8px;
+        transition: transform 0.3s ease;
+        backface-visibility: hidden;
+    }
+
+    .portfolio-item:hover img {
+        transform: scale(1.03);
+    }
+
+    .overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 10px;
+        transform: translateY(0);
+        transition: transform 0.3s ease;
+    }
+
+    .overlay p {
+        margin: 0;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .portfolio-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 30px 0;
+    }
+
+    @media (max-width: 992px) {
+        .nav-principal {
+            position: fixed;
+            top: 80px;
+            left: -100%;
+            width: 100%;
+            height: calc(100vh - 80px);
+            background: white;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: 0.3s ease-in-out;
+            overflow-y: auto;
+            z-index: 999;
+        }
+
+        .nav-principal.active {
+            left: 0;
+        }
+
+        .nav-principal ul {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .nav-principal li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .nav-responsive {
+            display: block;
+            order: 2;
+            margin-left: auto;
+            z-index: 1000;
+        }
+
+        .auth-buttons {
+            display: none;
+        }
+
+        .nav-principal.active .auth-buttons {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+            gap: 15px;
+        }
+    }
+
+    /* Blog images */
+    .img-blog img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px 8px 0 0;
+    }
+
+    @media (max-width: 992px) {
+        .nav-principal {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+            transition: 0.5s ease-in-out;
+        }
+
+        .btn-login {
+            background-color: #d66c3f;
+            color: white;
+        }
+
+        .btn-login:hover {
+            background-color: #c65b35;
+            transform: translateY(-2px);
+        }
+
+        .nav-principal.active {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+        }
+
+        .nav-principal ul {
+            flex-direction: column;
+        }
+
+        .auth-buttons {
+            margin-right: 50px;
+        }
+
+        .nav-responsive {
+            display: block;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .auth-buttons {
+            display: none;
+        }
+
+        .nav-principal.active .auth-buttons {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+    }
+
+    /* Lazy loading styles */
+    .img-blog img {
+        transition: filter 0.3s ease-in-out;
+    }
+    .img-blog img.lazyload {
+        filter: blur(10px);
+    }
+    .img-blog img.lazyloaded {
+        filter: none;
+    }
+</style>
+<body>
+<!-- Encabezado -->
+<header class="header">
+    <div class="container">
+        <div class="menu-content">
+            <div class="logo-container">
+                <img width="70" src="/img/Imagen1.jpg" alt="Logo ToolSolutions"/>
+                <span class="brand-name">SolutionsTool</span>
+            </div>
+            <nav class="nav-principal">
+                <ul>
+                    <li>
+                        <ion-icon name="home-outline"></ion-icon>
+                        <a th:href="@{/home}">Inicio</a>
+                    </li>
+                    <li>
+                        <ion-icon name="briefcase-outline"></ion-icon>
+                        <a th:href="@{/ventana-home-producto}">Producto</a>
+                    </li>
+                    <li>
+                        <ion-icon name="newspaper-outline"></ion-icon>
+                        <a th:href="@{/pages}">Proveedores</a>
+                    </li>
+                    <li>
+                        <ion-icon name="copy-outline"></ion-icon>
+                        <a th:href="@{/blog}">Clientes</a>
+                    </li>
+                    <li>
+                        <ion-icon name="mail-unread-outline"></ion-icon>
+                        <a th:href="@{/contact}">Contacto</a>
+                    </li>
+                    <li class="auth-buttons">
+                        <ion-icon name="body-outline"></ion-icon>
+                        <a th:href="@{/login}">Iniciar Sesión</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="nav-responsive">
+                <ion-icon name="menu"></ion-icon>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Principal -->
+<div class="main">
+    <div class="container">
+        <h1 class="title-h1">
+            TOOLSOLUTIONS<br/>
+        </h1>
+        <p class="subtitle-h1">
+            Gestión eficiente de inventario para ferreterías: conectamos proveedores y clientes.
+        </p>
+        <a th:href="@{/portfolio}" class="btn-main">Gestionar Inventario</a>
+        <div class="wave-container">
+            <div class="wave wave1"></div>
+            <div class="wave wave2"></div>
+            <div class="wave wave3"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Servicios -->
+<div class="services">
+    <div class="container">
+        <div class="services-content">
+            <div class="card-services">
+                <ion-icon name="cube"></ion-icon>
+                <h3 class="title-h3">Control de Inventario</h3>
+                <p class="text">
+                    Administra tu inventario con total precisión y visibilidad.
+                </p>
+            </div>
+            <div class="card-services">
+                <ion-icon name="rocket"></ion-icon>
+                <h3 class="title-h3">Gestión de Proveedores</h3>
+                <p class="text">
+                    Mantén un registro organizado de tus proveedores y sus suministros.
+                </p>
+            </div>
+            <div class="card-services">
+                <ion-icon name="logo-vimeo"></ion-icon>
+                <h3 class="title-h3">Atención a Clientes</h3>
+                <p class="text">
+                    Gestiona pedidos y necesidades de tus clientes de manera eficiente.
+                </p>
+            </div>
+            <div class="card-services">
+                <ion-icon name="podium"></ion-icon>
+                <h3 class="title-h3">Reportes y Análisis</h3>
+                <p class="text">
+                    Genera reportes detallados para optimizar tu ferretería.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Portafolio (Inventario) -->
+<div id="portfolio">
+    <div class="container">
+        <div class="portfolio-content">
+            <h2 class="title-h2">NUESTRO INVENTARIO</h2>
+            <p class="text">Explora las herramientas disponibles en tu ferretería.</p>
+        </div>
+        <section class="portfolio-grid">
+            <div class="portfolio-item">
+                <picture>
+                    <source srcset="https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=400&q=60&fm=webp" type="image/webp">
+                    <img src="https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=400&q=60"
+                         alt="Taladro Eléctrico"
+                         loading="lazy"
+                         decoding="async"
+                         width="400"
+                         height="250"/>
+                </picture>
+                <div class="overlay"><p>Taladro Eléctrico</p></div>
+            </div>
+            <div class="portfolio-item">
+                <picture>
+                    <source srcset="https://images.unsplash.com/photo-1581788604067-769a11325b0d?auto=format&fit=crop&w=400&q=60&fm=webp" type="image/webp">
+                    <img src="https://images.unsplash.com/photo-1581788604067-769a11325b0d?auto=format&fit=crop&w=400&q=60"
+                         alt="Llave Inglesa"
+                         loading="lazy"
+                         decoding="async"
+                         width="400"
+                         height="250"/>
+                </picture>
+                <div class="overlay"><p>Llave Inglesa</p></div>
+            </div>
+            <div class="portfolio-item">
+                <picture>
+                    <source srcset="https://images.unsplash.com/photo-1530124566582-a618bc2615dc?auto=format&fit=crop&w=400&q=60&fm=webp" type="image/webp">
+                    <img src="https://images.unsplash.com/photo-1530124566582-a618bc2615dc?auto=format&fit=crop&w=400&q=60"
+                         alt="Caja de Herramientas"
+                         loading="lazy"
+                         decoding="async"
+                         width="400"
+                         height="250"/>
+                </picture>
+                <div class="overlay"><p>Caja de Herramientas</p></div>
+            </div>
+            <div class="portfolio-item">
+                <picture>
+                    <source srcset="https://images.unsplash.com/photo-1572981779307-38b8cabb2407?auto=format&fit=crop&w=400&q=60&fm=webp" type="image/webp">
+                    <img src="https://images.unsplash.com/photo-1572981779307-38b8cabb2407?auto=format&fit=crop&w=400&q=60"
+                         alt="Sierra Eléctrica"
+                         loading="lazy"
+                         decoding="async"
+                         width="400"
+                         height="250"/>
+                </picture>
+                <div class="overlay"><p>Sierra Eléctrica</p></div>
+            </div>
+            <div class="portfolio-item">
+                <picture>
+                    <source srcset="https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?auto=format&fit=crop&w=400&q=60&fm=webp" type="image/webp">
+                    <img src="https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?auto=format&fit=crop&w=400&q=60"
+                         alt="Martillo Profesional"
+                         loading="lazy"
+                         decoding="async"
+                         width="400"
+                         height="250"/>
+                </picture>
+                <div class="overlay"><p>Martillo Profesional</p></div>
+            </div>
+            <div class="portfolio-item">
+                <picture>
+                    <source srcset="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2aB8F9xRM_a8Iit3lwVzkyZ2jld6Ernl17g&s" type="image/webp">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2aB8F9xRM_a8Iit3lwVzkyZ2jld6Ernl17g&s"
+                         alt="Tornillos"
+                         loading="lazy"
+                         decoding="async"
+                         width="400"
+                         height="250"/>
+                </picture>
+                <div class="overlay"><p>Tornillos</p></div>
+            </div>
+            <div class="portfolio-item">
+                <picture>
+                    <source srcset="https://www.mndelgolfo.com/blog/wp-content/uploads/2020/12/Conoces-el-uso-de-la-varilla-corrugada-dentro-de-las-construcciones.jpg" type="image/webp">
+                    <img src="https://www.mndelgolfo.com/blog/wp-content/uploads/2020/12/Conoces-el-uso-de-la-varilla-corrugada-dentro-de-las-construcciones.jpg"
+                         alt="Varillas"
+                         loading="lazy"
+                         decoding="async"
+                         width="400"
+                         height="250"/>
+                </picture>
+                <div class="overlay"><p>Varillas</p></div>
+            </div>
+            <div class="portfolio-item">
+                <picture>
+                    <source srcset="https://backoom.com/images/productos/tuercas/Tuerca%20aconica%20galvanizadas.png" type="image/webp">
+                    <img src="https://backoom.com/images/productos/tuercas/Tuerca%20aconica%20galvanizadas.png"
+                         alt="Tuercas"
+                         loading="lazy"
+                         decoding="async"
+                         width="400"
+                         height="250"/>
+                </picture>
+                <div class="overlay"><p>Tuercas</p></div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- Testimonios -->
+<div class="testimonial">
+    <div class="container">
+        <div class="testimonial-content">
+            <h2 class="title-h2">TESTIMONIOS</h2>
+            <p class="text">
+                Lee lo que dicen nuestros proveedores y clientes en Cartagena.
+            </p>
+        </div>
+        <div class="content-cards">
+            <div class="card-testimonial">
+                <p class="text-sm">
+                    "ToolSolutions ha simplificado la gestión de mi inventario en la ferretería."
+                </p>
+                <h4 class="title-h4 autor">
+                    CARLOS GÓMEZ
+                    <span class="subtitle-autor">/ CLIENTE</span>
+                </h4>
+            </div>
+            <div class="card-testimonial">
+                <p class="text-sm">
+                    "Como proveedor, ahora es más fácil coordinar con mis clientes."
+                </p>
+                <h4 class="title-h4 autor">
+                    ANA RODRÍGUEZ
+                    <span class="subtitle-autor">/ PROVEEDORA</span>
+                </h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Seguridad y Servicio -->
+<section class="safety-service">
+    <div class="safety-service-header">
+        <h2>Inventario Preciso, Confianza en el Servicio</h2>
+    </div>
+    <div class="safety-service-container">
+        <div class="safety-service-card">
+            <h2>01</h2>
+            <h3>Organización y Codificación de Almacén</h3>
+            <p>Organización física del inventario</p>
+            <p>Correcta codificación de productos</p>
+        </div>
+        <div class="safety-service-card">
+            <h2>02</h2>
+            <h3>Control de Mermas y Pérdidas</h3>
+            <p>Estrategias y Herramientas</p>
+            <p>Reducción de pérdidas por deterioro, robo o errores</p>
+        </div>
+        <div class="safety-service-card">
+            <h2>03</h2>
+            <h3>Planificación de Reaprovisionamiento Inteligente</h3>
+            <p>Desarrollo de modelos predictivos basados en la demanda histórica y las tendencias del mercado local para optimizar los puntos de reorden y evitar quiebres de stock o sobrestock.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Contactanos -->
+<section class="contact-section">
+    <div class="contact-left">
+        <h1>¿Necesitas Ayuda con tu Inventario?</h1>
+        <img src="/img/Imagen1.jpg" alt="ToolSolutions Logo">
+    </div>
+    <div class="contact-right">
+        <h2>NOS PONDREMOS EN CONTACTO CONTIGO</h2>
+        <input type="text" placeholder="Enter your Name" required>
+        <input type="email" placeholder="Enter a valid email address" required>
+        <textarea placeholder="Enter your message" required></textarea>
+        <button type="submit">ENTREGAR</button>
+    </div>
+</section>
+
+<!-- Pie de página -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4 class="title-h4">SOBRE NOSOTROS</h4>
+            <p class="text">
+                ToolSolutions es tu aliado estratégico en Cartagena, Colombia, especializado en la gestión eficiente de inventarios para ferreterías. Nos dedicamos a optimizar el control de herramientas, conectar proveedores y clientes, y ofrecer soluciones tecnológicas innovadoras para el sector ferretero. Con un enfoque en calidad y satisfacción, ayudamos a que tu negocio crezca con un sistema intuitivo y herramientas de última generación.
+            </p>
+        </div>
+        <div class="footer-section">
+            <h4 class="title-h4">CONTÁCTANOS</h4>
+            <ul class="contact-list">
+                <li><strong>Teléfono:</strong> +57 300 123 4567</li>
+                <li><strong>Correo:</strong> <a href="mailto:info@toolsolutions.co">info@toolsolutions.co</a></li>
+                <li><strong>Soporte Técnico:</strong> <a href="mailto:support@toolsolutions.co">support@toolsolutions.co</a></li>
+                <li><strong>Dirección:</strong> Calle 34 #12-45, Centro, Cartagena, Colombia</li>
+                <li><strong>Horario:</strong> Lunes a Viernes, 8:00 AM - 6:00 PM</li>
+                <li><strong>WhatsApp:</strong> <a href="https://wa.me/573001234567">+57 300 123 4567</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4 class="title-h4">ENLACES ÚTILES</h4>
+            <ul class="footer-links">
+                <li><a href="#">Política de Privacidad</a></li>
+                <li><a href="#">Términos y Condiciones</a></li>
+                <li><a href="#">Preguntas Frecuentes</a></li>
+                <li><a href="#">Soporte</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="sub-footer">
+        <p class="text-sm">© Copyright 2025 ToolSolutions. Todos los derechos reservados.</p>
+        <div class="social">
+            <a href="https://facebook.com/toolsolutionsco" aria-label="Facebook"><ion-icon name="logo-facebook"></ion-icon></a>
+            <a href="https://twitter.com/toolsolutionsco" aria-label="Twitter"><ion-icon name="logo-twitter"></ion-icon></a>
+            <a href="https://instagram.com/toolsolutionsco" aria-label="Instagram"><ion-icon name="logo-instagram"></ion-icon></a>
+            <a href="https://linkedin.com/company/toolsolutionsco" aria-label="LinkedIn"><ion-icon name="logo-linkedin"></ion-icon></a>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script>
+    // Lazy loading
+    document.addEventListener("DOMContentLoaded", function() {
+        const lazyImages = [].slice.call(document.querySelectorAll("img.lazyload"));
+
+        if ("IntersectionObserver" in window) {
+            let lazyImageObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        let lazyImage = entry.target;
+                        lazyImage.src = lazyImage.dataset.src;
+                        lazyImage.classList.remove("lazyload");
+                        lazyImageObserver.unobserve(lazyImage);
+                    }
+                });
+            });
+
+            lazyImages.forEach(function(lazyImage) {
+                lazyImageObserver.observe(lazyImage);
+            });
+        }
+    });
+
+    // Mobile menu toggle
+    const menuToggle = document.querySelector('.nav-responsive');
+    const navMenu = document.querySelector('.nav-principal');
+    const body = document.body;
+
+    menuToggle.addEventListener('click', function() {
+        this.classList.toggle('active');
+        navMenu.classList.toggle('active');
+        body.classList.toggle('no-scroll');
+    });
+
+    // Close menu when clicking outside or on a link
+    document.addEventListener('click', function(e) {
+        if (!navMenu.contains(e.target) &&
+            !menuToggle.contains(e.target) &&
+            navMenu.classList.contains('active')) {
+            menuToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+            body.classList.remove('no-scroll');
+        }
+    });
+
+    // Close menu when clicking on a link
+    document.querySelectorAll('.nav-principal a').forEach(link => {
+        link.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+            body.classList.remove('no-scroll');
+        });
+    });
+</script>
+</body>
+</html>

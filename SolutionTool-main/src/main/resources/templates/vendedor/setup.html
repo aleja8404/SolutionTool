@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Configurar Perfil de Vendedor</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Configurar tu Perfil de Vendedor</h1>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        
+        <form th:action="@{/vendedor/setup}" th:object="${vendedor}" method="post">
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required />
+            </div>
+            <div class="mb-3">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input type="text" class="form-control" id="telefono" th:field="*{telefono}" />
+            </div>
+            <div class="mb-3">
+                <label for="direccion" class="form-label">Dirección</label>
+                <input type="text" class="form-control" id="direccion" th:field="*{direccion}" />
+            </div>
+            <div class="mb-3">
+                <label for="correoElectronico" class="form-label">Correo Electrónico</label>
+                <input type="email" class="form-control" id="correoElectronico" th:field="*{correoElectronico}" readonly />
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar Perfil</button>
+        </form>
+    </div>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

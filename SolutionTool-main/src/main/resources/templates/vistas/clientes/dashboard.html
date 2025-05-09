@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard del Cliente - Ferretería Online</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .dashboard-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: #232f3e !important;
+            padding: 1rem 2rem;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff !important;
+        }
+
+        .navbar-toggler {
+            border: none;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .nav-link {
+            color: #fff !important;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #f0c14b !important;
+        }
+
+        .btn-outline-light {
+            border-color: #f0c14b;
+            color: #f0c14b;
+            font-weight: 500;
+        }
+
+        .btn-outline-light:hover {
+            background-color: #f0c14b;
+            color: #232f3e;
+        }
+
+        /* Welcome Card */
+        .welcome-card {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .welcome-card h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0f1111;
+            margin-bottom: 10px;
+        }
+
+        .welcome-card p {
+            font-size: 1.1rem;
+            color: #565959;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .dashboard-card {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+        }
+
+        .dashboard-card h3 {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #0f1111;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .dashboard-card p {
+            font-size: 1rem;
+            color: #0f1111;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-card p strong {
+            color: #565959;
+        }
+
+        .dashboard-card .text-muted {
+            font-size: 1rem;
+            color: #888;
+        }
+
+        .order-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 15px 0;
+        }
+
+        .order-item {
+            font-size: 0.95rem;
+            color: #0f1111;
+            padding: 10px 0;
+            border-bottom: 1px solid #f7f7f7;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item span.order-price {
+            color: #b12704;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background-color: #f0c14b;
+            border: 1px solid #a88734;
+            color: #0f1111;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #e6b800;
+            color: #0f1111;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #232f3e;
+            color: #fff;
+            padding: 20px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .dashboard-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 15px;
+            }
+            .welcome-card {
+                padding: 15px;
+            }
+            .welcome-card h1 {
+                font-size: 1.6rem;
+            }
+            .welcome-card p {
+                font-size: 1rem;
+            }
+            .dashboard-card {
+                padding: 15px;
+            }
+            .dashboard-card h3 {
+                font-size: 1.2rem;
+            }
+            .dashboard-card p {
+                font-size: 0.95rem;
+            }
+            .order-item {
+                font-size: 0.9rem;
+            }
+            .btn-primary {
+                padding: 7px 14px;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .dashboard-container {
+                padding: 10px;
+            }
+            .welcome-card {
+                padding: 10px;
+            }
+            .welcome-card h1 {
+                font-size: 1.4rem;
+            }
+            .welcome-card p {
+                font-size: 0.9rem;
+            }
+            .dashboard-card {
+                padding: 10px;
+            }
+            .dashboard-card h3 {
+                font-size: 1.1rem;
+            }
+            .dashboard-card p {
+                font-size: 0.9rem;
+            }
+            .order-item {
+                font-size: 0.85rem;
+            }
+            .btn-primary {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+            .navbar-brand {
+                font-size: 1.4rem;
+            }
+            .nav-link {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/cliente/dashboard}">Ferretería Online</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/perfil}">Perfil</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/ordenes}">Órdenes</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/productos}">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/carrito}">Carrito</a></li>
+                </ul>
+                <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+    <div class="dashboard-container">
+        <div class="welcome-card">
+            <h1>Bienvenido, <span th:text="${cliente?.nombre ?: 'Cliente'}"></span></h1>
+            <p>Aquí puedes ver un resumen de tu actividad reciente.</p>
+        </div>
+        <div class="dashboard-row">
+            <div class="dashboard-card">
+                <h3>Tus Datos</h3>
+                <p><strong>Nombre:</strong> <span th:text="${cliente?.nombre ?: 'N/A'}"></span></p>
+                <p><strong>Email:</strong> <span th:text="${cliente?.correoElectronico ?: 'N/A'}"></span></p>
+                <a th:href="@{/cliente/perfil}" class="btn btn-primary">Editar Perfil</a>
+            </div>
+            <div class="dashboard-card">
+                <h3>Órdenes Recientes</h3>
+                <p th:if="${ordenes == null or ordenes.isEmpty()}" class="text-muted">No tienes órdenes recientes.</p>
+                <ul class="order-list" th:unless="${ordenes == null or ordenes.isEmpty()}">
+                    <li class="order-item" th:each="orden : ${ordenes}">
+                        Orden #<span th:text="${orden.venta?.idVenta ?: 'N/A'}"></span> - 
+                        <span th:text="${orden.producto?.nombre ?: 'Producto no disponible'}"></span> 
+                        (Cantidad: <span th:text="${orden.cantidad ?: '0'}"></span>, 
+                        Precio: <span class="order-price" th:text="${orden.precio != null} ? ${#numbers.formatDecimal(orden.precio, 1, 2)} + ' USD' : '0.00 USD'"></span>)
+                    </li>
+                </ul>
+                <a th:href="@{/cliente/ordenes}" class="btn btn-primary">Ver Todas las Órdenes</a>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>© 2025 Ferretería Online</p>
+    </footer>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
