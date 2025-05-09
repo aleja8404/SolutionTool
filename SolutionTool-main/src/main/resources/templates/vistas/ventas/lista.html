@@ -100,9 +100,8 @@
         /* Main Content Styles */
         .main-content {
             flex: 1;
-            overflow-x: hidden;
-            padding: 25px;
-            background-color: var(--content-bg);
+            overflow-x: auto;
+            padding: 30px;
         }
         
         .content-container {
@@ -173,8 +172,8 @@
         }
         
         .table thead th {
-            background-color: #2c3e50;
-            color: white;
+            background-color: #b8d5f1;
+            color: #495057;
             border-bottom: none;
             font-weight: 600;
             padding: 12px 15px;
@@ -442,8 +441,8 @@
         </aside>
 
         <!-- Main Content -->
-        <div class="main-content">
-            <div class="content-container">
+        <main class="main-content">
+            <div class="card-container">
                 <h1><i class="fas fa-chart-line me-2"></i>Listado de Ventas</h1>
                 
                 <div class="action-buttons">
@@ -491,8 +490,8 @@
                                 <td th:text="${venta.fechaDelPedido != null} ? ${#temporals.format(venta.fechaDelPedido, 'dd/MM/yyyy HH:mm')} : 'N/A'">
                                     01/01/2025
                                 </td>
-                                <td th:text="${venta.total != null} ? ${#numbers.formatDecimal(venta.total, 1, 2, 'COMMA')} + ' €' : '0.00 €'">
-                                    0.00 €
+                                <td th:text="${venta.total != null} ? ${#numbers.formatDecimal(venta.total, 1, 2, 'COMMA')} + '' : '0.00 '">
+                                    0.00
                                 </td>
                                 <td>
                                     <span class="badge" 

@@ -6,124 +6,220 @@
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <style>
+        :root {
+            --sidebar-bg: #e77547;
+            --sidebar-text: white;
+            --sidebar-active: rgba(255, 255, 255, 0.2);
+            --content-bg: #f8f9fa;
+            --card-bg: white;
+            --primary-color: #3498db;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
             display: flex;
             min-height: 100vh;
-            margin: 0;
-            background-color: #f8f9fa;
+            background-color: var(--content-bg);
         }
-
+        
         /* Sidebar Styles */
         .sidebar {
             width: 250px;
-            background-color: #e77547;
-            color: white;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
             padding: 20px 0;
-            transition: all 0.3s;
             position: sticky;
             top: 0;
             height: 100vh;
             overflow-y: auto;
+            flex-shrink: 0;
         }
-
+        
         .sidebar-header {
             padding: 0 20px 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-
+        
         .sidebar-header h3 {
-            color: white;
+            color: var(--sidebar-text);
             margin-bottom: 0;
+            font-weight: 600;
         }
-
+        
         .sidebar-nav {
             padding: 20px 0;
         }
-
+        
         .nav-item {
             margin-bottom: 5px;
         }
-
+        
         .nav-link {
-            color: rgba(255, 255, 255, 0.8);
-            padding: 10px 20px;
+            color: rgba(255, 255, 255, 0.85);
+            padding: 12px 20px;
             border-radius: 4px;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
         }
-
+        
         .nav-link i {
-            margin-right: 10px;
+            margin-right: 12px;
             width: 20px;
             text-align: center;
         }
-
+        
         .nav-link:hover {
-            color: white;
-            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--sidebar-text);
+            background-color: rgba(255, 255, 255, 0.15);
             text-decoration: none;
         }
-
+        
         .nav-link.active {
-            color: white;
-            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--sidebar-text);
+            background-color: var(--sidebar-active);
+            font-weight: 600;
         }
-
+        
         .logout-btn {
             margin-top: auto;
             padding: 20px;
         }
-
-        /* Main Content Styles */
+        
+        /* Main Content */
         .main-content {
             flex: 1;
-            overflow-x: hidden;
-            padding: 20px;
-        }
-
-        /* Form and Table Styles */
-        .content-container {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .search-form {
-            margin-bottom: 20px;
-        }
-
-        .table-responsive {
             overflow-x: auto;
+            padding: 30px;
         }
-
+        
+        .card-container {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h1 i {
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+        
+        /* Search Form */
+        .search-form {
+            margin-bottom: 25px;
+        }
+        
+        /* Table Styles */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .table th {
+            background-color: #b8d5f1;
+            color: #495057;
+            font-weight: 600;
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+        
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .table tr:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2188d9;
+            border-color: #fdfdfd;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            border-color: var(--warning-color);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+        /* Pagination Styles */
+        .pagination {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+        
+        .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .page-link {
+            color: var(--primary-color);
+            border-radius: 6px;
+        }
+        
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+        
         /* Responsive Adjustments */
         @media (max-width: 992px) {
-            .sidebar {
-                width: 80px;
-                overflow: hidden;
-            }
-            
-            .sidebar-header h3, 
-            .nav-link span {
-                display: none;
-            }
-            
-            .nav-link {
-                justify-content: center;
-                padding: 10px;
-            }
-            
-            .nav-link i {
-                margin-right: 0;
-                font-size: 1.2rem;
-            }
-        }
-
-        @media (max-width: 768px) {
             body {
                 flex-direction: column;
             }
@@ -132,60 +228,60 @@
                 width: 100%;
                 height: auto;
                 position: relative;
-                padding: 10px 0;
-            }
-            
-            .sidebar-nav {
-                display: flex;
-                flex-wrap: wrap;
-                padding: 10px;
-            }
-            
-            .nav-item {
-                margin: 5px;
-            }
-            
-            .nav-link {
-                padding: 8px 12px;
-            }
-            
-            .nav-link i {
-                margin-right: 5px;
-                font-size: 1rem;
-            }
-            
-            .nav-link span {
-                display: inline;
-                font-size: 0.8rem;
-            }
-            
-            .logout-btn {
-                padding: 10px;
-                text-align: center;
             }
             
             .main-content {
-                padding: 15px;
+                padding: 20px;
+            }
+            
+            .card-container {
+                padding: 20px;
+                overflow-x: auto;
+            }
+            
+            .table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
             }
         }
-
-        @media (max-width: 576px) {
-            .content-container {
-                padding: 15px;
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .card-container {
+                padding: 20px 15px;
             }
             
             .btn {
-                padding: 0.375rem 0.75rem;
+                padding: 6px 12px;
                 font-size: 0.875rem;
             }
             
-            h1 {
-                font-size: 1.5rem;
+            .btn i {
+                margin-right: 4px;
+            }
+            
+            .table td, .table th {
+                padding: 8px 10px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 15px;
+            }
+            
+            .action-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
             }
         }
     </style>
 </head>
-
 <body>
     <!-- Sidebar -->
     <aside class="sidebar">
@@ -251,7 +347,7 @@
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/vendedor-producto}">
                         <i class="fas fa-link"></i>
-                        <span>Vendedor Artículo</span>
+                        <span>Asignaciones</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -272,71 +368,116 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        <div class="content-container">
+        <div class="card-container">
             <h1><i class="fas fa-users"></i>Gestión de Clientes</h1>
 
+            <div class="mb-4">
+                <a th:href="@{/clientes/nuevo}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Nuevo Cliente
+                </a>
+            </div>
+            
             <!-- Formulario de búsqueda -->
             <form th:action="@{/clientes}" method="get" class="search-form">
-                <div class="row">
-                    <div class="col-md-8">
-                        <input type="text" name="search" class="form-control" placeholder="Buscar por nombre o correo" th:value="${search}" />
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-100">Buscar</button>
-                    </div>
-                    <div class="col-md-2">
-                        <a th:href="@{/clientes/nuevo}" class="btn btn-success w-100">Nuevo Cliente</a>
-                    </div>
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" 
+                           placeholder="Buscar por nombre o email" th:value="${search}" />
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
                 </div>
             </form>
-
-            <!-- Lista de clientes con paginación -->
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Correo Electrónico</th>
-                            <th>Teléfono</th>
-                            <th>Dirección</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="cliente : ${clientes}">
-                            <td th:text="${cliente.idCliente}"></td>
-                            <td th:text="${cliente.nombre}"></td>
-                            <td th:text="${cliente.correoElectronico}"></td>
-                            <td th:text="${cliente.telefono} ?: 'No especificado'"></td>
-                            <td th:text="${cliente.direccion} ?: 'No especificada'"></td>
-                            <td>
-                                <a th:href="@{/clientes/editar/{id}(id=${cliente.idCliente}, page=${clientesPage.number}, size=${clientesPage.size}, search=${search})}" class="btn btn-sm btn-warning">Editar</a>
-                                <a th:href="@{/clientes/eliminar/{id}(id=${cliente.idCliente})}" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este cliente?');">Eliminar</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            
+            <div th:if="${clientes.empty}" class="empty-state">
+                <i class="fas fa-user-slash fa-3x mb-3"></i>
+                <p>No se encontraron clientes</p>
             </div>
+            
+            <div th:unless="${clientes.empty}">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Correo Electrónico</th>
+                                <th>Teléfono</th>
+                                <th>Dirección</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="cliente : ${clientes}">
+                                <td th:text="${cliente.idCliente}"></td>
+                                <td th:text="${cliente.nombre}"></td>
+                                <td th:text="${cliente.correoElectronico}"></td>
+                                <td th:text="${cliente.telefono} ?: 'N/A'"></td>
+                                <td th:text="${cliente.direccion} ?: 'N/A'"></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a th:href="@{'/clientes/editar/' + ${cliente.idCliente} + '?page=' + ${clientesPage.number} + '&size=' + ${clientesPage.size} + '&search=' + ${search}}" 
+                                           class="btn btn-sm btn-warning">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </a>
+                                        <a th:href="@{'/clientes/eliminar/' + ${cliente.idCliente}}" 
+                                           class="btn btn-sm btn-danger"
+                                           onclick="return confirm('¿Estás seguro de eliminar este cliente?');">
+                                            <i class="fas fa-trash"></i> Eliminar
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-            <!-- Controles de paginación -->
-            <nav aria-label="Paginación de clientes">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item" th:classappend="${clientesPage.first} ? 'disabled'">
-                        <a class="page-link" th:href="@{/clientes(page=${clientesPage.number - 1}, size=${clientesPage.size}, search=${search})}">Anterior</a>
-                    </li>
-                    <li class="page-item" th:each="i : ${#numbers.sequence(0, clientesPage.totalPages - 1)}" th:classappend="${i == clientesPage.number} ? 'active'">
-                        <a class="page-link" th:href="@{/clientes(page=${i}, size=${clientesPage.size}, search=${search})}" th:text="${i + 1}"></a>
-                    </li>
-                    <li class="page-item" th:classappend="${clientesPage.last} ? 'disabled'">
-                        <a class="page-link" th:href="@{/clientes(page=${clientesPage.number + 1}, size=${clientesPage.size}, search=${search})}">Siguiente</a>
-                    </li>
-                </ul>
-            </nav>
+                <!-- Paginación -->
+                <nav aria-label="Paginación de clientes" th:if="${clientesPage.totalPages > 1}">
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${clientesPage.first} ? 'disabled'">
+                            <a class="page-link" th:href="@{/clientes(page=0, size=${clientesPage.size}, search=${search})}">
+                                <i class="fas fa-angle-double-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${!clientesPage.hasPrevious()} ? 'disabled'">
+                            <a class="page-link" th:href="@{/clientes(page=${clientesPage.number - 1}, size=${clientesPage.size}, search=${search})}">
+                                <i class="fas fa-angle-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(clientesPage.number - 2 > 0 ? clientesPage.number - 2 : 0, clientesPage.number + 2 < clientesPage.totalPages ? clientesPage.number + 2 : clientesPage.totalPages - 1)}"
+                            th:classappend="${i == clientesPage.number} ? 'active'">
+                            <a class="page-link" th:href="@{/clientes(page=${i}, size=${clientesPage.size}, search=${search})}" 
+                            th:text="${i + 1}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${!clientesPage.hasNext()} ? 'disabled'">
+                            <a class="page-link" th:href="@{/clientes(page=${clientesPage.number + 1}, size=${clientesPage.size}, search=${search})}">
+                                <i class="fas fa-angle-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${clientesPage.last} ? 'disabled'">
+                            <a class="page-link" th:href="@{/clientes(page=${clientesPage.totalPages - 1}, size=${clientesPage.size}, search=${search})}">
+                                <i class="fas fa-angle-double-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </main>
 
     <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    
+    <script>
+        // Resaltar el enlace activo
+        $(document).ready(function() {
+            const currentPath = window.location.pathname;
+            $('.nav-link').each(function() {
+                if ($(this).attr('href') === currentPath) {
+                    $(this).addClass('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

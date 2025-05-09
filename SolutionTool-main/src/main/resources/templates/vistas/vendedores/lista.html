@@ -3,335 +3,458 @@
 <head>
     <meta charset="UTF-8">
     <title>Listado de Vendedores</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <style>
-        .dashboard-container {
-            padding: 20px;
-            font-family: Arial, sans-serif;
-            max-width: 100%;
-            overflow-x: hidden;
+        :root {
+            --sidebar-bg: #e77547;
+            --sidebar-text: white;
+            --sidebar-active: rgba(255, 255, 255, 0.2);
+            --content-bg: #f8f9fa;
+            --card-bg: white;
+            --primary-color: #3498db;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
         }
-
-        .metrics-row {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .metric-card {
-            flex: 1;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            min-width: 200px;
-        }
-
-        .metric-card h3 {
-            margin: 0 0 10px 0;
-            color: #333;
-            font-size: 1.2rem;
-        }
-
-        .metric-card p {
-            font-size: 24px;
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            color: #000;
-        }
-
-        .metric-card span {
-            font-size: 14px;
-        }
-
-        .positive {
-            color: green;
-        }
-
-        .negative {
-            color: red;
-        }
-
-        .charts-row {
+            padding: 0;
             display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
+            min-height: 100vh;
+            background-color: var(--content-bg);
         }
-
-        .chart-card {
-            flex: 1;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            min-width: 300px;
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            flex-shrink: 0;
         }
-
-        .sub-charts {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .chart-section {
-            flex: 1;
-            min-width: 250px;
+        
+        .sidebar-header h3 {
+            color: var(--sidebar-text);
+            margin-bottom: 0;
+            font-weight: 600;
         }
-
-        canvas {
-            max-height: 300px;
-            width: 100% !important;
-            height: auto !important;
+        
+        .sidebar-nav {
+            padding: 20px 0;
         }
-
-        /* Improved Navbar Styles */
-        .navbar {
-            padding: 1rem;
-        }
-
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .navbar-toggler {
-            border: none;
-            padding: 0.5rem;
-        }
-
-        .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-        }
-
-        .navbar-collapse {
-            background-color: #343a40;
-            border-radius: 8px;
-            margin-top: 0.5rem;
-            padding: 1rem;
-        }
-
-        .navbar-nav {
-            width: 100%;
-        }
-
+        
         .nav-item {
-            margin: 0.5rem 0;
+            margin-bottom: 5px;
         }
-
+        
         .nav-link {
-            color: #fff !important;
-            font-size: 1.1rem;
-            padding: 0.5rem 1rem;
-            transition: background-color 0.3s;
-        }
-
-        .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.85);
+            padding: 12px 20px;
             border-radius: 4px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
         }
-
-        .btn-outline-light {
+        
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .nav-link:hover {
+            color: var(--sidebar-text);
+            background-color: rgba(255, 255, 255, 0.15);
+            text-decoration: none;
+        }
+        
+        .nav-link.active {
+            color: var(--sidebar-text);
+            background-color: var(--sidebar-active);
+            font-weight: 600;
+        }
+        
+        .logout-btn {
+            margin-top: auto;
+            padding: 20px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-x: auto;
+            padding: 30px;
+        }
+        
+        .card-container {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h1 i {
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+        
+        /* Table Styles */
+        .table {
             width: 100%;
-            margin-top: 1rem;
-            padding: 0.5rem;
-            font-weight: bold;
+            border-collapse: collapse;
+            margin-bottom: 20px;
         }
-
+        
+        .table th {
+            background-color: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+        
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .table tr:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2188d9;
+            border-color: #1d7fcb;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            border-color: var(--warning-color);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
         /* Pagination Styles */
         .pagination {
+            display: flex;
+            gap: 5px;
             justify-content: center;
-            margin-top: 20px;
         }
-
+        
         .page-item.active .page-link {
-            background-color: #007bff;
-            border-color: #007bff;
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
         }
-
+        
         .page-link {
-            color: #007bff;
+            color: var(--primary-color);
+            border-radius: 6px;
         }
-
-        .page-link:hover {
-            color: #0056b3;
-            background-color: #e9ecef;
+        
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
         }
-
-        /* Enhanced Media Queries */
-        @media (min-width: 992px) {
-            .navbar-collapse {
-                background-color: transparent;
-                padding: 0;
-                margin-top: 0;
-            }
-            .nav-item {
-                margin: 0;
-            }
-            .btn-outline-light {
-                width: auto;
-                margin-top: 0;
-            }
-        }
-
-        @media (max-width: 1200px) {
-            .metrics-row {
-                gap: 15px;
-            }
-            .metric-card {
-                flex: 1 1 calc(50% - 15px);
-            }
-            .charts-row {
-                gap: 15px;
-            }
-        }
-
+        
+        /* Responsive Adjustments */
         @media (max-width: 992px) {
-            .metric-card {
-                flex: 1 1 calc(50% - 15px);
+            body {
+                flex-direction: column;
             }
-            .chart-card {
-                flex: 1 1 100%;
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .card-container {
+                padding: 20px;
+                overflow-x: auto;
+            }
+            
+            .table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
             }
         }
-
+        
         @media (max-width: 768px) {
-            .metrics-row {
-                flex-direction: column;
-                gap: 15px;
-            }
-            .metric-card {
-                flex: 1 1 100%;
-                padding: 15px;
-            }
-            .charts-row {
-                flex-direction: column;
-            }
-            .chart-card {
-                margin-bottom: 15px;
-            }
-            .sub-charts {
-                flex-direction: column;
-                gap: 15px;
-            }
-            canvas {
-                max-height: 250px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .dashboard-container {
-                padding: 10px;
-            }
-            .metric-card {
-                padding: 10px;
-            }
-            .metric-card p {
-                font-size: 20px;
-            }
-            .chart-card {
-                padding: 10px;
-            }
-            .chart-section {
-                min-width: 100%;
-            }
-            canvas {
-                max-height: 200px;
-            }
             h1 {
                 font-size: 1.5rem;
             }
-            p {
-                font-size: 0.9rem;
+            
+            .card-container {
+                padding: 20px 15px;
             }
-            .navbar-brand {
-                font-size: 1.25rem;
+            
+            .btn {
+                padding: 6px 12px;
+                font-size: 0.875rem;
             }
-            .nav-link {
-                font-size: 1rem;
+            
+            .btn i {
+                margin-right: 4px;
+            }
+            
+            .table td, .table th {
+                padding: 8px 10px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 15px;
+            }
+            
+            .action-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
             }
         }
     </style>
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" th:href="@{/admin/dashboard}">Administrador</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" th:href="@{/clientes}">Clientes</a></li>
-                     <li class="nav-item"><a class="nav-link" th:href="@{/proveedores}">Proveedores</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/vendedores}">Vendedores</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/usuarios}">Usuarios</a></li>
-                
-                <li class="nav-item"><a class="nav-link" th:href="@{/order-items}">Órdenes</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/categorias}">Categorías</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/productos}">Productos</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/ventas}">Ventas</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/compras}">Compras</a></li>
-
-                <li class="nav-item"><a class="nav-link" th:href="@{/vendedor-producto}">Vendedor Artículo</a></li>
-
-                <li class="nav-item"><a class="nav-link" th:href="@{/clasificacion}">Predicción</a></li>
-                
-            </ul>
-            <a class="btn btn-outline-light" style="--bs-btn-line-height: 1.0;" th:href="@{/logout}">Cerrar Sesión</a>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>Administrador</h3>
         </div>
-    </nav>
-    <div class="container mt-4">
-        <h1>Listado de Vendedores</h1>
-        <div class="mb-3">
-            <a th:href="@{/vendedores/nuevo}" class="btn btn-primary">Nuevo Vendedor</a>
-        </div>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Correo Electrónico</th>
-                    <th>Teléfono</th>
-                    <th>Dirección</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="vendedor : ${vendedores}">
-                    <td th:text="${vendedor.idVendedor}">1</td>
-                    <td th:text="${vendedor.nombre}">Nombre del Vendedor</td>
-                    <td th:text="${vendedor.correoElectronico}">correo@ejemplo.com</td>
-                    <td th:text="${vendedor.telefono}">123456789</td>
-                    <td th:text="${vendedor.direccion}">Dirección del Vendedor</td>
-                    <td>
-                        <a th:href="@{|/vendedores/editar/${vendedor.idVendedor}|}" class="btn btn-sm btn-warning">Editar</a>
-                        <a th:href="@{|/vendedores/eliminar/${vendedor.idVendedor}|}" class="btn btn-sm btn-danger"
-                           onclick="return confirm('¿Seguro que desea eliminar este vendedor?');">Eliminar</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <!-- Pagination Controls -->
-        <nav aria-label="Page navigation">
-            <ul class="pagination">
-                <li class="page-item" th:classappend="${page.isFirst()} ? 'disabled'">
-                    <a class="page-link" th:href="@{/vendedores(page=${page.number - 1},size=${page.size})}" aria-label="Previous">
-                        <span aria-hidden="true">«</span>
+        <nav class="sidebar-nav">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/clientes}">
+                        <i class="fas fa-users"></i>
+                        <span>Clientes</span>
                     </a>
                 </li>
-                <li class="page-item" th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
-                    th:classappend="${i == page.number} ? 'active'">
-                    <a class="page-link" th:href="@{/vendedores(page=${i},size=${page.size})}" th:text="${i + 1}">1</a>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/proveedores}">
+                        <i class="fas fa-truck"></i>
+                        <span>Proveedores</span>
+                    </a>
                 </li>
-                <li class="page-item" th:classappend="${page.isLast()} ? 'disabled'">
-                    <a class="page-link" th:href="@{/vendedores(page=${page.number + 1},size=${page.size})}" aria-label="Next">
-                        <span aria-hidden="true">»</span>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/vendedores}">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Vendedores</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/usuarios}">
+                        <i class="fas fa-user-cog"></i>
+                        <span>Usuarios</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/order-items}">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Órdenes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/categorias}">
+                        <i class="fas fa-tags"></i>
+                        <span>Categorías</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/productos}">
+                        <i class="fas fa-box-open"></i>
+                        <span>Productos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/ventas}">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Ventas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/compras}">
+                        <i class="fas fa-shopping-basket"></i>
+                        <span>Compras</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/vendedor-producto}">
+                        <i class="fas fa-link"></i>
+                        <span>Vendedor Artículo</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/clasificacion}">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Predicción</span>
                     </a>
                 </li>
             </ul>
         </nav>
-    </div>
+        <div class="logout-btn">
+            <a class="btn btn-outline-light btn-sm w-100" th:href="@{/logout}">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="card-container">
+            <h1><i class="fas fa-user-tie"></i>Listado de Vendedores</h1>
+            
+            <div class="mb-4">
+                <a th:href="@{/vendedores/nuevo}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Nuevo Vendedor
+                </a>
+            </div>
+            
+            <div th:if="${vendedores.empty}" class="empty-state">
+                <i class="fas fa-user-tie fa-3x mb-3"></i>
+                <p>No hay vendedores registrados</p>
+            </div>
+            
+            <div th:unless="${vendedores.empty}">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Correo Electrónico</th>
+                            <th>Teléfono</th>
+                            <th>Dirección</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="vendedor : ${vendedores}">
+                            <td th:text="${vendedor.idVendedor}">1</td>
+                            <td th:text="${vendedor.nombre}">Nombre del Vendedor</td>
+                            <td th:text="${vendedor.correoElectronico}">correo@ejemplo.com</td>
+                            <td th:text="${vendedor.telefono}">123456789</td>
+                            <td th:text="${vendedor.direccion}">Dirección del Vendedor</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a th:href="@{|/vendedores/editar/${vendedor.idVendedor}|}" 
+                                       class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </a>
+                                    <a th:href="@{|/vendedores/eliminar/${vendedor.idVendedor}|}" 
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('¿Seguro que desea eliminar este vendedor?');">
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <nav aria-label="Paginación de vendedores" th:if="${page.totalPages > 1}">
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${page.first} ? 'disabled'">
+                            <a class="page-link" th:href="@{/vendedores(page=0,size=${page.size})}">
+                                <i class="fas fa-angle-double-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${!page.hasPrevious()} ? 'disabled'">
+                            <a class="page-link" th:href="@{/vendedores(page=${page.number - 1},size=${page.size})}">
+                                <i class="fas fa-angle-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(page.number - 2 > 0 ? page.number - 2 : 0, page.number + 2 < page.totalPages ? page.number + 2 : page.totalPages - 1)}"
+                            th:classappend="${i == page.number} ? 'active'">
+                            <a class="page-link" th:href="@{/vendedores(page=${i},size=${page.size})}" 
+                               th:text="${i + 1}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${!page.hasNext()} ? 'disabled'">
+                            <a class="page-link" th:href="@{/vendedores(page=${page.number + 1},size=${page.size})}">
+                                <i class="fas fa-angle-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${page.last} ? 'disabled'">
+                            <a class="page-link" th:href="@{/vendedores(page=${page.totalPages - 1},size=${page.size})}">
+                                <i class="fas fa-angle-double-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </main>
+
     <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    
+    <script>
+        // Resaltar el enlace activo
+        $(document).ready(function() {
+            const currentPath = window.location.pathname;
+            $('.nav-link').each(function() {
+                if ($(this).attr('href') === currentPath) {
+                    $(this).addClass('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

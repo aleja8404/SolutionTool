@@ -6,192 +6,273 @@
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <style>
+        :root {
+            --sidebar-bg: #e77547;
+            --sidebar-text: white;
+            --sidebar-active: rgba(255, 255, 255, 0.2);
+            --content-bg: #f4f6f9;
+            --card-bg: white;
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+        }
+        
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            background-color: var(--content-bg);
             color: #333;
         }
-        .dashboard-container {
-            padding: 30px;
-            max-width: 100%;
-            overflow-x: hidden;
-        }
-
-         /* Sidebar */
-         .sidebar {
+        
+        /* Sidebar Styles */
+        .sidebar {
             width: 250px;
-            background-color: #793229;
-            color: white;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
             padding: 20px 0;
-            transition: all 0.3s;
-            position: fixed;
+            position: sticky;
             top: 0;
-            left: 0;
             height: 100vh;
             overflow-y: auto;
-            z-index: 1000;
-            transform: translateX(0);
+            flex-shrink: 0;
         }
-
-        .sidebar.collapsed {
-            transform: translateX(-100%);
-        }
-
+        
         .sidebar-header {
             padding: 0 20px 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-
+        
         .sidebar-header h3 {
-            color: white;
+            color: var(--sidebar-text);
             margin-bottom: 0;
-            font-size: 1.5rem;
+            font-weight: 600;
         }
-
+        
         .sidebar-nav {
             padding: 20px 0;
         }
-
+        
         .nav-item {
             margin-bottom: 5px;
         }
-
+        
         .nav-link {
-            color: rgba(255, 255, 255, 0.8);
-            padding: 10px 20px;
+            color: rgba(255, 255, 255, 0.85);
+            padding: 12px 20px;
             border-radius: 4px;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            font-size: 0.95rem;
         }
-
-        .nav-link:hover {
-            color: white;
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
+        
         .nav-link i {
-            margin-right: 10px;
-        }
-
-        .logout-btn {
-            padding: 20px;
-        }
-
-        .card {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 25px;
-            margin: 0 auto;
-            max-width: 1200px; /* Increased width for horizontal layout */
-            transition: transform 0.3s ease;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #1a1a1a;
-            margin-bottom: 20px;
+            margin-right: 12px;
+            width: 20px;
             text-align: center;
         }
+        
+        .nav-link:hover {
+            color: var(--sidebar-text);
+            background-color: rgba(255, 255, 255, 0.15);
+            text-decoration: none;
+        }
+        
+        .nav-link.active {
+            color: var(--sidebar-text);
+            background-color: var(--sidebar-active);
+            font-weight: 600;
+        }
+        
+        .logout-btn {
+            margin-top: auto;
+            padding: 20px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-x: auto;
+            padding: 30px;
+        }
+        
+        .card-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+        
+        .card-container:hover {
+            transform: translateY(-5px);
+        }
+        
+        h1 {
+            color: #1a1a1a;
+            font-weight: 700;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        h1 i {
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+        
+        /* Form Styles */
         .form-group {
             position: relative;
             margin-bottom: 15px;
         }
+        
         .form-group label {
             font-weight: 600;
             color: #444;
             margin-bottom: 8px;
             display: block;
         }
-        .form-group input, .form-group select {
+        
+        .form-control {
             width: 100%;
-            padding: 10px 35px 10px 12px; /* Adjusted padding for icon alignment */
+            padding: 10px 35px 10px 12px;
             border: 1px solid #dfe3e8;
             border-radius: 8px;
             font-size: 0.95rem;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
-        .form-group input:focus, .form-group select:focus {
-            border-color: #007bff;
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
             box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
             outline: none;
         }
+        
         .form-group i {
             position: absolute;
             right: 12px;
-            top: 65%; /* Adjusted for better vertical centering */
+            top: 65%;
             transform: translateY(-50%);
             color: #888;
             font-size: 1rem;
         }
-        .btn-primary {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            border: none;
+        
+        /* Button Styles */
+        .btn {
             padding: 12px 24px;
             border-radius: 8px;
             font-weight: 600;
-            transition: background 0.3s ease, transform 0.2s ease;
-            width: 100%;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), #0056b3);
+            border: none;
+            color: white;
+        }
+        
         .btn-primary:hover {
             background: linear-gradient(135deg, #0056b3, #003d80);
             transform: translateY(-2px);
         }
-        .btn-list {
-            display: inline-block;
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #6c757d, #495057);
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary-color), #495057);
+            border: none;
             color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background 0.3s ease, transform 0.2s ease;
         }
-        .btn-list:hover {
+        
+        .btn-secondary:hover {
             background: linear-gradient(135deg, #495057, #343a40);
             transform: translateY(-2px);
         }
+        
+        /* Result Section */
         .result-section {
             margin-top: 30px;
             padding: 20px;
             background: #e9f7ff;
             border-radius: 8px;
-            border-left: 4px solid #007bff;
+            border-left: 4px solid var(--primary-color);
         }
-        .error {
-            color: #dc3545;
+        
+        .result-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .result-section p {
+            margin-bottom: 8px;
+        }
+        
+        .result-section strong {
+            color: #1a1a1a;
+        }
+        
+        /* Error Message */
+        .error-message {
+            color: var(--danger-color);
             margin-top: 15px;
             font-weight: 500;
             text-align: center;
         }
+        
+        /* Responsive Adjustments */
         @media (max-width: 992px) {
-            .form-group {
-                margin-bottom: 20px;
+            body {
+                flex-direction: column;
             }
-            .btn-primary {
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .card-container {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .card-container {
+                padding: 20px 15px;
+            }
+            
+            .btn {
                 width: 100%;
             }
         }
+        
         @media (max-width: 576px) {
-            .dashboard-container {
+            .main-content {
                 padding: 15px;
-            }
-            .card {
-                padding: 15px;
-            }
-            h1 {
-                font-size: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
-    
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-header">
@@ -275,77 +356,95 @@
         </div>
     </aside>
 
-<div class="dashboard-container">
-    <h1>Clasificación de Clientes</h1>
-    <a class="btn-list" th:href="@{/clasificacion/lista}">Ver Lista de Clasificaciones</a>
-    <p></p>
-    <p></p>
-    <div class="card">
-        <form th:action="@{/clasificacion/clasificar}" th:object="${customerData}" method="post">
-            <div class="row g-3">
-                <div class="col-lg-3 col-md-6">
-                    <div class="form-group">
-                        <label>Edad:</label>
-                        <input type="number" th:field="*{edad}" min="17" max="70" value="17" required>
-                        <i class="fas fa-user"></i>
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="card-container">
+            <h1><i class="fas fa-star"></i>Clasificación de Clientes</h1>
+            
+            <a th:href="@{/clasificacion/lista}" class="btn btn-secondary mb-4">
+                <i class="fas fa-list"></i> Ver Lista de Clasificaciones
+            </a>
+            
+            <form th:action="@{/clasificacion/clasificar}" th:object="${customerData}" method="post">
+                <div class="row g-3">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="form-group">
+                            <label>Edad:</label>
+                            <input type="number" class="form-control" th:field="*{edad}" min="17" max="70" value="17" required>
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="form-group">
+                            <label>Frecuencia de Compra:</label>
+                            <input type="number" class="form-control" th:field="*{frecuenciaCompra}" min="0" max="300" value="0" required>
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="form-group">
+                            <label>Valor Total de Compra:</label>
+                            <input type="number" step="0.01" class="form-control" th:field="*{valorTotalCompra}" min="0" value="0" required>
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="form-group">
+                            <label>Días desde Última Compra:</label>
+                            <input type="number" class="form-control" th:field="*{ultimaCompra}" min="0" value="0" required>
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="form-group">
+                            <label>Método de Pago:</label>
+                            <select class="form-control" th:field="*{metodoPago}" required>
+                                <option value="Efectivo">Efectivo</option>
+                                <option value="Tarjeta">Tarjeta</option>
+                                <option value="Transferencia">Transferencia</option>
+                            </select>
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-calculator"></i> Clasificar
+                        </button>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="form-group">
-                        <label>Frecuencia de Compra:</label>
-                        <input type="number" th:field="*{frecuenciaCompra}" min="0" max="300" value="0" required>
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="form-group">
-                        <label>Valor Total de Compra:</label>
-                        <input type="number" step="0.01" th:field="*{valorTotalCompra}" min="0" value="0" required>
-                        <i class="fas fa-dollar-sign"></i>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="form-group">
-                        <label>Días desde Última Compra:</label>
-                        <input type="number" th:field="*{ultimaCompra}" min="0" value="0" required>
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="form-group">
-                        <label>Método de Pago:</label>
-                        <select th:field="*{metodoPago}" required>
-                            <option value="Efectivo">Efectivo</option>
-                            <option value="Tarjeta">Tarjeta</option>
-                            <option value="Transferencia">Transferencia</option>
-                        </select>
-                        <i class="fas fa-credit-card"></i>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 d-flex align-items-end">
-                    <button type="submit" class="btn-primary">Clasificar</button>
-                </div>
+            </form>
+
+            <div th:if="${error}" class="error-message">
+                <p th:text="${error}"></p>
             </div>
-        </form>
 
-        <div th:if="${error}" class="error">
-            <p th:text="${error}"></p>
+            <div th:if="${showResult}" class="result-section">
+                <h2>Resultado de la Clasificación</h2>
+                <p>Categoría: <strong th:text="${clasificacion}"></strong></p>
+                <p>Confianza: <strong th:text="${confianza}"></strong></p>
+                <h3>Datos Enviados</h3>
+                <p>Edad: <span th:text="${customerData.edad}"></span></p>
+                <p>Frecuencia de Compra: <span th:text="${customerData.frecuenciaCompra}"></span></p>
+                <p>Valor Total de Compra: <span th:text="${#numbers.formatDecimal(customerData.valorTotalCompra, 1, 2, 'COMMA')}"></span></p>
+                <p>Días desde Última Compra: <span th:text="${customerData.ultimaCompra}"></span></p>
+                <p>Método de Pago: <span th:text="${customerData.metodoPago}"></span></p>
+            </div>
         </div>
+    </main>
 
-        <div th:if="${showResult}" class="result-section">
-            <h2>Resultado de la Clasificación</h2>
-            <p>Categoría: <strong th:text="${clasificacion}"></strong></p>
-            <p>Confianza: <strong th:text="${confianza}"></strong></p>
-            <h3>Datos Enviados</h3>
-            <p>Edad: <span th:text="${customerData.edad}"></span></p>
-            <p>Frecuencia de Compra: <span th:text="${customerData.frecuenciaCompra}"></span></p>
-            <p>Valor Total de Compra: <span th:text="${#numbers.formatDecimal(customerData.valorTotalCompra, 1, 2, 'COMMA')}"></span></p>
-            <p>Días desde Última Compra: <span th:text="${customerData.ultimaCompra}"></span></p>
-            <p>Método de Pago: <span th:text="${customerData.metodoPago}"></span></p>
-        </div>
-    </div>
-</div>
-
-<script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    
+    <script>
+        // Resaltar el enlace activo
+        $(document).ready(function() {
+            const currentPath = window.location.pathname;
+            $('.nav-link').each(function() {
+                if ($(this).attr('href') === currentPath) {
+                    $(this).addClass('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
