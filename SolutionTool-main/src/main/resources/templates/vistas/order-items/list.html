@@ -280,7 +280,6 @@
         }
     </style>
 </head>
-<body>
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-header">
@@ -288,6 +287,12 @@
         </div>
         <nav class="sidebar-nav">
             <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/admin/dashboard}">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/clientes}">
                         <i class="fas fa-users"></i>
@@ -301,7 +306,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" th:href="@{/order-items}">
+                    <a class="nav-link" th:href="@{/order-items}">
                         <i class="fas fa-shopping-cart"></i>
                         <span>Órdenes</span>
                     </a>
@@ -348,6 +353,12 @@
                         <span>Vendedor Artículo</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/clasificacion}">
+                        <i class="fas fa-star"></i>
+                        <span>Predicción</span>
+                    </a>
+                </li>
             </ul>
         </nav>
         <div class="logout-btn">
@@ -357,7 +368,7 @@
             </a>
         </div>
     </aside>
-
+    
     <!-- Main Content -->
     <main class="main-content">
         <div class="card-container">

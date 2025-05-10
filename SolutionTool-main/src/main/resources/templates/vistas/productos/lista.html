@@ -349,21 +349,15 @@
         <nav class="sidebar-nav">
             <ul class="nav flex-column">
                 <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/admin/dashboard}">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" th:href="@{/clientes}">
                         <i class="fas fa-users"></i>
                         <span>Clientes</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/proveedores}">
-                        <i class="fas fa-truck"></i>
-                        <span>Proveedores</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/vendedores}">
-                        <i class="fas fa-user-tie"></i>
-                        <span>Vendedores</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -385,7 +379,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" th:href="@{/productos}">
+                    <a class="nav-link" th:href="@{/productos}">
                         <i class="fas fa-box-open"></i>
                         <span>Productos</span>
                     </a>
@@ -400,6 +394,18 @@
                     <a class="nav-link" th:href="@{/compras}">
                         <i class="fas fa-shopping-basket"></i>
                         <span>Compras</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/proveedores}">
+                        <i class="fas fa-truck"></i>
+                        <span>Proveedores</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/vendedores}">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Vendedores</span>
                     </a>
                 </li>
                 <li class="nav-item">

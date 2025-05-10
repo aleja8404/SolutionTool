@@ -4,57 +4,424 @@
     <meta charset="UTF-8">
     <title th:text="${proveedor.idProveedor} != null ? 'Editar Proveedor' : 'Nuevo Proveedor'">Formulario Proveedor</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <style>
+        :root {
+            --sidebar-bg: #e77547;
+            --sidebar-text: white;
+            --sidebar-active: rgba(255, 255, 255, 0.2);
+            --content-bg: #f8f9fa;
+            --card-bg: white;
+            --primary-color: #3498db;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            background-color: var(--content-bg);
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-header h3 {
+            color: var(--sidebar-text);
+            margin-bottom: 0;
+            font-weight: 600;
+        }
+        
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+        
+        .nav-item {
+            margin-bottom: 5px;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            padding: 12px 20px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .nav-link:hover {
+            color: var(--sidebar-text);
+            background-color: rgba(255, 255, 255, 0.15);
+            text-decoration: none;
+        }
+        
+        .nav-link.active {
+            color: var(--sidebar-text);
+            background-color: var(--sidebar-active);
+            font-weight: 600;
+        }
+        
+        .logout-btn {
+            margin-top: auto;
+            padding: 20px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-x: auto;
+            padding: 30px;
+        }
+        
+        .card-container {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h1 i {
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+        
+        /* Form Styles */
+        .form-label {
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        
+        .form-control {
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2188d9;
+            border-color: #1e7e34;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        /* Validation Styles */
+        .is-invalid {
+            border-color: var(--danger-color);
+        }
+        
+        .invalid-feedback {
+            color: var(--danger-color);
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .card-container {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .card-container {
+                padding: 20px 15px;
+            }
+            
+            .btn {
+                padding: 8px 16px;
+                font-size: 0.875rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 15px;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" th:href="@{/admin/dashboard}">Admin Dashboard</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" th:href="@{/clientes}">Clientes</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/usuarios}">Usuarios</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/order-items}">ordenes</a></li>
-
-                <li class="nav-item"><a class="nav-link" th:href="@{/categorias}">Categorías</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/productos}">Productos</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/ventas}">Ventas</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/compras}">Compras</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/proveedores}">Proveedores</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/vendedores}">Vendedores</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/vendedor-producto}">Vendedor Productos</a></li>
-            </ul>
-            <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>Administrador</h3>
         </div>
-    </nav>
-    <div class="container mt-4">
-        <h1 th:text="${proveedor.idProveedor} != null ? 'Editar Proveedor' : 'Nuevo Proveedor'">Formulario Proveedor</h1>
-        <form th:action="${proveedor.idProveedor} != null ? @{/proveedores/editar/{id}(id=${proveedor.idProveedor})} : @{/proveedores}" 
-              th:object="${proveedor}" method="post">
-            <!-- Campo oculto para ID (solo en edición) -->
-            <div th:if="${proveedor.idProveedor} != null">
-                <input type="hidden" th:field="*{idProveedor}" />
-            </div>
-            <div class="mb-3">
-                <label for="nombre" class="form-label">Nombre:</label>
-                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" placeholder="Nombre del proveedor" required />
-            </div>
-            <div class="mb-3">
-                <label for="correoElectronico" class="form-label">Correo Electrónico:</label>
-                <input type="email" id="correoElectronico" th:field="*{correoElectronico}" class="form-control" placeholder="correo@ejemplo.com" required />
-            </div>
-            <div class="mb-3">
-                <label for="telefono" class="form-label">Teléfono:</label>
-                <input type="text" id="telefono" th:field="*{telefono}" class="form-control" placeholder="Teléfono del proveedor" />
-            </div>
-            <div class="mb-3">
-                <label for="direccion" class="form-label">Dirección:</label>
-                <input type="text" id="direccion" th:field="*{direccion}" class="form-control" placeholder="Dirección del proveedor" />
-            </div>
-            <button type="submit" class="btn btn-success" th:text="${proveedor.idProveedor} != null ? 'Actualizar' : 'Guardar'">Guardar</button>
-            <a th:href="@{/proveedores}" class="btn btn-secondary">Cancelar</a>
-        </form>
-    </div>
+        <nav class="sidebar-nav">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/dashboard}">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/clientes}">
+                        <i class="fas fa-users"></i>
+                        <span>Clientes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/usuarios}">
+                        <i class="fas fa-user-cog"></i>
+                        <span>Usuarios</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/order-items}">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Órdenes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/categorias}">
+                        <i class="fas fa-tags"></i>
+                        <span>Categorías</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/productos}">
+                        <i class="fas fa-box-open"></i>
+                        <span>Productos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/ventas}">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Ventas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/compras}">
+                        <i class="fas fa-shopping-basket"></i>
+                        <span>Compras</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/proveedores}">
+                        <i class="fas fa-truck"></i>
+                        <span>Proveedores</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/vendedores}">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Vendedores</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/vendedor-producto}">
+                        <i class="fas fa-link"></i>
+                        <span>Vendedor Artículo</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/clasificacion}">
+                        <i class="fas fa-star"></i>
+                        <span>Predicción</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="logout-btn">
+            <a class="btn btn-outline-light btn-sm w-100" th:href="@{/logout}">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="card-container">
+            <h1><i class="fas fa-truck"></i><span th:text="${proveedor.idProveedor} != null ? 'Editar Proveedor' : 'Nuevo Proveedor'">Formulario Proveedor</span></h1>
+            
+            <form th:action="${proveedor.idProveedor} != null ? @{/proveedores/editar/{id}(id=${proveedor.idProveedor})} : @{/proveedores}" 
+                  th:object="${proveedor}" method="post" class="needs-validation" novalidate>
+                
+                <!-- Campo oculto para ID (solo en edición) -->
+                <input type="hidden" th:if="${proveedor.idProveedor} != null" th:field="*{idProveedor}" />
+                
+                <div class="form-group">
+                    <label for="nombre" class="form-label">Nombre:</label>
+                    <input type="text" id="nombre" th:field="*{nombre}" class="form-control" 
+                           placeholder="Nombre del proveedor" required />
+                    <div class="invalid-feedback">Por favor ingrese el nombre del proveedor</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="correoElectronico" class="form-label">Correo Electrónico:</label>
+                    <input type="email" id="correoElectronico" th:field="*{correoElectronico}" class="form-control" 
+                           placeholder="correo@ejemplo.com" required />
+                    <div class="invalid-feedback">Por favor ingrese un correo electrónico válido</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="telefono" class="form-label">Teléfono:</label>
+                    <input type="tel" id="telefono" th:field="*{telefono}" class="form-control" 
+                           placeholder="Teléfono del proveedor" pattern="[0-9+]{8,15}" />
+                    <div class="invalid-feedback">Por favor ingrese un número de teléfono válido (8-15 dígitos)</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="direccion" class="form-label">Dirección:</label>
+                    <input type="text" id="direccion" th:field="*{direccion}" class="form-control" 
+                           placeholder="Dirección del proveedor" />
+                </div>
+                
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> <span th:text="${proveedor.idProveedor} != null ? 'Actualizar' : 'Guardar'"></span>
+                    </button>
+                    <a th:href="@{/proveedores}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </main>
+
     <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    
+    <script>
+        // Resaltar el enlace activo
+        $(document).ready(function() {
+            const currentPath = window.location.pathname;
+            $('.nav-link').each(function() {
+                if ($(this).attr('href') === currentPath) {
+                    $(this).addClass('active');
+                }
+            });
+            
+            // Validación de formulario
+            (function() {
+                'use strict';
+                
+                // Obtener todos los formularios a los que queremos aplicar estilos de validación de Bootstrap personalizados
+                var forms = document.querySelectorAll('.needs-validation');
+                
+                // Bucle sobre ellos y evitar el envío
+                Array.prototype.slice.call(forms)
+                    .forEach(function(form) {
+                        form.addEventListener('submit', function(event) {
+                            if (!form.checkValidity()) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                            }
+                            
+                            form.classList.add('was-validated');
+                        }, false);
+                    });
+            })();
+        });
+    </script>
 </body>
 </html>
