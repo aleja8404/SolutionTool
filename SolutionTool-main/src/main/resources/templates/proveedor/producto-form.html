@@ -2,24 +2,25 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${producto.idProducto != null} ? 'Editar Producto' : 'Nuevo Producto'">Formulario Producto</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <style>
         :root {
-            --sidebar-bg: #e77547;
-            --sidebar-text: white;
+            --sidebar-bg: #2c3e50;
+            --sidebar-text: #ecf0f1;
             --sidebar-active: rgba(255, 255, 255, 0.2);
             --content-bg: #f8f9fa;
             --card-bg: white;
             --primary-color: #3498db;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-            --warning-color: #ffc107;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
@@ -29,7 +30,7 @@
         
         /* Sidebar Styles */
         .sidebar {
-            width: 250px;
+            width: 280px;
             background-color: var(--sidebar-bg);
             color: var(--sidebar-text);
             padding: 20px 0;
@@ -38,6 +39,7 @@
             height: 100vh;
             overflow-y: auto;
             flex-shrink: 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
         }
         
         .sidebar-header {
@@ -75,13 +77,13 @@
         }
         
         .nav-link:hover {
-            color: var(--sidebar-text);
+            color: white;
             background-color: rgba(255, 255, 255, 0.15);
             text-decoration: none;
         }
         
         .nav-link.active {
-            color: var(--sidebar-text);
+            color: white;
             background-color: var(--sidebar-active);
             font-weight: 600;
         }
@@ -101,19 +103,21 @@
         .card-container {
             background-color: var(--card-bg);
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             padding: 30px;
             margin-bottom: 30px;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
         }
         
         h1 {
             color: #2c3e50;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 30px;
             display: flex;
             align-items: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 15px;
         }
         
         h1 i {
@@ -123,37 +127,37 @@
         
         /* Form Styles */
         .form-label {
-            font-weight: 500;
-            color: #495057;
+            font-weight: 600;
+            color: #2c3e50;
             margin-bottom: 8px;
         }
         
-        .form-control {
-            padding: 10px 15px;
-            border-radius: 6px;
-            border: 1px solid #ced4da;
-            transition: border-color 0.3s ease;
+        .form-control, .form-select {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
         }
         
-        .form-control:focus {
+        .form-control:focus, .form-select:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
         }
         
         textarea.form-control {
-            min-height: 100px;
+            min-height: 120px;
             resize: vertical;
         }
         
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.8rem;
         }
         
         /* Button Styles */
         .btn {
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 500;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
@@ -161,7 +165,7 @@
         }
         
         .btn i {
-            margin-right: 8px;
+            margin-right: 10px;
         }
         
         .btn-primary {
@@ -170,35 +174,97 @@
         }
         
         .btn-primary:hover {
-            background-color: #2188d9;
-            border-color: #1e7e34;
+            background-color: #2980b9;
+            border-color: #2980b9;
         }
         
         .btn-secondary {
-            background-color: #6c757d;
-            border-color: #6c757d;
+            background-color: #95a5a6;
+            border-color: #95a5a6;
         }
         
         .btn-secondary:hover {
-            background-color: #5a6268;
-            border-color: #545b62;
+            background-color: #7f8c8d;
+            border-color: #7f8c8d;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        .btn-success:hover {
+            background-color: #219955;
+            border-color: #219955;
         }
         
         .btn-group {
             display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        /* Image Upload Styles */
+        .image-upload-container {
+            border: 2px dashed #bdc3c7;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+        
+        .image-upload-container:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 250px;
+            margin-top: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        
+        /* Category Tags */
+        .category-tags {
+            display: flex;
+            flex-wrap: wrap;
             gap: 10px;
-            margin-top: 20px;
+            margin-top: 10px;
+        }
+        
+        .category-tag {
+            background-color: #e0f7fa;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            color: #00796b;
+            border: 1px solid #b2ebf2;
+        }
+        
+        .category-tag-remove {
+            margin-left: 8px;
+            cursor: pointer;
+            color: var(--danger-color);
         }
         
         /* Validation Styles */
         .is-invalid {
-            border-color: var(--danger-color);
+            border-color: var(--danger-color) !important;
         }
         
         .invalid-feedback {
             color: var(--danger-color);
-            font-size: 0.875em;
-            margin-top: 0.25rem;
+            font-size: 0.9em;
+            margin-top: 0.5rem;
+            font-weight: 500;
         }
         
         /* Responsive Adjustments */
@@ -214,37 +280,37 @@
             }
             
             .main-content {
-                padding: 20px;
+                padding: 25px;
             }
             
             .card-container {
-                padding: 20px;
+                padding: 25px;
             }
         }
         
         @media (max-width: 768px) {
             h1 {
-                font-size: 1.5rem;
+                font-size: 1.6rem;
             }
             
             .card-container {
-                padding: 20px 15px;
+                padding: 20px;
             }
             
             .btn {
-                padding: 8px 16px;
-                font-size: 0.875rem;
+                padding: 10px 20px;
+                font-size: 0.9rem;
             }
         }
         
         @media (max-width: 576px) {
             .main-content {
-                padding: 15px;
+                padding: 20px;
             }
             
             .btn-group {
                 flex-direction: column;
-                gap: 8px;
+                gap: 10px;
             }
             
             .btn {
@@ -257,7 +323,7 @@
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <h3>Panel de Proveedor</h3>
+            <h3><i class="fas fa-store-alt me-2"></i>Panel Proveedor</h3>
         </div>
         <nav class="sidebar-nav">
             <ul class="nav flex-column">
@@ -269,14 +335,26 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/proveedor/accesos/editar}">
-                        <i class="fas fa-user-edit"></i>
-                        <span>Editar Perfil</span>
+                        <i class="fas fa-user-cog"></i>
+                        <span>Mi Perfil</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" th:href="@{/proveedor/productos}">
-                        <i class="fas fa-box-open"></i>
+                        <i class="fas fa-boxes"></i>
                         <span>Mis Productos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/proveedor/ventas}">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Reportes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/proveedor/pedidos}">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>Pedidos</span>
                     </a>
                 </li>
             </ul>
@@ -294,54 +372,121 @@
         <div class="card-container">
             <h1>
                 <i class="fas" th:class="${producto.idProducto != null} ? 'fa-edit' : 'fa-plus-circle'"></i>
-                <span th:text="${producto.idProducto != null} ? 'Editar Producto' : 'Nuevo Producto'">Formulario Producto</span>
+                <span th:text="${producto.idProducto != null} ? 'Editar Producto' : 'Nuevo Producto'"></span>
             </h1>
             
             <form th:action="${producto.idProducto != null} ? @{/proveedor/productos/actualizar/{id}(id=${producto.idProducto})} : @{/proveedor/productos}" 
-                  th:object="${producto}" method="post" class="needs-validation" novalidate>
+                  th:object="${producto}" method="post" class="needs-validation" novalidate enctype="multipart/form-data">
                 
                 <!-- Campos ocultos -->
                 <input type="hidden" th:field="*{idProducto}" th:if="${producto.idProducto != null}" />
                 <input type="hidden" th:field="*{proveedor}" />
                 
-                <div class="form-group">
-                    <label for="nombre" class="form-label">Nombre:</label>
-                    <input type="text" id="nombre" th:field="*{nombre}" class="form-control" 
-                           placeholder="Nombre del producto" required />
-                    <div class="invalid-feedback">Por favor ingrese el nombre del producto</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="descripcion" class="form-label">Descripción:</label>
-                    <textarea id="descripcion" th:field="*{descripcion}" class="form-control" 
-                              placeholder="Descripción detallada del producto"></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="precio" class="form-label">Precio:</label>
-                    <div class="input-group">
-                        <span class="input-group-text">$</span>
-                        <input type="number" id="precio" th:field="*{precio}" class="form-control" 
-                               step="0.01" min="0.01" placeholder="0.00" required />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="nombre" class="form-label">Nombre del Producto*</label>
+                            <input type="text" id="nombre" th:field="*{nombre}" class="form-control" 
+                                   placeholder="Ej: Martillo profesional de 16 oz" required />
+                            <div class="invalid-feedback">El nombre del producto es requerido</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="categoria" class="form-label">Categoría*</label>
+                            <select id="categoria" th:field="*{categoria}" class="form-select" required>
+                                <option value="" disabled selected>Seleccione una categoría</option>
+                                <option th:each="categoria : ${categorias}" 
+                                        th:value="${categoria.idCategoria}" 
+                                        th:text="${categoria.nombre}">
+                                </option>
+                            </select>
+                            <div class="invalid-feedback">Por favor seleccione una categoría</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="precio" class="form-label">Precio*</label>
+                            <div class="input-group">
+                                <span class="input-group-text">S/</span>
+                                <input type="number" id="precio" th:field="*{precio}" class="form-control" 
+                                       step="0.01" min="0.01" placeholder="0.00" required />
+                            </div>
+                            <div class="invalid-feedback">Ingrese un precio válido</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="stock" class="form-label">Stock Disponible*</label>
+                            <input type="number" id="stock" th:field="*{stock}" class="form-control" 
+                                   min="0" placeholder="Cantidad en inventario" required />
+                            <div class="invalid-feedback">Ingrese la cantidad disponible</div>
+                        </div>
                     </div>
-                    <div class="invalid-feedback">Por favor ingrese un precio válido</div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">Imagen del Producto</label>
+                            <div class="image-upload-container" id="imageUploadContainer">
+                                <i class="fas fa-cloud-upload-alt fa-3x mb-3" style="color: var(--primary-color);"></i>
+                                <p class="mb-2">Arrastra y suelta la imagen aquí</p>
+                                <p class="text-muted small">o haz clic para seleccionar</p>
+                                <img id="imagePreview" class="image-preview" th:if="${producto.imagen != null}" th:src="@{'/uploads/' + ${producto.imagen}}" />
+                                <input type="file" id="imagen" name="imagen" accept="image/*" class="d-none" />
+                                <small class="text-muted">Formatos: JPG, PNG (Max. 2MB)</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="unidadMedida" class="form-label">Unidad de Medida*</label>
+                            <select id="unidadMedida" th:field="*{unidadMedida}" class="form-select" required>
+                                <option value="UNIDAD">Unidad</option>
+                                <option value="KILO">Kilo</option>
+                                <option value="LITRO">Litro</option>
+                                <option value="METRO">Metro</option>
+                                <option value="PAR">Par</option>
+                                <option value="CAJA">Caja</option>
+                                <option value="JUEGO">Juego</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="stock" class="form-label">Stock:</label>
-                    <input type="number" id="stock" th:field="*{stock}" class="form-control" 
-                           min="0" placeholder="Cantidad disponible" required />
-                    <div class="invalid-feedback">Por favor ingrese la cantidad disponible</div>
+                    <label for="descripcion" class="form-label">Descripción Detallada</label>
+                    <textarea id="descripcion" th:field="*{descripcion}" class="form-control" 
+                              placeholder="Describa las características, materiales, usos y especificaciones técnicas del producto"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="etiquetas" class="form-label">Etiquetas (Palabras clave)</label>
+                    <input type="text" id="etiquetas" class="form-control" 
+                           placeholder="Ej: herramienta, construcción, profesional (presiona Enter para agregar)" />
+                    <div class="category-tags" id="tagsContainer">
+                        <!-- Las etiquetas se agregarán aquí dinámicamente -->
+                    </div>
+                    <input type="hidden" id="etiquetasHidden" th:field="*{etiquetas}" />
+                    <small class="text-muted">Agregue palabras clave que ayuden a encontrar su producto</small>
+                </div>
+                
+                <div class="form-group form-check">
+                    <input type="checkbox" id="disponible" th:field="*{disponible}" class="form-check-input" />
+                    <label for="disponible" class="form-check-label">Producto disponible para venta</label>
+                </div>
+                
+                <div class="form-group form-check">
+                    <input type="checkbox" id="destacado" th:field="*{destacado}" class="form-check-input" />
+                    <label for="destacado" class="form-check-label">Destacar este producto</label>
                 </div>
                 
                 <div class="btn-group">
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save"></i>
-                        <span th:text="${producto.idProducto != null} ? 'Actualizar' : 'Guardar'">Guardar</span>
+                        <span th:text="${producto.idProducto != null} ? 'Actualizar Producto' : 'Guardar Producto'"></span>
                     </button>
                     <a th:href="@{/proveedor/productos}" class="btn btn-secondary">
                         <i class="fas fa-times"></i> Cancelar
                     </a>
+                    <button type="button" class="btn btn-success" th:if="${producto.idProducto != null}" onclick="previewProduct()">
+                        <i class="fas fa-eye"></i> Vista Previa
+                    </button>
                 </div>
             </form>
         </div>
@@ -364,10 +509,8 @@
             (function() {
                 'use strict';
                 
-                // Obtener todos los formularios a los que queremos aplicar estilos de validación de Bootstrap personalizados
                 var forms = document.querySelectorAll('.needs-validation');
                 
-                // Bucle sobre ellos y evitar el envío
                 Array.prototype.slice.call(forms)
                     .forEach(function(form) {
                         form.addEventListener('submit', function(event) {
@@ -380,7 +523,145 @@
                         }, false);
                     });
             })();
+            
+            // Manejo de carga de imagen
+            const imageUploadContainer = document.getElementById('imageUploadContainer');
+            const imageInput = document.getElementById('imagen');
+            const imagePreview = document.getElementById('imagePreview');
+            
+            imageUploadContainer.addEventListener('click', function() {
+                imageInput.click();
+            });
+            
+            imageInput.addEventListener('change', function(e) {
+                if (e.target.files.length > 0) {
+                    const file = e.target.files[0];
+                    
+                    // Validar tamaño máximo (2MB)
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert('El archivo no debe exceder los 2MB');
+                        return;
+                    }
+                    
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        imagePreview.src = event.target.result;
+                        imagePreview.style.display = 'block';
+                    };
+                    
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Permitir arrastrar y soltar imágenes
+            imageUploadContainer.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.style.borderColor = 'var(--primary-color)';
+                this.style.backgroundColor = 'rgba(52, 152, 219, 0.1)';
+            });
+            
+            imageUploadContainer.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#bdc3c7';
+                this.style.backgroundColor = '#f8f9fa';
+            });
+            
+            imageUploadContainer.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#bdc3c7';
+                this.style.backgroundColor = '#f8f9fa';
+                
+                if (e.dataTransfer.files.length > 0) {
+                    const file = e.dataTransfer.files[0];
+                    
+                    // Validar tipo de archivo
+                    if (!file.type.match('image.*')) {
+                        alert('Por favor seleccione un archivo de imagen');
+                        return;
+                    }
+                    
+                    // Validar tamaño máximo (2MB)
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert('El archivo no debe exceder los 2MB');
+                        return;
+                    }
+                    
+                    imageInput.files = e.dataTransfer.files;
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        imagePreview.src = event.target.result;
+                        imagePreview.style.display = 'block';
+                    };
+                    
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Manejo de etiquetas
+            const etiquetasInput = document.getElementById('etiquetas');
+            const tagsContainer = document.getElementById('tagsContainer');
+            const etiquetasHidden = document.getElementById('etiquetasHidden');
+            
+            etiquetasInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' || e.key === ',') {
+                    e.preventDefault();
+                    const tagText = this.value.trim();
+                    if (tagText !== '') {
+                        addTag(tagText);
+                        this.value = '';
+                    }
+                }
+            });
+            
+            function addTag(tagText) {
+                if (tagText === '') return;
+                
+                // Limitar a 10 etiquetas
+                if (tagsContainer.children.length >= 10) {
+                    alert('Máximo 10 etiquetas permitidas');
+                    return;
+                }
+                
+                const tag = document.createElement('div');
+                tag.className = 'category-tag';
+                tag.innerHTML = `
+                    ${tagText}
+                    <span class="category-tag-remove" onclick="removeTag(this)">
+                        <i class="fas fa-times"></i>
+                    </span>
+                `;
+                
+                tagsContainer.appendChild(tag);
+                updateHiddenTags();
+            }
+            
+            window.removeTag = function(element) {
+                element.parentElement.remove();
+                updateHiddenTags();
+            };
+            
+            function updateHiddenTags() {
+                const tags = Array.from(tagsContainer.children).map(tag => 
+                    tag.textContent.replace('×', '').trim()
+                );
+                etiquetasHidden.value = tags.join(',');
+            }
+            
+            // Inicializar etiquetas si ya existen
+            const initialTags = etiquetasHidden.value ? etiquetasHidden.value.split(',') : [];
+            initialTags.forEach(tag => {
+                if (tag.trim() !== '') {
+                    addTag(tag.trim());
+                }
+            });
         });
+        
+        function previewProduct() {
+            // Aquí iría la lógica para mostrar una vista previa del producto
+            alert('Vista previa del producto (se abriría en una nueva ventana o modal)');
+        }
     </script>
 </body>
 </html>

@@ -15,7 +15,7 @@
             --primary-color: #3498db;
             --success-color: #28a745;
             --danger-color: #dc3545;
-            --warning-color: #ffc107;
+            --warning-color: #3498db;
         }
         
         body {
@@ -308,12 +308,6 @@
         <nav class="sidebar-nav">
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" th:href="@{/vendedor/dashboard}">
-                        <i class="fas fa-tachometer-alt"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" th:href="@{/vendedor/ventas/nueva}">
                         <i class="fas fa-cart-plus"></i>
                         <span>Nueva Venta</span>
@@ -351,7 +345,7 @@
     <main class="main-content">
         <!-- Welcome Card -->
         <div class="welcome-card">
-            <h1><i class="fas fa-user-tie"></i>Bienvenido, <span th:text="${vendedor?.nombre ?: 'Vendedor'}"></span></h1>
+            <h1><i class="fas fa-user-tie"></i>Bienvenido,  <span th:text="${vendedor?.nombre ?: 'Vendedor'}"></span></h1>
             <p>Aquí puedes gestionar tus productos, ventas y compras</p>
         </div>
         
@@ -405,7 +399,7 @@
                                 <td th:text="${vp?.producto?.idProducto ?: 'N/A'}"></td>
                                 <td th:text="${vp?.producto?.nombre ?: 'N/A'}"></td>
                                 <td th:text="${vp?.cantidad ?: '0'}"></td>
-                                <td th:text="${vp?.precio != null} ? ${#numbers.formatDecimal(vp.precio, 1, 2)} + ' USD' : '0.00 USD'"></td>
+                                <td th:text="${vp?.precio != null} ? ${#numbers.formatDecimal(vp.precio, 1, 2)} + ' COP' : '0.00 USD'"></td>
                                 <td>
                                     <a th:href="@{|/vendedor/productos/editar/${vp.idVendedorProducto}|}" 
                                        class="btn btn-sm btn-warning me-1">

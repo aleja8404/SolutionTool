@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control - Proveedor</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
@@ -16,6 +17,8 @@
             --success-color: #28a745;
             --danger-color: #dc3545;
             --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --dark-color: #343a40;
         }
         
         body {
@@ -106,58 +109,89 @@
             margin-bottom: 30px;
         }
         
-        h1, h2, h3 {
+        h1 {
             color: #2c3e50;
             font-weight: 600;
+            margin-bottom: 30px;
             display: flex;
             align-items: center;
         }
         
-        h1 i, h2 i, h3 i {
+        h1 i {
             margin-right: 15px;
             color: var(--primary-color);
         }
         
-        /* Card Header Styles */
+        /* Card Styles */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+        }
+        
         .card-header {
-            background-color: #b8d5f1;
-            color: #495057;
+            border-radius: 10px 10px 0 0 !important;
             font-weight: 600;
-            padding: 15px 20px;
-            border-bottom: 2px solid #dee2e6;
+            background-color: var(--primary-color);
+            color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
-        /* Table Styles */
-        .table {
-            width: 100%;
-            border-collapse: collapse;
+        .info-card .card-header {
+            background-color: var(--info-color);
+        }
+        
+        .products-card .card-header {
+            background-color: var(--success-color);
+        }
+        
+        /* Stats Cards */
+        .stat-card {
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
             margin-bottom: 20px;
+            height: 100%;
+            transition: transform 0.3s ease;
         }
         
-        .table th {
-            background-color: #e9ecef;
-            color: #495057;
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card i {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        
+        .stat-card .card-title {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        
+        .stat-card .card-text {
+            font-size: 1.75rem;
             font-weight: 600;
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 2px solid #dee2e6;
         }
         
-        .table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #dee2e6;
-            vertical-align: middle;
+        /* Table Styles */
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
         }
         
-        .table tr:last-child td {
-            border-bottom: none;
+        .table-responsive {
+            border-radius: 8px;
+            overflow: hidden;
         }
         
-        .table tr:hover {
-            background-color: rgba(0, 0, 0, 0.02);
+        .badge {
+            padding: 6px 10px;
+            font-weight: 500;
         }
         
         /* Button Styles */
@@ -182,7 +216,7 @@
         
         .btn-primary:hover {
             background-color: #2188d9;
-            border-color: #fdfdfd;
+            border-color: #2188d9;
         }
         
         .btn-success {
@@ -190,9 +224,21 @@
             border-color: var(--success-color);
         }
         
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+        
         .btn-warning {
             background-color: var(--warning-color);
             border-color: var(--warning-color);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+            color: white;
         }
         
         .btn-danger {
@@ -200,10 +246,24 @@
             border-color: var(--danger-color);
         }
         
-        /* Alert Styles */
-        .alert {
-            padding: 15px;
-            border-radius: 6px;
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+        
+        .btn-light {
+            background-color: #f8f9fa;
+            border-color: #f8f9fa;
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.875rem;
+        }
+        
+        .action-buttons .btn {
+            margin-right: 5px;
+            min-width: 80px;
         }
         
         /* Responsive Adjustments */
@@ -224,18 +284,11 @@
             
             .card-container {
                 padding: 20px;
-                overflow-x: auto;
-            }
-            
-            .table {
-                display: block;
-                overflow-x: auto;
-                white-space: nowrap;
             }
         }
         
         @media (max-width: 768px) {
-            h1, h2, h3 {
+            h1 {
                 font-size: 1.5rem;
             }
             
@@ -248,24 +301,15 @@
                 font-size: 0.875rem;
             }
             
-            .btn i {
-                margin-right: 4px;
-            }
-            
-            .table td, .table th {
-                padding: 8px 10px;
+            .action-buttons .btn {
+                margin-bottom: 5px;
+                width: 100%;
             }
         }
         
         @media (max-width: 576px) {
             .main-content {
                 padding: 15px;
-            }
-            
-            .action-buttons {
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
             }
         }
     </style>
@@ -309,68 +353,106 @@
     <!-- Main Content -->
     <main class="main-content">
         <div class="card-container">
+            <h1><i class="fas fa-tachometer-alt"></i>Dashboard de Proveedor</h1>
+            
             <!-- Información del Proveedor -->
             <div class="card mb-4">
-                <div class="card-header">
-                    <h3><i class="fas fa-info-circle"></i> Información de la Cuenta</h3>
+                <div class="card-header info-card">
+                    <div class="d-flex justify-content-light align-items-light">
+                        <h3 class="mb-0"><i class="fas fa-info-circle me-2"></i>Información de la Cuenta</h3>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <p><strong>Nombre:</strong> <span th:text="${proveedor.nombre}">Nombre</span></p>
-                            <p><strong>Email:</strong> <span th:text="${proveedor.correoElectronico}">email@ejemplo.com</span></p>
+                            <p><strong><i class="fas fa-user text-info me-2"></i>Nombre:</strong> <span th:text="${proveedor.nombre}">Nombre</span></p>
+                            <p><strong><i class="fas fa-envelope text-info me-2"></i>Email:</strong> <span th:text="${proveedor.correoElectronico}">email@ejemplo.com</span></p>
                         </div>
                         <div class="col-md-6">
-                            <p><strong>Teléfono:</strong> <span th:text="${proveedor.telefono} ?: 'N/A'">123456789</span></p>
-                            <p><strong>Dirección:</strong> <span th:text="${proveedor.direccion} ?: 'N/A'">Dirección</span></p>
+                            <p><strong><i class="fas fa-phone text-info me-2"></i>Teléfono:</strong> <span th:text="${proveedor.telefono ?: 'No especificado'}">123456789</span></p>
+                            <p><strong><i class="fas fa-map-marker-alt text-info me-2"></i>Dirección:</strong> <span th:text="${proveedor.direccion ?: 'No especificada'}">Dirección</span></p>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estadísticas rápidas -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="stat-card bg-primary">
+                        <i class="fas fa-boxes"></i>
+                        <h5 class="card-title">Productos</h5>
+                        <p class="card-text" th:text="${productos.size()}">0</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card bg-success">
+                        <i class="fas fa-check-circle"></i>
+                        <h5 class="card-title">Disponibles</h5>
+                        <p class="card-text" th:text="${productos.?[disponible == true].size()}">0</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card bg-warning">
+                        <i class="fas fa-star"></i>
+                        <h5 class="card-title">Destacados</h5>
+                        <p class="card-text" th:text="${productos.?[destacado == true].size()}">0</p>
                     </div>
                 </div>
             </div>
 
             <!-- Listado de Productos -->
             <div class="card">
-                <div class="card-header">
-                    <h3 class="mb-0"><i class="fas fa-boxes"></i> Mis Productos</h3>
-                    <a th:href="@{/proveedor/productos/nuevo}" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Nuevo Producto
-                    </a>
+                <div class="card-header products-card d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0"><i class="fas fa-box-open me-2"></i>Mis Productos</h3>
+                    <div>
+                        <a th:href="@{/proveedor/productos/nuevo}" class="btn btn-light">
+                            <i class="fas fa-plus me-1"></i>Nuevo Producto
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div th:if="${productos.empty}" class="alert alert-info">
-                        <i class="fas fa-info-circle"></i> No tienes productos registrados.
+                        <i class="fas fa-info-circle me-2"></i>No tienes productos registrados.
                     </div>
                     <div th:unless="${productos.empty}" class="table-responsive">
-                        <table class="table">
+                        <table class="table table-hover">
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Nombre</th>
-                                    <th>Descripción</th>
                                     <th>Precio</th>
                                     <th>Stock</th>
+                                    <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr th:each="producto : ${productos}">
                                     <td th:text="${producto.idProducto}">1</td>
-                                    <td th:text="${producto.nombre}">Producto</td>
-                                    <td th:text="${producto.descripcion}">Descripción</td>
-                                    <td th:text="${'$' + #numbers.formatDecimal(producto.precio, 1, 2)}">0.00</td>
-                                    <td th:text="${producto.stock}">0</td>
                                     <td>
-                                        <div class="action-buttons">
-                                            <a th:href="@{|/proveedor/productos/editar/${producto.idProducto}|}" 
-                                               class="btn btn-sm btn-warning">
-                                                <i class="fas fa-edit"></i> Editar
-                                            </a>
-                                            <a th:href="@{|/proveedor/productos/eliminar/${producto.idProducto}|}" 
-                                               class="btn btn-sm btn-danger"
-                                               onclick="return confirm('¿Está seguro de eliminar este producto?')">
-                                                <i class="fas fa-trash"></i> Eliminar
-                                            </a>
-                                        </div>
+                                        <span th:text="${producto.nombre}">Producto</span>
+                                        <span th:if="${producto.destacado}" class="badge bg-warning ms-2">Destacado</span>
+                                    </td>
+                                    <td th:text="'S/ ' + ${#numbers.formatDecimal(producto.precio, 1, 2)}">S/ 0.00</td>
+                                    <td>
+                                        <span th:text="${producto.stock}">0</span>
+                                        <span th:text="${producto.unidadMedida}" class="text-muted small ms-1"></span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${producto.disponible}" class="badge bg-success">Disponible</span>
+                                        <span th:unless="${producto.disponible}" class="badge bg-secondary">No disponible</span>
+                                    </td>
+                                    <td class="action-buttons">
+                                        <a th:href="@{|/proveedor/productos/editar/${producto.idProducto}|}" 
+                                           class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a th:href="@{|/proveedor/productos/eliminar/${producto.idProducto}|}" 
+                                           class="btn btn-danger btn-sm"
+                                           onclick="return confirm('¿Está seguro de eliminar este producto?')">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             </tbody>

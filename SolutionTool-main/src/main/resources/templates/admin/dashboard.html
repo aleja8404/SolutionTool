@@ -10,13 +10,14 @@
         :root {
             --sidebar-bg: #e77547;
             --sidebar-text: white;
-            --sidebar-active: rgba(255, 255, 255, 0.2);
-            --content-bg: #f8f9fa;
+            --sidebar-active: #e77547;
+            --content-bg: #f5f7fa;
             --card-bg: white;
             --primary-color: #3498db;
             --success-color: #28a745;
             --danger-color: #dc3545;
             --warning-color: #ffc107;
+            --info-color: #17a2b8;
         }
         
         body {
@@ -39,6 +40,7 @@
             height: 100vh;
             overflow-y: auto;
             flex-shrink: 0;
+            transition: all 0.3s ease;
         }
         
         .sidebar-header {
@@ -50,6 +52,13 @@
             color: var(--sidebar-text);
             margin-bottom: 0;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sidebar-header h3 i {
+            margin-right: 10px;
+            color: var(--sidebar-active);
         }
         
         .sidebar-nav {
@@ -67,24 +76,26 @@
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
+            font-size: 0.95rem;
         }
         
         .nav-link i {
             margin-right: 12px;
             width: 20px;
             text-align: center;
+            font-size: 1rem;
         }
         
         .nav-link:hover {
             color: var(--sidebar-text);
-            background-color: rgba(255, 255, 255, 0.15);
+            background-color: rgba(255, 255, 255, 0.1);
             text-decoration: none;
         }
         
         .nav-link.active {
             color: var(--sidebar-text);
             background-color: var(--sidebar-active);
-            font-weight: 600;
+            font-weight: 500;
         }
         
         .logout-btn {
@@ -99,47 +110,46 @@
             padding: 30px;
         }
         
-        .card-container {
-            background-color: var(--card-bg);
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            padding: 30px;
-            margin-bottom: 30px;
-        }
-        
-        h1 {
-            color: #2c3e50;
-            font-weight: 600;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-        }
-        
-        h1 i {
-            margin-right: 15px;
-            color: var(--primary-color);
-        }
-        
         /* Welcome Card */
         .welcome-card {
-            background-color: var(--card-bg);
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             padding: 30px;
             margin-bottom: 30px;
-            text-align: center;
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .welcome-card::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
         }
         
         .welcome-card h2 {
             font-size: 1.8rem;
             font-weight: 700;
-            color: #2c3e50;
             margin-bottom: 10px;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .welcome-card h2 i {
+            margin-right: 15px;
         }
         
         .welcome-card p {
             font-size: 1.1rem;
-            color: #6c757d;
+            opacity: 0.9;
+            margin-bottom: 0;
         }
         
         /* Metrics Grid */
@@ -153,33 +163,44 @@
         .metric-card {
             background-color: var(--card-bg);
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             padding: 20px;
-            text-align: center;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary-color);
         }
         
         .metric-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
         }
         
         .metric-card h3 {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 500;
-            color: #495057;
+            color: #6c757d;
             margin-bottom: 15px;
+            display: flex;
+            align-items: center;
         }
         
-        .metric-card p {
+        .metric-card h3 i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+        
+        .metric-card .value {
             font-size: 1.8rem;
             font-weight: 700;
             color: #2c3e50;
             margin: 0;
+            line-height: 1.2;
         }
         
         .metric-card .growth {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin-top: 8px;
+            display: flex;
+            align-items: center;
         }
         
         .positive {
@@ -193,15 +214,20 @@
         /* Charts Grid */
         .charts-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 20px;
         }
         
         .chart-card {
             background-color: var(--card-bg);
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .chart-card:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
         }
         
         .chart-card h3 {
@@ -209,6 +235,13 @@
             font-weight: 600;
             color: #2c3e50;
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .chart-card h3 i {
+            margin-right: 10px;
+            color: var(--primary-color);
         }
         
         .sub-charts {
@@ -228,15 +261,23 @@
         
         /* Footer */
         footer {
-            background-color: #2c3e50;
-            color: white;
+            background-color: var(--card-bg);
+            color: #6c757d;
             padding: 20px;
             text-align: center;
             margin-top: 30px;
-            border-radius: 0 0 10px 10px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
         
         /* Responsive Adjustments */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 220px;
+            }
+        }
+        
         @media (max-width: 992px) {
             body {
                 flex-direction: column;
@@ -252,7 +293,7 @@
                 padding: 20px;
             }
             
-            .card-container, .welcome-card {
+            .welcome-card {
                 padding: 20px;
             }
             
@@ -278,7 +319,7 @@
                 padding: 15px;
             }
             
-            .metric-card p {
+            .metric-card .value {
                 font-size: 1.5rem;
             }
         }
@@ -288,11 +329,15 @@
                 padding: 15px;
             }
             
-            .card-container, .welcome-card {
+            .welcome-card {
                 padding: 15px;
             }
             
             .metrics-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .charts-row {
                 grid-template-columns: 1fr;
             }
         }
@@ -388,6 +433,7 @@
         </div>
     </aside>
 
+
     <!-- Main Content -->
     <main class="main-content">
         <div th:if="${error}" class="alert alert-danger" role="alert">
@@ -395,34 +441,42 @@
         </div>
         
         <div class="welcome-card">
-            <h2><i class="fas fa-tachometer-alt"></i>PANEL DE ADMINISTRACION</h2>
-            <p>Gestiona todos los aspectos de tu ferretería desde este panel centralizado.</p>
+            <h2><i class="fas fa-tachometer-alt"></i>PANEL DE ADMINISTRACIÓN</h2>
+            <p>Gestiona todos los aspectos de tu ferretería desde este panel centralizado</p>
         </div>
         
         <div class="metrics-row">
             <div class="metric-card">
-                <h3>Ventas Totales</h3>
-                <p th:text="${ventasTotal} ?: '0'"></p>
-                <span class="growth" th:text="'(' + (${ventasCrecimiento} ?: '0') + '%)'"
-                      th:classappend="${ventasCrecimiento > 0 ? 'positive' : 'negative'}"></span>
+                <h3><i class="fas fa-dollar-sign"></i> Ventas Totales</h3>
+                <p class="value" th:text="${ventasTotal} ?: '0'"></p>
+                <div class="growth" th:classappend="${ventasCrecimiento > 0 ? 'positive' : 'negative'}">
+                    <i th:class="${ventasCrecimiento > 0 ? 'fas fa-arrow-up' : 'fas fa-arrow-down'}"></i>
+                    <span th:text="(${ventasCrecimiento} ?: '0') + '%'"></span>
+                </div>
             </div>
             <div class="metric-card">
-                <h3>Productos</h3>
-                <p th:text="${productosTotal} ?: '0'"></p>
-                <span class="growth" th:text="'(' + (${productosCrecimiento} ?: '0') + '%)'"
-                      th:classappend="${productosCrecimiento > 0 ? 'positive' : 'negative'}"></span>
+                <h3><i class="fas fa-box"></i> Productos</h3>
+                <p class="value" th:text="${productosTotal} ?: '0'"></p>
+                <div class="growth" th:classappend="${productosCrecimiento > 0 ? 'positive' : 'negative'}">
+                    <i th:class="${productosCrecimiento > 0 ? 'fas fa-arrow-up' : 'fas fa-arrow-down'}"></i>
+                    <span th:text="(${productosCrecimiento} ?: '0') + '%'"></span>
+                </div>
             </div>
             <div class="metric-card">
-                <h3>Clientes</h3>
-                <p th:text="${clientesTotal} ?: '0'"></p>
-                <span class="growth" th:text="'(' + (${clientesCrecimiento} ?: '0') + '%)'"
-                      th:classappend="${clientesCrecimiento > 0 ? 'positive' : 'negative'}"></span>
+                <h3><i class="fas fa-users"></i> Clientes</h3>
+                <p class="value" th:text="${clientesTotal} ?: '0'"></p>
+                <div class="growth" th:classappend="${clientesCrecimiento > 0 ? 'positive' : 'negative'}">
+                    <i th:class="${clientesCrecimiento > 0 ? 'fas fa-arrow-up' : 'fas fa-arrow-down'}"></i>
+                    <span th:text="(${clientesCrecimiento} ?: '0') + '%'"></span>
+                </div>
             </div>
             <div class="metric-card">
-                <h3>Usuarios</h3>
-                <p th:text="${usuariosTotal} ?: '0'"></p>
-                <span class="growth" th:text="'(' + (${usuariosCrecimiento} ?: '0') + '%)'"
-                      th:classappend="${usuariosCrecimiento > 0 ? 'positive' : 'negative'}"></span>
+                <h3><i class="fas fa-user-shield"></i> Usuarios</h3>
+                <p class="value" th:text="${usuariosTotal} ?: '0'"></p>
+                <div class="growth" th:classappend="${usuariosCrecimiento > 0 ? 'positive' : 'negative'}">
+                    <i th:class="${usuariosCrecimiento > 0 ? 'fas fa-arrow-up' : 'fas fa-arrow-down'}"></i>
+                    <span th:text="(${usuariosCrecimiento} ?: '0') + '%'"></span>
+                </div>
             </div>
         </div>
         
@@ -432,13 +486,14 @@
                 <canvas id="salesChart"></canvas>
             </div>
             <div class="chart-card">
+                <h3><i class="fas fa-chart-pie"></i> Resumen de Datos</h3>
                 <div class="sub-charts">
                     <div class="chart-section">
-                        <h3><i class="fas fa-mobile-alt"></i> Tráfico por Dispositivo</h3>
+                        <h4><i class="fas fa-mobile-alt"></i> Tráfico por Dispositivo</h4>
                         <canvas id="trafficChart"></canvas>
                     </div>
                     <div class="chart-section">
-                        <h3><i class="fas fa-clipboard-check"></i> Estado de Ventas</h3>
+                        <h4><i class="fas fa-clipboard-check"></i> Estado de Ventas</h4>
                         <canvas id="portfolioChart"></canvas>
                     </div>
                 </div>
@@ -483,84 +538,91 @@
                         label: '2025',
                         data: currentYearSales,
                         borderColor: '#3498db',
-                        backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
                         fill: true,
-                        tension: 0.4
+                        tension: 0.4,
+                        borderWidth: 2
                     }, {
                         label: '2024',
                         data: previousYearSales,
                         borderColor: '#e77547',
-                        borderDash: [5, 5],
-                        fill: false,
-                        tension: 0.4
+                        backgroundColor: 'rgba(231, 117, 71, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2,
+                        borderDash: [5, 5]
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: { size: 12 },
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Total Ventas (USD)'
+                            grid: {
+                                drawBorder: false
                             }
                         },
                         x: {
-                            title: {
-                                display: true,
-                                text: 'Mes'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            labels: {
-                                font: { size: 12 }
+                            grid: {
+                                display: false
                             }
                         }
                     }
                 }
             });
 
-            // Traffic by Device (Bar Chart)
+            // Traffic by Device (Doughnut Chart)
             const trafficCtx = document.getElementById('trafficChart').getContext('2d');
             new Chart(trafficCtx, {
-                type: 'bar',
+                type: 'doughnut',
                 data: {
                     labels: ['Móvil', 'Escritorio', 'Tablet'],
                     datasets: [{
-                        label: 'Tráfico',
                         data: [mobileCount, desktopCount, tabletCount],
                         backgroundColor: ['#3498db', '#e77547', '#28a745'],
-                        borderColor: ['#2980b9', '#d35400', '#218838'],
-                        borderWidth: 1
+                        borderWidth: 0
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true },
-                        x: { title: { display: true, text: 'Dispositivo' } }
-                    },
                     plugins: {
                         legend: {
-                            labels: { font: { size: 12 } }
+                            position: 'right',
+                            labels: {
+                                font: { size: 12 },
+                                usePointStyle: true
+                            }
                         }
-                    }
+                    },
+                    cutout: '70%'
                 }
             });
 
-            // Portfolio Status (Doughnut Chart)
+            // Portfolio Status (Pie Chart)
             const portfolioCtx = document.getElementById('portfolioChart').getContext('2d');
             new Chart(portfolioCtx, {
-                type: 'doughnut',
+                type: 'pie',
                 data: {
                     labels: ['Completada', 'Pendiente', 'Cancelada'],
                     datasets: [{
                         data: [completadaCount, pendienteCount, canceladaCount],
-                        backgroundColor: ['#28a745', '#ffc107', '#dc3545']
+                        backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+                        borderWidth: 0
                     }]
                 },
                 options: {
@@ -568,7 +630,11 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            labels: { font: { size: 12 } }
+                            position: 'right',
+                            labels: {
+                                font: { size: 12 },
+                                usePointStyle: true
+                            }
                         }
                     }
                 }
