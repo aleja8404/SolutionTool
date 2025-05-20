@@ -1,218 +1,389 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Perfil del Cliente - Ferretería Online</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <style>
+        :root {
+            --sidebar-bg: #2c3e50;
+            --sidebar-text: white;
+            --sidebar-active: #e77547;
+            --content-bg: #f5f7fa;
+            --card-bg: white;
+            --primary-color: #3498db;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+        }
+        
         body {
-            font-family: 'Roboto', Arial, sans-serif;
-            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            background-color: var(--content-bg);
         }
-
-        .dashboard-container {
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
         }
-
-        /* Navbar Styles */
-        .navbar {
-            background-color: #232f3e !important;
-            padding: 1rem 2rem;
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .navbar-brand {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #fff !important;
+        
+        .sidebar-header h3 {
+            color: var(--sidebar-text);
+            margin-bottom: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
         }
-
-        .navbar-toggler {
-            border: none;
+        
+        .sidebar-header h3 i {
+            margin-right: 10px;
+            color: var(--sidebar-active);
         }
-
-        .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        
+        .sidebar-nav {
+            padding: 20px 0;
         }
-
+        
+        .nav-item {
+            margin-bottom: 5px;
+        }
+        
         .nav-link {
-            color: #fff !important;
-            font-size: 1.1rem;
-            padding: 0.5rem 1rem;
-            transition: color 0.3s;
+            color: rgba(255, 255, 255, 0.85);
+            padding: 12px 20px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
         }
-
+        
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
         .nav-link:hover {
-            color: #f0c14b !important;
+            color: var(--sidebar-text);
+            background-color: rgba(255, 255, 255, 0.1);
+            text-decoration: none;
         }
-
-        .btn-outline-light {
-            border-color: #f0c14b;
-            color: #f0c14b;
+        
+        .nav-link.active {
+            color: var(--sidebar-text);
+            background-color: var(--sidebar-active);
             font-weight: 500;
         }
-
-        .btn-outline-light:hover {
-            background-color: #f0c14b;
-            color: #232f3e;
+        
+        .logout-btn {
+            margin-top: auto;
+            padding: 20px;
         }
-
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-x: auto;
+            padding: 30px;
+        }
+        
         /* Profile Card */
         .profile-card {
-            background-color: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             padding: 30px;
-            margin-top: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            border-left: 4px solid var(--primary-color);
         }
-
-        .profile-card h1 {
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .profile-header h1 {
             font-size: 1.8rem;
-            font-weight: 700;
-            color: #0f1111;
-            margin-bottom: 20px;
-            text-align: center;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+            display: flex;
+            align-items: center;
         }
-
+        
+        .profile-header h1 i {
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+        
+        /* Form Styles */
         .form-label {
-            font-size: 1rem;
             font-weight: 500;
-            color: #0f1111;
+            color: #2c3e50;
             margin-bottom: 8px;
+            display: flex;
+            align-items: center;
         }
-
+        
+        .form-label i {
+            margin-right: 10px;
+            width: 20px;
+            color: var(--primary-color);
+        }
+        
         .form-control {
-            border-radius: 8px;
-            border: 1px solid #d5d9d9;
-            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            padding: 10px 15px;
             font-size: 1rem;
-            transition: border-color 0.3s;
+            transition: all 0.3s ease;
         }
-
+        
         .form-control:focus {
-            border-color: #f0c14b;
-            box-shadow: 0 0 0 3px rgba(240, 193, 75, 0.2);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
         }
-
-        .btn-submit {
-            background-color: #f0c14b;
-            border: 1px solid #a88734;
-            color: #0f1111;
-            font-weight: 500;
+        
+        .form-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        /* Buttons */
+        .btn {
             padding: 10px 20px;
-            border-radius: 8px;
-            width: 100%;
-            font-size: 1.1rem;
-            transition: background-color 0.3s;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
-
-        .btn-submit:hover {
-            background-color: #e6b800;
+        
+        .btn i {
+            margin-right: 8px;
         }
-
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2188d9;
+            border-color: #2188d9;
+            color: white;
+        }
+        
         /* Footer */
         footer {
-            background-color: #232f3e;
-            color: #fff;
+            background-color: var(--card-bg);
+            color: #6c757d;
             padding: 20px;
-            margin-top: 40px;
             text-align: center;
+            margin-top: 30px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
-
+        
         /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            .dashboard-container {
-                padding: 15px;
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 220px;
             }
+        }
+        
+        @media (max-width: 992px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
             .profile-card {
                 padding: 20px;
             }
-            .profile-card h1 {
-                font-size: 1.6rem;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-header h1 {
+                font-size: 1.5rem;
             }
-            .form-label {
-                font-size: 0.9rem;
-            }
+            
             .form-control {
-                font-size: 0.9rem;
-                padding: 8px;
-            }
-            .btn-submit {
-                font-size: 1rem;
-                padding: 8px 16px;
+                padding: 8px 12px;
             }
         }
-
+        
         @media (max-width: 576px) {
-            .dashboard-container {
-                padding: 10px;
+            .main-content {
+                padding: 15px;
             }
+            
             .profile-card {
                 padding: 15px;
             }
-            .profile-card h1 {
-                font-size: 1.4rem;
+            
+            .profile-header h1 {
+                font-size: 1.3rem;
             }
-            .navbar-brand {
-                font-size: 1.4rem;
-            }
-            .nav-link {
-                font-size: 1rem;
+            
+            .btn {
+                padding: 8px 16px;
+                font-size: 0.95rem;
             }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" th:href="@{/cliente/dashboard}">Ferretería Online</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/perfil}">Perfil</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/ordenes}">Órdenes</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/productos}">Productos</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/carrito}">Carrito</a></li>
-                </ul>
-                <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
-            </div>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-user"></i> Mi Cuenta</h3>
         </div>
-    </nav>
-    <div class="dashboard-container">
+        <nav class="sidebar-nav">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/cliente/dashboard}">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/cliente/perfil}">
+                        <i class="fas fa-user-edit"></i>
+                        <span>Perfil</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/cliente/ordenes}">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Órdenes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/cliente/productos}">
+                        <i class="fas fa-box-open"></i>
+                        <span>Productos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/cliente/carrito}">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Carrito</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="logout-btn">
+            <a class="btn btn-outline-light btn-sm w-100" th:href="@{/logout}">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
         <div class="profile-card">
-            <h1>Tu Perfil</h1>
+            <div class="profile-header">
+                <h1><i class="fas fa-user-circle"></i> Tu Perfil</h1>
+            </div>
+            
             <form th:action="@{/cliente/perfil}" th:object="${cliente}" method="post">
                 <input type="hidden" th:field="*{idCliente}" />
                 <input type="hidden" th:field="*{correoElectronico}" />
-                <div class="mb-3">
-                    <label for="nombre" class="form-label">Nombre</label>
+                
+                <div class="mb-4">
+                    <label for="nombre" class="form-label">
+                        <i class="fas fa-user"></i> Nombre
+                    </label>
                     <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required="required" aria-describedby="nombreHelp" />
-                    <div id="nombreHelp" class="form-text">Ingresa tu nombre completo.</div>
+                    <div id="nombreHelp" class="form-text">Ingresa tu nombre completo</div>
                 </div>
-                <div class="mb-3">
-                    <label for="telefono" class="form-label">Teléfono</label>
+                
+                <div class="mb-4">
+                    <label for="telefono" class="form-label">
+                        <i class="fas fa-phone"></i> Teléfono
+                    </label>
                     <input type="text" id="telefono" th:field="*{telefono}" class="form-control" aria-describedby="telefonoHelp" />
-                    <div id="telefonoHelp" class="form-text">Opcional. Ingresa un número de contacto.</div>
+                    <div id="telefonoHelp" class="form-text">Opcional. Ingresa un número de contacto</div>
                 </div>
-                <div class="mb-3">
-                    <label for="direccion" class="form-label">Dirección</label>
+                
+                <div class="mb-4">
+                    <label for="direccion" class="form-label">
+                        <i class="fas fa-map-marker-alt"></i> Dirección
+                    </label>
                     <input type="text" id="direccion" th:field="*{direccion}" class="form-control" aria-describedby="direccionHelp" />
-                    <div id="direccionHelp" class="form-text">Opcional. Ingresa tu dirección de entrega.</div>
+                    <div id="direccionHelp" class="form-text">Opcional. Ingresa tu dirección de entrega</div>
                 </div>
-                <button type="submit" class="btn btn-submit">Actualizar Perfil</button>
+                
+                <div class="mb-4">
+                    <label class="form-label">
+                        <i class="fas fa-envelope"></i> Correo Electrónico
+                    </label>
+                    <input type="text" class="form-control" th:value="${cliente.correoElectronico}" disabled />
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Actualizar Datos
+                </button>
             </form>
         </div>
-    </div>
-    <footer>
-        <p>© 2025 Ferretería Online</p>
-    </footer>
+        
+        <footer>
+            <p>© 2025 Ferretería Online - Todos los derechos reservados</p>
+        </footer>
+    </main>
+
     <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Resaltar el enlace activo
+            const currentPath = window.location.pathname;
+            $('.nav-link').each(function() {
+                if ($(this).attr('href') === currentPath) {
+                    $(this).addClass('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

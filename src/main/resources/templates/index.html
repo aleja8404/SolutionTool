@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ToolSolutions || Gestión de Inventario para Ferreterías</title>
+    <title>SolutionTool || Gestión de Inventario para Ferreterías</title>
     <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
     <link rel="preconnect" href="https://images.unsplash.com">
@@ -62,8 +62,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        position: relative; /* Added for wave positioning */
-        overflow: hidden; /* Ensure wave doesn't overflow */
+        position: relative;
+        overflow: hidden;
     }
 
     /* Wave Container */
@@ -381,7 +381,6 @@
         }
     }
 
-    /* Blog images */
     .img-blog img {
         width: 100%;
         height: 200px;
@@ -458,33 +457,30 @@
     <div class="container">
         <div class="menu-content">
             <div class="logo-container">
-                <img width="70" src="/img/Imagen1.jpg" alt="Logo ToolSolutions"/>
+                <img width="70" src="/img/Imagen1.png" alt="Logo ToolSolutions"/>
                 <span class="brand-name">SolutionsTool</span>
             </div>
             <nav class="nav-principal">
                 <ul>
-                    <li>
-                        <ion-icon name="home-outline"></ion-icon>
-                        <a th:href="@{/home}">Inicio</a>
-                    </li>
+                   
                     <li>
                         <ion-icon name="briefcase-outline"></ion-icon>
-                        <a th:href="@{/ventana-home-producto}">Producto</a>
+                        <a href="#services">Servicio</a>
                     </li>
                     <li>
                         <ion-icon name="newspaper-outline"></ion-icon>
-                        <a th:href="@{/pages}">Proveedores</a>
+                        <a href="#portfolio">productos</a>
                     </li>
                     <li>
                         <ion-icon name="copy-outline"></ion-icon>
-                        <a th:href="@{/blog}">Clientes</a>
+                        <a href="#testimonial">Testimonios</a>
                     </li>
                     <li>
                         <ion-icon name="mail-unread-outline"></ion-icon>
-                        <a th:href="@{/contact}">Contacto</a>
+                        <a href="#contact-section">Contacto</a>
                     </li>
                     <li class="auth-buttons">
-                        <ion-icon name="body-outline"></ion-icon>
+                       	<ion-icon name="person-outline"></ion-icon>
                         <a th:href="@{/login}">Iniciar Sesión</a>
                     </li>
                 </ul>
@@ -497,10 +493,10 @@
 </header>
 
 <!-- Principal -->
-<div class="main">
+<div class="main" id="main">
     <div class="container">
         <h1 class="title-h1">
-            TOOLSOLUTIONS<br/>
+            ¡SOLUTIONTOOL!<br/>
         </h1>
         <p class="subtitle-h1">
             Gestión eficiente de inventario para ferreterías: conectamos proveedores y clientes.
@@ -515,7 +511,7 @@
 </div>
 
 <!-- Servicios -->
-<div class="services">
+<div class="services" id="services">
     <div class="container">
         <div class="services-content">
             <div class="card-services">
@@ -659,7 +655,7 @@
 </div>
 
 <!-- Testimonios -->
-<div class="testimonial">
+<div class="testimonial" id="testimonial">
     <div class="container">
         <div class="testimonial-content">
             <h2 class="title-h2">TESTIMONIOS</h2>
@@ -691,7 +687,7 @@
 </div>
 
 <!-- Seguridad y Servicio -->
-<section class="safety-service">
+<section class="safety-service" id="safety-service">
     <div class="safety-service-header">
         <h2>Inventario Preciso, Confianza en el Servicio</h2>
     </div>
@@ -717,10 +713,10 @@
 </section>
 
 <!-- Contactanos -->
-<section class="contact-section">
+<section class="contact-section" id="contact-section">
     <div class="contact-left">
         <h1>¿Necesitas Ayuda con tu Inventario?</h1>
-        <img src="/img/Imagen1.jpg" alt="ToolSolutions Logo">
+        <img src="/img/Imagen1.png" alt="ToolSolutions Logo">
     </div>
     <div class="contact-right">
         <h2>NOS PONDREMOS EN CONTACTO CONTIGO</h2>
@@ -794,6 +790,21 @@
                 lazyImageObserver.observe(lazyImage);
             });
         }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('.nav-principal a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
     });
 
     // Mobile menu toggle

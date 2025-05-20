@@ -2,98 +2,480 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control - Proveedor</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <style>
+        :root {
+            --sidebar-bg: #e77547;
+            --sidebar-text: white;
+            --sidebar-active: rgba(255, 255, 255, 0.2);
+            --content-bg: #f8f9fa;
+            --card-bg: white;
+            --primary-color: #3498db;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --dark-color: #343a40;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            background-color: var(--content-bg);
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-header h3 {
+            color: var(--sidebar-text);
+            margin-bottom: 0;
+            font-weight: 600;
+        }
+        
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+        
+        .nav-item {
+            margin-bottom: 5px;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            padding: 12px 20px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .nav-link:hover {
+            color: var(--sidebar-text);
+            background-color: rgba(255, 255, 255, 0.15);
+            text-decoration: none;
+        }
+        
+        .nav-link.active {
+            color: var(--sidebar-text);
+            background-color: var(--sidebar-active);
+            font-weight: 600;
+        }
+        
+        .logout-btn {
+            margin-top: auto;
+            padding: 20px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-x: auto;
+            padding: 30px;
+        }
+        
+        .card-container {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h1 i {
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+        
+        /* Card Styles */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+        }
+        
+        .card-header {
+            border-radius: 10px 10px 0 0 !important;
+            font-weight: 600;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .info-card .card-header {
+            background-color: var(--info-color);
+        }
+        
+        .products-card .card-header {
+            background-color: var(--success-color);
+        }
+        
+        /* Stats Cards */
+        .stat-card {
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card i {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        
+        .stat-card .card-title {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        
+        .stat-card .card-text {
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+        
+        /* Table Styles */
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .table-responsive {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .badge {
+            padding: 6px 10px;
+            font-weight: 500;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2188d9;
+            border-color: #2188d9;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            border-color: var(--warning-color);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+        
+        .btn-light {
+            background-color: #f8f9fa;
+            border-color: #f8f9fa;
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.875rem;
+        }
+        
+        .action-buttons .btn {
+            margin-right: 5px;
+            min-width: 80px;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .card-container {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .card-container {
+                padding: 20px 15px;
+            }
+            
+            .btn {
+                padding: 6px 12px;
+                font-size: 0.875rem;
+            }
+            
+            .action-buttons .btn {
+                margin-bottom: 5px;
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="#">Panel de Proveedor</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/proveedor/accesos/editar}">Editar Perfil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/logout}">Cerrar Sesión</a>
-                    </li>
-                </ul>
-            </div>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>Panel de Proveedor</h3>
         </div>
-    </nav>
+        <nav class="sidebar-nav">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/proveedor/dashboard}">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/proveedor/accesos/editar}">
+                        <i class="fas fa-user-edit"></i>
+                        <span>Editar Perfil</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/proveedor/productos}">
+                        <i class="fas fa-box-open"></i>
+                        <span>Mis Productos</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="logout-btn">
+            <a class="btn btn-outline-light btn-sm w-100" th:href="@{/logout}">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </aside>
 
-    <div class="container mt-4">
-        <!-- Información del Proveedor -->
-        <div class="card mb-4">
-            <div class="card-header bg-info text-white">
-                <h3>Información de la Cuenta</h3>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <p><strong>Nombre:</strong> <span th:text="${proveedor.nombre}">Nombre</span></p>
-                        <p><strong>Email:</strong> <span th:text="${proveedor.correoElectronico}">email@ejemplo.com</span></p>
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="card-container">
+            <h1><i class="fas fa-tachometer-alt"></i>Dashboard de Proveedor</h1>
+            
+            <!-- Información del Proveedor -->
+            <div class="card mb-4">
+                <div class="card-header info-card">
+                    <div class="d-flex justify-content-light align-items-light">
+                        <h3 class="mb-0"><i class="fas fa-info-circle me-2"></i>Información de la Cuenta</h3>
                     </div>
-                    <div class="col-md-6">
-                        <p><strong>Teléfono:</strong> <span th:text="${proveedor.telefono}">123456789</span></p>
-                        <p><strong>Dirección:</strong> <span th:text="${proveedor.direccion}">Dirección</span></p>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong><i class="fas fa-user text-info me-2"></i>Nombre:</strong> <span th:text="${proveedor.nombre}">Nombre</span></p>
+                            <p><strong><i class="fas fa-envelope text-info me-2"></i>Email:</strong> <span th:text="${proveedor.correoElectronico}">email@ejemplo.com</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong><i class="fas fa-phone text-info me-2"></i>Teléfono:</strong> <span th:text="${proveedor.telefono ?: 'No especificado'}">123456789</span></p>
+                            <p><strong><i class="fas fa-map-marker-alt text-info me-2"></i>Dirección:</strong> <span th:text="${proveedor.direccion ?: 'No especificada'}">Dirección</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estadísticas rápidas -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="stat-card bg-primary">
+                        <i class="fas fa-boxes"></i>
+                        <h5 class="card-title">Productos</h5>
+                        <p class="card-text" th:text="${productos.size()}">0</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card bg-success">
+                        <i class="fas fa-check-circle"></i>
+                        <h5 class="card-title">Disponibles</h5>
+                        <p class="card-text" th:text="${productos.?[disponible == true].size()}">0</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card bg-warning">
+                        <i class="fas fa-star"></i>
+                        <h5 class="card-title">Destacados</h5>
+                        <p class="card-text" th:text="${productos.?[destacado == true].size()}">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Listado de Productos -->
+            <div class="card">
+                <div class="card-header products-card d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0"><i class="fas fa-box-open me-2"></i>Mis Productos</h3>
+                    <div>
+                        <a th:href="@{/proveedor/productos/nuevo}" class="btn btn-light">
+                            <i class="fas fa-plus me-1"></i>Nuevo Producto
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div th:if="${productos.empty}" class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>No tienes productos registrados.
+                    </div>
+                    <div th:unless="${productos.empty}" class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Precio</th>
+                                    <th>Stock</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="producto : ${productos}">
+                                    <td th:text="${producto.idProducto}">1</td>
+                                    <td>
+                                        <span th:text="${producto.nombre}">Producto</span>
+                                        <span th:if="${producto.destacado}" class="badge bg-warning ms-2">Destacado</span>
+                                    </td>
+                                    <td th:text="'S/ ' + ${#numbers.formatDecimal(producto.precio, 1, 2)}">S/ 0.00</td>
+                                    <td>
+                                        <span th:text="${producto.stock}">0</span>
+                                        <span th:text="${producto.unidadMedida}" class="text-muted small ms-1"></span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${producto.disponible}" class="badge bg-success">Disponible</span>
+                                        <span th:unless="${producto.disponible}" class="badge bg-secondary">No disponible</span>
+                                    </td>
+                                    <td class="action-buttons">
+                                        <a th:href="@{|/proveedor/productos/editar/${producto.idProducto}|}" 
+                                           class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a th:href="@{|/proveedor/productos/eliminar/${producto.idProducto}|}" 
+                                           class="btn btn-danger btn-sm"
+                                           onclick="return confirm('¿Está seguro de eliminar este producto?')">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Listado de Productos -->
-        <div class="card">
-            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                <h3 class="mb-0">Mis Productos</h3>
-                <a th:href="@{/proveedor/productos/nuevo}" class="btn btn-light">Nuevo Producto</a>
-            </div>
-            <div class="card-body">
-                <div th:if="${productos.empty}" class="alert alert-info">
-                    No tienes productos registrados.
-                </div>
-                <div th:unless="${productos.empty}" class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Descripción</th>
-                                <th>Precio</th>
-                                <th>Stock</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="producto : ${productos}">
-                                <td th:text="${producto.idProducto}">1</td>
-                                <td th:text="${producto.nombre}">Producto</td>
-                                <td th:text="${producto.descripcion}">Descripción</td>
-                                <td th:text="${producto.precio}">0.00</td>
-                                <td th:text="${producto.stock}">0</td>
-                                <td>
-                                    <a th:href="@{|/proveedor/productos/editar/${producto.idProducto}|}" 
-                                       class="btn btn-warning btn-sm">Editar</a>
-                                    <a th:href="@{|/proveedor/productos/eliminar/${producto.idProducto}|}" 
-                                       class="btn btn-danger btn-sm"
-                                       onclick="return confirm('¿Está seguro de eliminar este producto?')">Eliminar</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <footer class="bg-light text-center py-3 mt-4">
-        <p>&copy; 2025 Panel de Proveedor. Todos los derechos reservados.</p>
-    </footer>
+    </main>
 
     <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    
+    <script>
+        // Resaltar el enlace activo
+        $(document).ready(function() {
+            const currentPath = window.location.pathname;
+            $('.nav-link').each(function() {
+                if ($(this).attr('href') === currentPath) {
+                    $(this).addClass('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

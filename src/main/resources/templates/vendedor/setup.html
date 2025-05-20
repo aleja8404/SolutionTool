@@ -5,20 +5,30 @@
     <title>Configurar Perfil de Vendedor</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
     <link rel="stylesheet" href="/css/styles.css" />
+    <style>
+        .dynamic-item { margin-bottom: 10px; }
+        .feedback { display: none; }
+    </style>
 </head>
 <body>
     <div class="container mt-4">
         <h1>Configurar tu Perfil de Vendedor</h1>
+        
+        <!-- Feedback al guardar -->
+        <div id="feedback" class="alert alert-success feedback" role="alert">
+            ¡Perfil guardado exitosamente!
+        </div>
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
         
-        <form th:action="@{/vendedor/setup}" th:object="${vendedor}" method="post">
+        <form id="perfilForm" th:action="@{/vendedor/setup}" th:object="${vendedor}" method="post">
+            <!-- Campos básicos -->
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre</label>
                 <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required />
             </div>
             <div class="mb-3">
                 <label for="telefono" class="form-label">Teléfono</label>
-                <input type="text" class="form-control" id="telefono" th:field="*{telefono}" />
+                <input type="text" class="form-control" id="telefono" th:field="*{telefono}" pattern="[0-9]{9,15}" title="Mínimo 9 números" />
             </div>
             <div class="mb-3">
                 <label for="direccion" class="form-label">Dirección</label>
@@ -28,10 +38,57 @@
                 <label for="correoElectronico" class="form-label">Correo Electrónico</label>
                 <input type="email" class="form-control" id="correoElectronico" th:field="*{correoElectronico}" readonly />
             </div>
+
+            <!-- Sección dinámica: Horarios de atención -->
+            <div class="mb-3">
+                <label class="form-label">Horarios de Atención</label>
+                <div id="horariosContainer">
+                    <div class="dynamic-item input-group">
+                        <input type="text" class="form-control" name="horarios" placeholder="Ej: Lunes a Viernes, 9:00 - 18:00" />
+                        <button type="button" class="btn btn-danger" onclick="removeItem(this)">Eliminar</button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary mt-2" onclick="addHorario()">+ Agregar Horario</button>
+            </div>
+
             <button type="submit" class="btn btn-primary">Guardar Perfil</button>
         </form>
     </div>
+
     <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    
+    <!-- Scripts para funcionalidad dinámica -->
+    <script>
+        // Agregar horarios dinámicamente (similar al listado de compras)
+        function addHorario() {
+            const container = document.getElementById('horariosContainer');
+            const div = document.createElement('div');
+            div.className = 'dynamic-item input-group';
+            div.innerHTML = `
+                <input type="text" class="form-control" name="horarios" required />
+                <button type="button" class="btn btn-danger" onclick="removeItem(this)">Eliminar</button>
+            `;
+            container.appendChild(div);
+        }
+
+        // Eliminar ítem
+        function removeItem(button) {
+            button.closest('.dynamic-item').remove();
+        }
+
+        // Validación antes de enviar (opcional)
+        document.getElementById('perfilForm').addEventListener('submit', function(e) {
+            const nombre = document.getElementById('nombre').value;
+            if (!nombre) {
+                e.preventDefault();
+                alert('El nombre es obligatorio.');
+            } else {
+                document.getElementById('feedback').style.display = 'block';
+                // Opcional: Guardar en localStorage (si no usas backend)
+                localStorage.setItem('ultimoPerfilGuardado', new Date().toLocaleString());
+            }
+        });
+    </script>
 </body>
 </html>

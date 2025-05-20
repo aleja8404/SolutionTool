@@ -1,379 +1,687 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Carrito de Compras - Ferretería Online</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <style>
+        :root {
+            --sidebar-bg: #2c3e50;
+            --sidebar-text: white;
+            --sidebar-active: #e77547;
+            --content-bg: #f5f7fa;
+            --card-bg: white;
+            --primary-color: #3498db;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+        }
+        
         body {
-            font-family: 'Roboto', Arial, sans-serif;
-            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            background-color: var(--content-bg);
         }
-
-        .dashboard-container {
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
         }
-
-        /* Navbar Styles */
-        .navbar {
-            background-color: #232f3e !important;
-            padding: 1rem 2rem;
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .navbar-brand {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #fff !important;
+        
+        .sidebar-header h3 {
+            color: var(--sidebar-text);
+            margin-bottom: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
         }
-
-        .navbar-toggler {
-            border: none;
+        
+        .sidebar-header h3 i {
+            margin-right: 10px;
+            color: var(--sidebar-active);
         }
-
-        .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        
+        .sidebar-nav {
+            padding: 20px 0;
         }
-
+        
+        .nav-item {
+            margin-bottom: 5px;
+        }
+        
         .nav-link {
-            color: #fff !important;
-            font-size: 1.1rem;
-            padding: 0.5rem 1rem;
-            transition: color 0.3s;
+            color: rgba(255, 255, 255, 0.85);
+            padding: 12px 20px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
         }
-
+        
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
         .nav-link:hover {
-            color: #f0c14b !important;
+            color: var(--sidebar-text);
+            background-color: rgba(255, 255, 255, 0.1);
+            text-decoration: none;
         }
-
-        .btn-outline-light {
-            border-color: #f0c14b;
-            color: #f0c14b;
+        
+        .nav-link.active {
+            color: var(--sidebar-text);
+            background-color: var(--sidebar-active);
             font-weight: 500;
         }
-
-        .btn-outline-light:hover {
-            background-color: #f0c14b;
-            color: #232f3e;
+        
+        .logout-btn {
+            margin-top: auto;
+            padding: 20px;
         }
-
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-x: auto;
+            padding: 30px;
+        }
+        
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .page-header h1 i {
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+        
         /* Cart Items */
         .cart-items {
-            margin-top: 20px;
+            margin-bottom: 30px;
         }
-
+        
         .cart-item {
-            background-color: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            padding: 15px;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            padding: 20px;
             margin-bottom: 15px;
             display: flex;
             flex-wrap: wrap;
+            gap: 20px;
             align-items: center;
-            gap: 15px;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary-color);
         }
-
-        .cart-item-img {
-            width: 100px;
-            height: 100px;
-            object-fit: contain;
-            background-color: #f7f7f7;
+        
+        .cart-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
         }
-
-        .cart-item-no-img {
-            width: 100px;
-            height: 100px;
-            background-color: #f7f7f7;
+        
+        .cart-item-img-container {
+            width: 120px;
+            height: 120px;
+            flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
+            background-color: #f7f7f7;
+            border-radius: 8px;
+        }
+        
+        .cart-item-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .cart-item-no-img {
             color: #888;
             font-size: 0.9rem;
             text-align: center;
         }
-
+        
         .cart-item-details {
             flex: 1;
-            min-width: 200px;
+            min-width: 250px;
         }
-
+        
         .cart-item-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .cart-item-price {
             font-size: 1.1rem;
             font-weight: 500;
-            color: #0f1111;
-            margin-bottom: 5px;
-        }
-
-        .cart-item-price {
-            font-size: 1rem;
-            color: #b12704;
-            font-weight: 500;
-        }
-
-        .cart-item-quantity {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .cart-item-quantity input {
-            width: 70px;
-            font-size: 0.9rem;
-            border-radius: 8px;
-        }
-
-        .cart-item-subtotal {
-            font-size: 1rem;
-            font-weight: 500;
-            color: #0f1111;
-            margin-left: auto;
-            min-width: 100px;
-            text-align: right;
-        }
-
-        .btn-delete {
-            color: #007185;
-            font-size: 0.85rem;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .btn-delete:hover {
-            color: #b12704;
-            text-decoration: underline;
-        }
-
-        /* Summary Card */
-        .summary-card {
-            background-color: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            padding: 20px;
-            margin-top: 20px;
-            max-width: 400px;
-            margin-left: auto;
-        }
-
-        .summary-card h2 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #0f1111;
+            color: var(--danger-color);
             margin-bottom: 15px;
         }
-
-        .summary-total {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #b12704;
-            margin-bottom: 20px;
+        
+        .cart-item-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
         }
-
-        .btn-checkout {
-            background-color: #f0c14b;
-            border: 1px solid #a88734;
-            color: #0f1111;
-            font-weight: 500;
-            padding: 10px;
-            border-radius: 8px;
-            width: 100%;
-            font-size: 1.1rem;
-            transition: background-color 0.3s;
-        }
-
-        .btn-checkout:hover {
-            background-color: #e6b800;
-        }
-
-        .btn-continue {
-            background-color: #fff;
-            border: 1px solid #d5d9d9;
-            color: #0f1111;
-            font-weight: 500;
-            padding: 10px;
-            border-radius: 8px;
-            width: 100%;
-            font-size: 1.1rem;
+        
+        .quantity-input {
+            width: 70px;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            padding: 8px 10px;
             text-align: center;
-            display: inline-block;
-            margin-top: 10px;
-            transition: background-color 0.3s;
         }
-
-        .btn-continue:hover {
-            background-color: #f7f7f7;
+        
+        .cart-item-subtotal {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-left: auto;
+            min-width: 120px;
+            text-align: right;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2188d9;
+            border-color: #2188d9;
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+            color: white;
+        }
+        
+        .btn-link {
+            color: var(--primary-color);
             text-decoration: none;
         }
-
+        
+        .btn-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Summary Card */
+        .summary-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-left: auto;
+            max-width: 400px;
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .summary-card h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .summary-card h2 i {
+            margin-right: 10px;
+            color: var(--success-color);
+        }
+        
+        .summary-total {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--danger-color);
+            margin-bottom: 25px;
+            text-align: right;
+        }
+        
+        .btn-checkout {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .btn-checkout:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+            color: white;
+        }
+        
+        .btn-continue {
+            background-color: var(--card-bg);
+            border: 1px solid #ced4da;
+            color: #2c3e50;
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            margin-top: 15px;
+            text-align: center;
+            display: block;
+        }
+        
+        .btn-continue:hover {
+            background-color: #f8f9fa;
+            text-decoration: none;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state p {
+            font-size: 1.1rem;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+        
         /* Alerts */
         .alert {
             border-radius: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
-
+        
         /* Footer */
         footer {
-            background-color: #232f3e;
-            color: #fff;
+            background-color: var(--card-bg);
+            color: #6c757d;
             padding: 20px;
-            margin-top: 40px;
             text-align: center;
+            margin-top: 30px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
-
+        
         /* Responsive Adjustments */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 220px;
+            }
+            
+            .cart-item-img-container {
+                width: 100px;
+                height: 100px;
+            }
+        }
+        
         @media (max-width: 992px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
             .summary-card {
                 max-width: 100%;
             }
+            
             .cart-item-subtotal {
                 text-align: left;
                 margin-left: 0;
-                margin-top: 10px;
+                margin-top: 15px;
             }
         }
-
+        
         @media (max-width: 768px) {
-            .dashboard-container {
-                padding: 15px;
+            .page-header h1 {
+                font-size: 1.5rem;
             }
+            
             .cart-item {
                 flex-direction: column;
                 align-items: flex-start;
             }
-            .cart-item-img, .cart-item-no-img {
-                width: 80px;
-                height: 80px;
+            
+            .cart-item-img-container {
+                width: 100%;
+                height: 200px;
             }
+            
             .cart-item-details {
                 min-width: 100%;
             }
+            
             .cart-item-title {
+                font-size: 1.1rem;
+            }
+            
+            .cart-item-price {
                 font-size: 1rem;
             }
-            .cart-item-price {
-                font-size: 0.9rem;
-            }
+            
             .cart-item-subtotal {
-                font-size: 0.9rem;
+                font-size: 1.1rem;
             }
-            .cart-item-quantity input {
-                width: 60px;
-            }
+            
             .summary-card h2 {
                 font-size: 1.3rem;
             }
+            
             .summary-total {
-                font-size: 1.2rem;
+                font-size: 1.3rem;
+            }
+            
+            .empty-state {
+                padding: 30px;
+            }
+            
+            .empty-state i {
+                font-size: 2.5rem;
+            }
+            
+            .empty-state p {
+                font-size: 1rem;
             }
         }
-
+        
         @media (max-width: 576px) {
-            .dashboard-container {
-                padding: 10px;
+            .main-content {
+                padding: 15px;
             }
+            
+            .page-header h1 {
+                font-size: 1.3rem;
+            }
+            
             .cart-item {
-                padding: 10px;
+                padding: 15px;
             }
-            .cart-item-img, .cart-item-no-img {
+            
+            .cart-item-img-container {
+                height: 150px;
+            }
+            
+            .quantity-input {
                 width: 60px;
-                height: 60px;
             }
-            .cart-item-title {
+            
+            .btn {
+                padding: 6px 12px;
                 font-size: 0.9rem;
             }
-            .cart-item-price {
-                font-size: 0.85rem;
-            }
-            .cart-item-subtotal {
-                font-size: 0.85rem;
-            }
-            .btn-checkout, .btn-continue {
+            
+            .btn-checkout {
+                padding: 10px;
                 font-size: 1rem;
-                padding: 8px;
             }
-            h1 {
-                font-size: 1.5rem;
+            
+            .empty-state {
+                padding: 20px;
             }
-            .navbar-brand {
-                font-size: 1.4rem;
+            
+            .empty-state i {
+                font-size: 2rem;
             }
-            .nav-link {
-                font-size: 1rem;
+            
+            .empty-state p {
+                font-size: 0.95rem;
             }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" th:href="@{/cliente/dashboard}">Ferretería Online</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/perfil}">Perfil</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/ordenes}">Órdenes</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/productos}">Productos</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/cliente/carrito}">Carrito</a></li>
-                </ul>
-                <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-user"></i> Mi Cuenta</h3>
+        </div>
+        <nav class="sidebar-nav">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/cliente/dashboard}">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/cliente/perfil}">
+                        <i class="fas fa-user-edit"></i>
+                        <span>Perfil</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/cliente/ordenes}">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Órdenes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/cliente/productos}">
+                        <i class="fas fa-box-open"></i>
+                        <span>Productos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/cliente/carrito}">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Carrito</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="logout-btn">
+            <a class="btn btn-outline-light btn-sm w-100" th:href="@{/logout}">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1><i class="fas fa-shopping-cart"></i> Carrito de Compras</h1>
+        </div>
+        
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${error}"></span>
+        </div>
+        
+        <div th:if="${success}" class="alert alert-success" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${success}"></span>
+        </div>
+        
+        <div th:if="${carrito == null or carrito.isEmpty()}">
+            <div class="empty-state">
+                <i class="fas fa-shopping-cart"></i>
+                <p>Tu carrito está vacío</p>
+                <a th:href="@{/cliente/productos}" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Explorar Productos
+                </a>
             </div>
         </div>
-    </nav>
-    <div class="dashboard-container">
-        <h1>Carrito de Compras</h1>
-        <div th:if="${carrito == null or carrito.isEmpty()}">
-            <p class="text-muted">Tu carrito está vacío.</p>
-            <a th:href="@{/cliente/productos}" class="btn btn-continue">Explorar Productos</a>
-        </div>
-        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        
         <div class="cart-items" th:unless="${carrito == null or carrito.isEmpty()}">
-            <div class="cart-item" th:each="item : ${carrito}" th:if="${item != null}">
-                <div th:if="${item.producto?.foto}">
-                    <img th:src="@{${item.producto.foto}}" th:alt="'Foto de ' + ${item.producto.nombre}" class="cart-item-img" />
-                </div>
-                <div th:unless="${item.producto?.foto}" class="cart-item-no-img">
-                    Sin Imagen
+            <!-- Ejemplo de producto en el carrito - Martillo -->
+            <div class="cart-item">
+                <div class="cart-item-img-container">
+                    <img src="https://m.media-amazon.com/images/I/71x+42WQn7L._AC_UF1000,1000_QL80_.jpg" alt="Martillo de carpintero" class="cart-item-img" />
                 </div>
                 <div class="cart-item-details">
-                    <h5 class="cart-item-title" th:text="${item.producto?.nombre ?: 'Producto no disponible'}"></h5>
-                    <p class="cart-item-price" th:text="${item.precio != null} ? ${#numbers.formatDecimal(item.precio, 1, 2)} + ' USD' : '0.00 USD'"></p>
-                    <div class="cart-item-quantity">
-                        <form th:action="@{/cliente/carrito/actualizar}" method="post" class="d-inline">
-                            <input type="hidden" name="productoId" th:value="${item.producto?.idProducto}" />
-                            <input type="number" name="cantidad" min="1" th:value="${item.cantidad}" class="form-control d-inline-block" style="width: 70px;" />
-                            <button type="submit" class="btn btn-link btn-sm">Actualizar</button>
+                    <h5 class="cart-item-title">Martillo de Carpintero 16 oz</h5>
+                    <p class="cart-item-price">12.99 USD</p>
+                    <div class="cart-item-actions">
+                        <form th:action="@{/cliente/carrito/actualizar}" method="post" class="d-flex align-items-center">
+                            <input type="hidden" name="productoId" value="1" />
+                            <input type="number" name="cantidad" min="1" value="2" class="form-control quantity-input me-2" />
+                            <button type="submit" class="btn btn-link">
+                                <i class="fas fa-sync-alt"></i> Actualizar
+                            </button>
                         </form>
-                        <form th:action="@{/cliente/carrito/eliminar}" method="post" class="d-inline">
-                            <input type="hidden" name="productoId" th:value="${item.producto?.idProducto}" />
-                            <button type="submit" class="btn btn-link btn-sm btn-delete">Eliminar</button>
+                        <form th:action="@{/cliente/carrito/eliminar}" method="post">
+                            <input type="hidden" name="productoId" value="1" />
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash-alt"></i> Eliminar
+                            </button>
                         </form>
                     </div>
                 </div>
-                <div class="cart-item-subtotal" th:text="${item.cantidad != null and item.precio != null} ? ${#numbers.formatDecimal(item.cantidad * item.precio.doubleValue(), 1, 2)} + ' USD' : '0.00 USD'"></div>
+                <div class="cart-item-subtotal">25.98 USD</div>
+            </div>
+            
+            <!-- Ejemplo de producto en el carrito - Taladro -->
+            <div class="cart-item">
+                <div class="cart-item-img-container">
+                    <img src="https://m.media-amazon.com/images/I/61lK+1G5UIL._AC_UF1000,1000_QL80_.jpg" alt="Taladro inalámbrico" class="cart-item-img" />
+                </div>
+                <div class="cart-item-details">
+                    <h5 class="cart-item-title">Taladro Inalámbrico 20V</h5>
+                    <p class="cart-item-price">89.99 USD</p>
+                    <div class="cart-item-actions">
+                        <form th:action="@{/cliente/carrito/actualizar}" method="post" class="d-flex align-items-center">
+                            <input type="hidden" name="productoId" value="2" />
+                            <input type="number" name="cantidad" min="1" value="1" class="form-control quantity-input me-2" />
+                            <button type="submit" class="btn btn-link">
+                                <i class="fas fa-sync-alt"></i> Actualizar
+                            </button>
+                        </form>
+                        <form th:action="@{/cliente/carrito/eliminar}" method="post">
+                            <input type="hidden" name="productoId" value="2" />
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash-alt"></i> Eliminar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="cart-item-subtotal">89.99 USD</div>
             </div>
         </div>
+        
         <div class="summary-card" th:unless="${carrito == null or carrito.isEmpty()}">
-            <h2>Resumen del Pedido</h2>
-            <p class="summary-total" th:text="${totalCarrito != null} ? ${#numbers.formatDecimal(totalCarrito, 1, 2)} + ' USD' : '0.00 USD'"></p>
+            <h2><i class="fas fa-receipt"></i> Resumen del Pedido</h2>
+            <p class="summary-total">115.97 USD</p>
             <form th:action="@{/cliente/carrito/comprar}" method="post">
-                <button type="submit" class="btn btn-checkout">Realizar Compra</button>
+                <button type="submit" class="btn btn-checkout">
+                    <i class="fas fa-credit-card"></i> Realizar Compra
+                </button>
             </form>
-            <a th:href="@{/cliente/productos}" class="btn btn-continue">Seguir Comprando</a>
+            <a th:href="@{/cliente/productos}" class="btn btn-continue">
+                <i class="fas fa-arrow-left"></i> Seguir Comprando
+            </a>
         </div>
-    </div>
-    <footer>
-        <p>© 2025 Ferretería Online</p>
-    </footer>
+        
+        <footer>
+            <p>© 2025 Ferretería Online - Todos los derechos reservados</p>
+        </footer>
+    </main>
+
     <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Resaltar el enlace activo
+            const currentPath = window.location.pathname;
+            $('.nav-link').each(function() {
+                if ($(this).attr('href') === currentPath) {
+                    $(this).addClass('active');
+                }
+            });
+            
+            // Validar cantidad al actualizar
+            $('form[action*="actualizar"]').on('submit', function(e) {
+                const input = $(this).find('input[name="cantidad"]');
+                const value = parseInt(input.val());
+                
+                if (value < 1) {
+                    e.preventDefault();
+                    input.val(1);
+                }
+            });
+        });
+    </script>
 </body>
 </html>

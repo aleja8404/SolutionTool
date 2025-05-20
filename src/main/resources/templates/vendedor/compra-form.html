@@ -2,243 +2,374 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrar Nueva Compra - Ferretería Online</title>
+    <title>Registrar Nueva Compra</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <style>
+        :root {
+            --sidebar-bg: #e77547;
+            --sidebar-text: white;
+            --sidebar-active: rgba(255, 255, 255, 0.2);
+            --content-bg: #f8f9fa;
+            --card-bg: white;
+            --primary-color: #3498db;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+        }
+        
         body {
-            font-family: 'Roboto', Arial, sans-serif;
-            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            background-color: var(--content-bg);
         }
-
-        .form-container {
-            padding: 20px;
-            max-width: 600px;
-            margin: 40px auto;
-            background-color: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            flex-shrink: 0;
         }
-
-        /* Navbar Styles */
-        .navbar {
-            background-color: #232f3e !important;
-            padding: 1rem 2rem;
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .navbar-brand {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #fff !important;
+        
+        .sidebar-header h3 {
+            color: var(--sidebar-text);
+            margin-bottom: 0;
+            font-weight: 600;
         }
-
-        .navbar-toggler {
-            border: none;
+        
+        .sidebar-nav {
+            padding: 20px 0;
         }
-
-        .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        
+        .nav-item {
+            margin-bottom: 5px;
         }
-
+        
         .nav-link {
-            color: #fff !important;
-            font-size: 1.1rem;
-            padding: 0.5rem 1rem;
-            transition: color 0.3s;
+            color: rgba(255, 255, 255, 0.85);
+            padding: 12px 20px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
         }
-
+        
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        
         .nav-link:hover {
-            color: #f0c14b !important;
+            color: var(--sidebar-text);
+            background-color: rgba(255, 255, 255, 0.15);
+            text-decoration: none;
         }
-
+        
         .nav-link.active {
-            color: #f0c14b !important;
-            font-weight: bold;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
+            color: var(--sidebar-text);
+            background-color: var(--sidebar-active);
+            font-weight: 600;
         }
-
-        .btn-outline-light {
-            border-color: #f0c14b;
-            color: #f0c14b;
-            font-weight: 500;
+        
+        .logout-btn {
+            margin-top: auto;
+            padding: 20px;
         }
-
-        .btn-outline-light:hover {
-            background-color: #f0c14b;
-            color: #232f3e;
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-x: auto;
+            padding: 30px;
         }
-
+        
+        .card-container {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1, h2 {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        h1 i, h2 i {
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+        
         /* Form Styles */
         .form-label {
-            font-size: 1rem;
             font-weight: 500;
-            color: #0f1111;
+            color: #495057;
+            margin-bottom: 8px;
         }
-
+        
         .form-control, .form-select {
-            border: 1px solid #d5d9d9;
-            border-radius: 8px;
-            padding: 10px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            transition: border-color 0.3s ease;
         }
-
+        
         .form-control:focus, .form-select:focus {
-            border-color: #f0c14b;
-            box-shadow: 0 0 5px rgba(240, 193, 75, 0.5);
-            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
         }
-
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
         .btn-primary {
-            background-color: #f0c14b;
-            border: 1px solid #a88734;
-            color: #0f1111;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: 8px;
-            transition: background-color 0.3s;
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
         }
-
+        
         .btn-primary:hover {
-            background-color: #e6b800;
-            color: #0f1111;
+            background-color: #2188d9;
+            border-color: #1e7e34;
         }
-
+        
         .btn-secondary {
-            background-color: #565959;
-            border: 1px solid #4a4a4a;
-            color: #fff;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: 8px;
+            background-color: #6c757d;
+            border-color: #6c757d;
         }
-
+        
         .btn-secondary:hover {
-            background-color: #4a4a4a;
-            color: #fff;
+            background-color: #5a6268;
+            border-color: #545b62;
         }
-
-        /* Footer */
-        footer {
-            background-color: #232f3e;
-            color: #fff;
-            padding: 20px;
-            text-align: center;
-            margin-top: 40px;
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
         }
-
+        
+        /* Validation Styles */
+        .is-invalid {
+            border-color: var(--danger-color);
+        }
+        
+        .invalid-feedback {
+            color: var(--danger-color);
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+        }
+        
         /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            .form-container {
-                padding: 15px;
-                margin: 20px;
+        @media (max-width: 992px) {
+            body {
+                flex-direction: column;
             }
-
-            .form-label {
-                font-size: 0.95rem;
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
             }
-
-            .form-control, .form-select {
-                font-size: 0.95rem;
-                padding: 8px;
+            
+            .main-content {
+                padding: 20px;
             }
-
-            .btn-primary, .btn-secondary {
-                padding: 7px 14px;
-                font-size: 0.95rem;
+            
+            .card-container {
+                padding: 20px;
             }
         }
-
+        
+        @media (max-width: 768px) {
+            h1, h2 {
+                font-size: 1.5rem;
+            }
+            
+            .card-container {
+                padding: 20px 15px;
+            }
+            
+            .btn {
+                padding: 8px 16px;
+                font-size: 0.875rem;
+            }
+        }
+        
         @media (max-width: 576px) {
-            .form-container {
-                padding: 10px;
-                margin: 10px;
+            .main-content {
+                padding: 15px;
             }
-
-            .form-label {
-                font-size: 0.9rem;
+            
+            .btn-group {
+                flex-direction: column;
+                gap: 8px;
             }
-
-            .form-control, .form-select {
-                font-size: 0.9rem;
-                padding: 6px;
-            }
-
-            .btn-primary, .btn-secondary {
-                padding: 6px 12px;
-                font-size: 0.9rem;
-            }
-
-            .navbar-brand {
-                font-size: 1.4rem;
-            }
-
-            .nav-link {
-                font-size: 1rem;
+            
+            .btn {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" th:href="@{/vendedor/dashboard}">Ferretería Online</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" th:classappend="${activePage == 'dashboard'} ? 'active'" th:href="@{/vendedor/dashboard}">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:classappend="${activePage == 'nueva-venta'} ? 'active'" th:href="@{/vendedor/ventas/nueva}">Nueva Venta</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" th:classappend="${activePage == 'nueva-compra'} ? 'active'" th:href="@{/vendedor/compras/nueva}">Nueva Compra</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:classappend="${activePage == 'nuevo-producto'} ? 'active'" th:href="@{/vendedor/productos/nuevo}">Asignar Producto</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:classappend="${activePage == 'editar'} ? 'active'" th:href="@{/vendedor/editar}">Editar Perfil</a>
-                    </li>
-                </ul>
-                <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
-            </div>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>Panel de Vendedor</h3>
         </div>
-    </nav>
-    <div class="form-container">
-        <h2 class="text-center mb-4">Registrar Nueva Compra</h2>
-        <form th:action="@{/vendedor/compras}" th:object="${compra}" method="post">
-            <div class="mb-3">
-                <label for="proveedor" class="form-label">Proveedor:</label>
-                <select id="proveedor" th:field="*{proveedor}" class="form-select" required>
-                    <option value="" disabled selected>Selecciona un proveedor</option>
-                    <option th:each="proveedor : ${proveedores}" th:value="${proveedor.idProveedor}" th:text="${proveedor.nombre}"></option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="fechaDeCompra" class="form-label">Fecha de Compra:</label>
-                <input type="datetime-local" id="fechaDeCompra" th:field="*{fechaDeCompra}" class="form-control" required />
-            </div>
-            <div class="mb-3">
-                <label for="importeTotal" class="form-label">Importe Total (USD):</label>
-                <input type="number" id="importeTotal" th:field="*{importeTotal}" class="form-control" step="0.01" min="0" required />
-            </div>
-            <div class="d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary">Guardar Compra</button>
-                <a th:href="@{/vendedor/dashboard}" class="btn btn-secondary">Cancelar</a>
-            </div>
-        </form>
-    </div>
-    <footer>
-        <p>© 2025 Ferretería Online</p>
-    </footer>
+        <nav class="sidebar-nav">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/vendedor/ventas/nueva}">
+                        <i class="fas fa-cart-plus"></i>
+                        <span>Nueva Venta</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/vendedor/compras/nueva}">
+                        <i class="fas fa-shopping-basket"></i>
+                        <span>Nueva Compra</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/vendedor/productos/nuevo}">
+                        <i class="fas fa-boxes"></i>
+                        <span>Asignar Producto</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/vendedor/editar}">
+                        <i class="fas fa-user-edit"></i>
+                        <span>Editar Perfil</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="logout-btn">
+            <a class="btn btn-outline-light btn-sm w-100" th:href="@{/logout}">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="card-container">
+            <h2><i class="fas fa-shopping-basket"></i>Registrar Nueva Compra</h2>
+            
+            <form th:action="@{/vendedor/compras}" th:object="${compra}" method="post" class="needs-validation" novalidate>
+                <div class="form-group">
+                    <label for="proveedor" class="form-label">Proveedor:</label>
+                    <select id="proveedor" th:field="*{proveedor}" class="form-select" required>
+                        <option value="" disabled selected>Selecciona un proveedor</option>
+                        <option th:each="proveedor : ${proveedores}" 
+                                th:value="${proveedor.idProveedor}" 
+                                th:text="${proveedor.nombre}">
+                        </option>
+                    </select>
+                    <div class="invalid-feedback">Por favor seleccione un proveedor</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fechaDeCompra" class="form-label">Fecha de Compra:</label>
+                    <input type="datetime-local" id="fechaDeCompra" th:field="*{fechaDeCompra}" class="form-control" required />
+                    <div class="invalid-feedback">Por favor ingrese la fecha de compra</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="importeTotal" class="form-label">Importe Total:</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" id="importeTotal" th:field="*{importeTotal}" 
+                               class="form-control" step="0.01" min="0.01" placeholder="0.00" required />
+                    </div>
+                    <div class="invalid-feedback">Por favor ingrese un importe válido</div>
+                </div>
+                
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Guardar Compra
+                    </button>
+                    <a th:href="@{/vendedor/dashboard}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </main>
+
     <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    
+    <script>
+        // Resaltar el enlace activo
+        $(document).ready(function() {
+            const currentPath = window.location.pathname;
+            $('.nav-link').each(function() {
+                if ($(this).attr('href') === currentPath) {
+                    $(this).addClass('active');
+                }
+            });
+            
+            // Validación de formulario
+            (function() {
+                'use strict';
+                
+                var forms = document.querySelectorAll('.needs-validation');
+                
+                Array.prototype.slice.call(forms)
+                    .forEach(function(form) {
+                        form.addEventListener('submit', function(event) {
+                            if (!form.checkValidity()) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                            }
+                            
+                            form.classList.add('was-validated');
+                        }, false);
+                    });
+            })();
+        });
+    </script>
 </body>
 </html>

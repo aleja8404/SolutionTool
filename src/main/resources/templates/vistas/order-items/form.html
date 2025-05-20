@@ -2,76 +2,411 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${orderItem.idPedidoArticulo != null} ? 'Editar Order Item' : 'Nuevo Order Item'">Formulario Order Item</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${orderItem.idPedidoArticulo != null} ? 'Editar Item de Orden' : 'Nuevo Item de Orden'">Formulario Order Item</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <style>
+        :root {
+            --sidebar-bg: #e77547;
+            --sidebar-text: white;
+            --sidebar-active: rgba(255, 255, 255, 0.2);
+            --content-bg: #f8f9fa;
+            --card-bg: white;
+            --primary-color: #3498db;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            background-color: var(--content-bg);
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            color: white;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            flex-shrink: 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-header h3 {
+            color: white;
+            margin-bottom: 0;
+            font-weight: 600;
+        }
+        
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+        
+        .nav-item {
+            margin-bottom: 5px;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            padding: 12px 20px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .nav-link i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .nav-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        .nav-link.active {
+            color: white;
+            background-color: var(--sidebar-active);
+            font-weight: 600;
+        }
+        
+        .logout-btn {
+            margin-top: auto;
+            padding: 20px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-x: auto;
+            padding: 30px;
+        }
+        
+        .form-container {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h1 i {
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+        
+        /* Form Styles */
+        .form-label {
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        
+        .form-control, .form-select {
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        }
+        
+        /* Input Group */
+        .input-group-text {
+            background-color: #e9ecef;
+            border-radius: 6px 0 0 6px !important;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn-primary {
+            background-color: #218838;
+            border-color: #218838;
+        }
+        
+        .btn-primary:hover {
+            background-color: #218838;
+            border-color: #218838;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .form-container {
+                padding: 20px 15px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 15px;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" th:href="@{/admin/dashboard}">Admin Dashboard</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" th:href="@{/clientes}">Clientes</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/usuarios}">Usuarios</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/order-items}">ordenes</a></li>
-
-                <li class="nav-item"><a class="nav-link" th:href="@{/categorias}">Categorías</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/productos}">Productos</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/ventas}">Ventas</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/compras}">Compras</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/proveedores}">Proveedores</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/vendedores}">Vendedores</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/vendedor-producto}">Vendedor Productos</a></li>
-            </ul>
-            <a class="btn btn-outline-light" th:href="@{/logout}">Cerrar Sesión</a>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>Administrador</h3>
         </div>
-    </nav>
-    <div class="container mt-4">
-        <h1 th:text="${orderItem.idPedidoArticulo != null} ? 'Editar Order Item' : 'Nuevo Order Item'">Formulario Order Item</h1>
-        <form th:action="${orderItem.idPedidoArticulo != null} ? @{/order-items/{id}(id=${orderItem.idPedidoArticulo})} : @{/order-items}" 
-              th:object="${orderItem}" method="post">
-            <!-- Campo oculto para ID en edición -->
-            <div th:if="${orderItem.idPedidoArticulo != null}">
-                <input type="hidden" th:field="*{idPedidoArticulo}" />
-            </div>
-            <!-- Dropdown para Venta -->
-            <div class="mb-3">
-                <label for="venta" class="form-label">Venta:</label>
-                <select id="venta" th:field="*{venta}" class="form-select" required>
-                    <option value="">Seleccione una venta</option>
-                    <option th:each="venta : ${ventas}" 
-                            th:value="${venta.idVenta}" 
-                            th:text="${'Venta #' + venta.idVenta}" 
-                            th:selected="${orderItem.venta != null and orderItem.venta.idVenta == venta.idVenta}"></option>
-                </select>
-            </div>
-            <!-- Dropdown para Producto -->
-            <div class="mb-3">
-                <label for="producto" class="form-label">Producto:</label>
-                <select id="producto" th:field="*{producto}" class="form-select" required>
-                    <option value="">Seleccione un producto</option>
-                    <option th:each="prod : ${productos}" 
-                            th:value="${prod.idProducto}" 
-                            th:text="${prod.nombre}" 
-                            th:selected="${orderItem.producto != null and orderItem.producto.idProducto == prod.idProducto}"></option>
-                </select>
-            </div>
-            <!-- Cantidad -->
-            <div class="mb-3">
-                <label for="cantidad" class="form-label">Cantidad:</label>
-                <input type="number" id="cantidad" th:field="*{cantidad}" class="form-control" placeholder="Cantidad" required />
-            </div>
-            <!-- Precio -->
-            <div class="mb-3">
-                <label for="precio" class="form-label">Precio:</label>
-                <input type="number" id="precio" th:field="*{precio}" class="form-control" step="0.01" placeholder="Precio" required />
-            </div>
-            <button type="submit" class="btn btn-success" 
-                    th:text="${orderItem.idPedidoArticulo != null} ? 'Actualizar' : 'Guardar'">Guardar</button>
-            <a th:href="@{/order-items}" class="btn btn-secondary">Cancelar</a>
-        </form>
-    </div>
+        <nav class="sidebar-nav">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/admin/dashboard}">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/clientes}">
+                        <i class="fas fa-users"></i>
+                        <span>Clientes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/usuarios}">
+                        <i class="fas fa-user-cog"></i>
+                        <span>Usuarios</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/order-items}">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Órdenes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/categorias}">
+                        <i class="fas fa-tags"></i>
+                        <span>Categorías</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/productos}">
+                        <i class="fas fa-box-open"></i>
+                        <span>Productos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/ventas}">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Ventas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/compras}">
+                        <i class="fas fa-shopping-basket"></i>
+                        <span>Compras</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/proveedores}">
+                        <i class="fas fa-truck"></i>
+                        <span>Proveedores</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/vendedores}">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Vendedores</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/vendedor-producto}">
+                        <i class="fas fa-link"></i>
+                        <span>Vendedor Artículo</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/clasificacion}">
+                        <i class="fas fa-star"></i>
+                        <span>Predicción</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="logout-btn">
+            <a class="btn btn-outline-light btn-sm w-100" th:href="@{/logout}">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="form-container">
+            <h1><i class="fas fa-shopping-cart"></i><span th:text="${orderItem.idPedidoArticulo != null} ? 'Editar Item de Orden' : 'Item de Orden'">Formulario Order Item</span></h1>
+            
+            <form th:action="${orderItem.idPedidoArticulo != null} ? @{/order-items/{id}(id=${orderItem.idPedidoArticulo})} : @{/order-items}" 
+                th:object="${orderItem}" method="post">
+                
+                <!-- Campo oculto para ID en edición -->
+                <div th:if="${orderItem.idPedidoArticulo != null}">
+                    <input type="hidden" th:field="*{idPedidoArticulo}" />
+                </div>
+                
+                <div class="row">
+                    <!-- Venta -->
+                    <div class="col-md-6 mb-3">
+                        <label for="venta" class="form-label">Venta:</label>
+                        <select id="venta" th:field="*{venta}" class="form-select" required>
+                            <option value="">Seleccione una venta</option>
+                            <option th:each="venta : ${ventas}" 
+                                    th:value="${venta.idVenta}" 
+                                    th:text="${'Venta #' + venta.idVenta + ' - ' + venta.cliente.nombre}" 
+                                    th:selected="${orderItem.venta != null and orderItem.venta.idVenta == venta.idVenta}"></option>
+                        </select>
+                    </div>
+                    
+                    <!-- Producto -->
+                    <div class="col-md-6 mb-3">
+                        <label for="producto" class="form-label">Producto:</label>
+                        <select id="producto" th:field="*{producto}" class="form-select" required>
+                            <option value="">Seleccione un producto</option>
+                            <option th:each="prod : ${productos}" 
+                                    th:value="${prod.idProducto}" 
+                                    th:text="${prod.nombre + ' ($' + #numbers.formatDecimal(prod.precio, 1, 2, 'COMMA') + ')'}" 
+                                    th:selected="${orderItem.producto != null and orderItem.producto.idProducto == prod.idProducto}"></option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <!-- Cantidad -->
+                    <div class="col-md-6 mb-3">
+                        <label for="cantidad" class="form-label">Cantidad:</label>
+                        <input type="number" id="cantidad" th:field="*{cantidad}" class="form-control" 
+                            placeholder="Ingrese la cantidad" min="1" required />
+                    </div>
+                    
+                    <!-- Precio -->
+                    <div class="col-md-6 mb-3">
+                        <label for="precio" class="form-label">Precio Unitario:</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" id="precio" th:field="*{precio}" class="form-control" 
+                                step="0.01" placeholder="0.00" min="0" required />
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mt-4">
+                    <a th:href="@{/order-items}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        <span th:text="${orderItem.idPedidoArticulo != null} ? 'Actualizar' : 'Guardar'">Guardar</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
     <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    <script>
+        $(document).ready(function() {
+            // Actualizar automáticamente el precio cuando se selecciona un producto
+            $('#producto').change(function() {
+                var selectedOption = $(this).find('option:selected');
+                if (selectedOption.val() !== "") {
+                    var priceText = selectedOption.text().match(/\$([\d,.]+)/)[1];
+                    var price = parseFloat(priceText.replace(',', ''));
+                    $('#precio').val(price.toFixed(2));
+                }
+            });
+            
+            // Calcular el total cuando cambia cantidad o precio
+            $('#cantidad, #precio').on('input', function() {
+                var cantidad = parseFloat($('#cantidad').val()) || 0;
+                var precio = parseFloat($('#precio').val()) || 0;
+                // Puedes agregar lógica para mostrar el total si lo necesitas
+            });
+        });
+    </script>
 </body>
 </html>

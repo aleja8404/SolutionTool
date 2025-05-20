@@ -2,58 +2,186 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configurar Perfil de Proveedor</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --light-color: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+        
+        .profile-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            padding: 1.5rem;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .form-control {
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2188d9;
+            border-color: #1e7e34;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+        
+        .profile-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-actions {
+                flex-direction: column;
+            }
+        }
+        
+        .email-display {
+            background-color: var(--light-color);
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-4">
+    <div class="container py-5">
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="text-center">Configurar tu Perfil de Proveedor</h2>
+            <div class="col-lg-8">
+                <div class="card profile-card">
+                    <div class="card-header text-center">
+                        <h2><i class="fas fa-user-cog me-2"></i>Configurar Perfil de Proveedor</h2>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body p-4">
                         <!-- Error message -->
                         <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">
                             Error message here
                         </div>
 
+                        <!-- Success message -->
+                        <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}">
+                            Success message here
+                        </div>
+
                         <!-- Form -->
-                        <form th:action="@{/proveedor/accesos/setup}" th:object="${proveedor}" method="post">
+                        <form th:action="@{/proveedor/accesos/setup}" th:object="${proveedor}" method="post" class="needs-validation" novalidate>
                             <input type="hidden" th:field="*{correoElectronico}" />
                             
-                            <div class="mb-3">
-                                <label for="nombre" class="form-label">Nombre:</label>
-                                <input type="text" 
-                                       class="form-control" 
-                                       id="nombre" 
-                                       th:field="*{nombre}"
-                                       required />
+                            <div class="mb-4">
+                                <label class="form-label">Correo Electrónico:</label>
+                                <div class="email-display" th:text="${proveedor.correoElectronico}">
+                                    user@example.com
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="nombre" class="form-label">Nombre:</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="nombre" 
+                                           th:field="*{nombre}"
+                                           required
+                                           placeholder="Ingrese su nombre completo" />
+                                    <div class="invalid-feedback">
+                                        Por favor ingrese su nombre
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="telefono" class="form-label">Teléfono:</label>
+                                    <input type="tel" 
+                                           class="form-control" 
+                                           id="telefono" 
+                                           th:field="*{telefono}"
+                                           placeholder="Ej: +51 987654321"
+                                           pattern="[+]?[\d\s]{8,15}"
+                                           required />
+                                    <div class="invalid-feedback">
+                                        Por favor ingrese un número de teléfono válido
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="telefono" class="form-label">Teléfono:</label>
-                                <input type="text" 
-                                       class="form-control" 
-                                       id="telefono" 
-                                       th:field="*{telefono}" />
-                            </div>
-
-                            <div class="mb-3">
+                            <div class="mb-4">
                                 <label for="direccion" class="form-label">Dirección:</label>
-                                <input type="text" 
-                                       class="form-control" 
-                                       id="direccion" 
-                                       th:field="*{direccion}" />
+                                <textarea class="form-control" 
+                                          id="direccion" 
+                                          th:field="*{direccion}"
+                                          rows="3"
+                                          placeholder="Ingrese su dirección completa"></textarea>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="descripcion" class="form-label">Descripción de su negocio:</label>
+                                <textarea class="form-control" 
+                                          id="descripcion" 
+                                          th:field="*{descripcionNegocio}"
+                                          rows="4"
+                                          placeholder="Describa los productos o servicios que ofrece"></textarea>
                             </div>
 
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary">
-                                    Guardar Perfil
+                            <div class="profile-actions">
+                                <button type="submit" class="btn btn-primary flex-grow-1">
+                                    <i class="fas fa-save me-2"></i>Guardar Perfil
                                 </button>
-                                <a th:href="@{/logout}" class="btn btn-secondary">
-                                    Cerrar Sesión
+                                <a th:href="@{/proveedor/dashboard}" class="btn btn-outline-secondary flex-grow-1">
+                                    <i class="fas fa-times me-2"></i>Cancelar
+                                </a>
+                                <a th:href="@{/logout}" class="btn btn-secondary flex-grow-1">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
                                 </a>
                             </div>
                         </form>
@@ -65,5 +193,34 @@
 
     <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    
+    <script>
+        // Validación de formulario
+        (function() {
+            'use strict';
+            
+            // Obtener todos los formularios a los que queremos aplicar estilos de validación de Bootstrap personalizados
+            var forms = document.querySelectorAll('.needs-validation');
+            
+            // Bucle sobre ellos y evitar el envío
+            Array.prototype.slice.call(forms)
+                .forEach(function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+        })();
+        
+        // Formatear automáticamente el número de teléfono
+        document.getElementById('telefono').addEventListener('input', function(e) {
+            var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : x[1] + ' ' + x[2] + (x[3] ? ' ' + x[3] : '');
+        });
+    </script>
 </body>
 </html>
