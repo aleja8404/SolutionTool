@@ -2,47 +2,57 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clasificación de Clientes</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <style>
         :root {
+            --sidebar-width: 280px;
             --sidebar-bg: #e77547;
             --sidebar-text: white;
             --sidebar-active: rgba(255, 255, 255, 0.2);
-            --content-bg: #f4f6f9;
+            --content-bg: #f5f7fa;
             --card-bg: white;
-            --primary-color: #007bff;
-            --secondary-color: #6c757d;
+            --primary-color: #3498db;
             --success-color: #28a745;
             --danger-color: #dc3545;
+            --warning-color: #ffc107;
         }
         
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             min-height: 100vh;
             background-color: var(--content-bg);
-            color: #333;
+            overflow-x: hidden;
         }
         
         /* Sidebar Styles */
         .sidebar {
-            width: 250px;
+            width: var(--sidebar-width);
             background-color: var(--sidebar-bg);
             color: var(--sidebar-text);
             padding: 20px 0;
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
             height: 100vh;
             overflow-y: auto;
             flex-shrink: 0;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar.hidden {
+            transform: translateX(-280px);
         }
         
         .sidebar-header {
-            padding: 0 20px 20px;
+            padding: 0 25px 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
@@ -50,6 +60,15 @@
             color: var(--sidebar-text);
             margin-bottom: 0;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            font-size: 1.25rem;
+        }
+        
+        .sidebar-header h3 i {
+            margin-right: 12px;
+            color: var(--sidebar-active);
+            font-size: 1.2rem;
         }
         
         .sidebar-nav {
@@ -57,28 +76,30 @@
         }
         
         .nav-item {
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
         
         .nav-link {
             color: rgba(255, 255, 255, 0.85);
-            padding: 12px 20px;
+            padding: 12px 25px;
             border-radius: 4px;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
+            font-size: 0.95rem;
+            text-decoration: none;
         }
         
         .nav-link i {
             margin-right: 12px;
             width: 20px;
             text-align: center;
+            font-size: 1rem;
         }
         
         .nav-link:hover {
             color: var(--sidebar-text);
             background-color: rgba(255, 255, 255, 0.15);
-            text-decoration: none;
         }
         
         .nav-link.active {
@@ -89,41 +110,87 @@
         
         .logout-btn {
             margin-top: auto;
-            padding: 20px;
+            padding: 25px;
+        }
+        
+        /* Toolbar Styles */
+        .toolbar {
+            background-color: var(--card-bg);
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            margin-bottom: 30px;
+        }
+        
+        .toolbar .toggle-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+        
+        .toolbar .toggle-btn:hover {
+            color: #2980b9;
+        }
+        
+        .toolbar .title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            letter-spacing: 0.5px;
         }
         
         /* Main Content */
         .main-content {
             flex: 1;
+            padding: 25px;
+            margin-left: 280px;
+            transition: margin-left 0.3s ease;
             overflow-x: auto;
-            padding: 30px;
+        }
+        
+        .main-content.full {
+            margin-left: 0;
         }
         
         .card-container {
             background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            margin-bottom: 30px;
-            transition: transform 0.3s ease;
-        }
-        
-        .card-container:hover {
-            transform: translateY(-5px);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 25px;
         }
         
         h1 {
-            color: #1a1a1a;
-            font-weight: 700;
+            color: #2c3e50;
+            font-weight: 600;
             margin-bottom: 30px;
+            font-size: 1.8rem;
             display: flex;
             align-items: center;
-            justify-content: center;
         }
         
         h1 i {
             margin-right: 15px;
             color: var(--primary-color);
+            font-size: 1.4rem;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         
         /* Form Styles */
@@ -134,23 +201,24 @@
         
         .form-group label {
             font-weight: 600;
-            color: #444;
+            color: #495057;
             margin-bottom: 8px;
             display: block;
+            font-size: 0.95rem;
         }
         
-        .form-control {
+        .form-control, .form-select {
             width: 100%;
-            padding: 10px 35px 10px 12px;
-            border: 1px solid #dfe3e8;
-            border-radius: 8px;
+            padding: 8px 35px 8px 12px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
             font-size: 0.95rem;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
         
-        .form-control:focus {
+        .form-control:focus, .form-select:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.2);
             outline: none;
         }
         
@@ -159,19 +227,20 @@
             right: 12px;
             top: 65%;
             transform: translateY(-50%);
-            color: #888;
+            color: #6c757d;
             font-size: 1rem;
         }
         
         /* Button Styles */
         .btn {
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            font-size: 0.95rem;
         }
         
         .btn i {
@@ -179,47 +248,62 @@
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color), #0056b3);
-            border: none;
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
             color: white;
         }
         
         .btn-primary:hover {
-            background: linear-gradient(135deg, #0056b3, #003d80);
-            transform: translateY(-2px);
+            background-color: #2188d9;
+            border-color: #1d7cc7;
         }
         
         .btn-secondary {
-            background: linear-gradient(135deg, var(--secondary-color), #495057);
-            border: none;
+            background-color: #6c757d;
+            border-color: #6c757d;
             color: white;
         }
         
         .btn-secondary:hover {
-            background: linear-gradient(135deg, #495057, #343a40);
-            transform: translateY(-2px);
+            background-color: #5a6268;
+            border-color: #545b62;
         }
         
         /* Result Section */
         .result-section {
             margin-top: 30px;
             padding: 20px;
-            background: #e9f7ff;
+            background: #b8d5f1;
             border-radius: 8px;
             border-left: 4px solid var(--primary-color);
         }
         
         .result-section h2 {
-            color: var(--primary-color);
+            color: #2c3e50;
+            font-size: 1.4rem;
             margin-bottom: 15px;
+            font-weight: 600;
         }
         
         .result-section p {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
         }
         
         .result-section strong {
-            color: #1a1a1a;
+            color: #2c3e50;
+        }
+        
+        .badge {
+            font-weight: 500;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            border-radius: 12px;
+        }
+        
+        .badge-success {
+            background-color: var(--success-color);
+            color: white;
         }
         
         /* Error Message */
@@ -228,40 +312,70 @@
             margin-top: 15px;
             font-weight: 500;
             text-align: center;
+            font-size: 0.95rem;
         }
         
         /* Responsive Adjustments */
         @media (max-width: 992px) {
-            body {
-                flex-direction: column;
+            .sidebar {
+                transform: translateX(-280px);
             }
             
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
+            .sidebar.active {
+                transform: translateX(0);
             }
             
             .main-content {
-                padding: 20px;
+                margin-left: 0;
+            }
+            
+            .main-content.full {
+                margin-left: 0;
             }
             
             .card-container {
                 padding: 20px;
+                overflow-x: auto;
             }
         }
         
         @media (max-width: 768px) {
+            .toolbar {
+                padding: 12px 20px;
+                margin-bottom: 20px;
+            }
+            
             h1 {
                 font-size: 1.5rem;
+            }
+            
+            h1 i {
+                font-size: 1.2rem;
             }
             
             .card-container {
                 padding: 20px 15px;
             }
             
+            .action-buttons {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .form-group {
+                margin-bottom: 12px;
+            }
+            
             .btn {
                 width: 100%;
+            }
+            
+            .result-section {
+                padding: 15px;
+            }
+            
+            .result-section h2 {
+                font-size: 1.2rem;
             }
         }
         
@@ -269,19 +383,55 @@
             .main-content {
                 padding: 15px;
             }
+            
+            .toolbar {
+                padding: 10px 15px;
+                margin-bottom: 15px;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            h1 i {
+                font-size: 1rem;
+            }
+            
+            .card-container {
+                padding: 15px;
+            }
+            
+            .btn {
+                padding: 6px 12px;
+                font-size: 0.875rem;
+            }
+            
+            .form-control, .form-select {
+                font-size: 0.875rem;
+                padding: 6px 30px 6px 10px;
+            }
+            
+            .form-group i {
+                font-size: 0.875rem;
+            }
+            
+            .badge {
+                font-size: 0.75rem;
+                padding: 4px 8px;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <h3>Administrador</h3>
+            <h3><i class="fas fa-tools"></i>Administrador</h3>
         </div>
         <nav class="sidebar-nav">
             <ul class="nav flex-column">
-                  <li class="nav-item">
-                    <a class="nav-link active" th:href="@{/admin/dashboard}">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin/dashboard}">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Dashboard</span>
                     </a>
@@ -349,7 +499,8 @@
                 <li class="nav-item">
                     <a class="nav-link active" th:href="@{/clasificacion}">
                         <i class="fas fa-star"></i>
-                        <span>Clasificación</span>
+                                                  <span>Predicción</span>
+
                     </a>
                 </li>
             </ul>
@@ -363,13 +514,22 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="main-content">
+    <main class="main-content" id="main-content">
+        <div class="toolbar">
+            <button class="toggle-btn" id="toggle-sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <span class="title">Clasificación de Clientes</span>
+        </div>
+        
         <div class="card-container">
-            <h1><i class="fas fa-star"></i>Clasificación de Clientes</h1>
+            <h1><i class="fas fa-star"></i> Clasificación de Clientes</h1>
             
-            <a th:href="@{/clasificacion/lista}" class="btn btn-secondary mb-4">
-                <i class="fas fa-list"></i> Ver Lista de Clasificaciones
-            </a>
+            <div class="action-buttons">
+                <a th:href="@{/clasificacion/lista}" class="btn btn-secondary">
+                    <i class="fas fa-list"></i> Ver Lista de Clasificaciones
+                </a>
+            </div>
             
             <form th:action="@{/clasificacion/clasificar}" th:object="${customerData}" method="post">
                 <div class="row g-3">
@@ -404,7 +564,7 @@
                     <div class="col-lg-3 col-md-6">
                         <div class="form-group">
                             <label>Método de Pago:</label>
-                            <select class="form-control" th:field="*{metodoPago}" required>
+                            <select class="form-select" th:field="*{metodoPago}" required>
                                 <option value="Efectivo">Efectivo</option>
                                 <option value="Tarjeta">Tarjeta</option>
                                 <option value="Transferencia">Transferencia</option>
@@ -426,28 +586,55 @@
 
             <div th:if="${showResult}" class="result-section">
                 <h2>Resultado de la Clasificación</h2>
-                <p>Categoría: <strong th:text="${clasificacion}"></strong></p>
-                <p>Confianza: <strong th:text="${confianza}"></strong></p>
+                <p>Categoría: <span class="badge badge-success" th:text="${clasificacion}"></span></p>
+                <p>Confianza: <span class="badge badge-success" th:text="${confianza}"></span></p>
                 <h3>Datos Enviados</h3>
-                <p>Edad: <span th:text="${customerData.edad}"></span></p>
-                <p>Frecuencia de Compra: <span th:text="${customerData.frecuenciaCompra}"></span></p>
-                <p>Valor Total de Compra: <span th:text="${#numbers.formatDecimal(customerData.valorTotalCompra, 1, 2, 'COMMA')}"></span></p>
-                <p>Días desde Última Compra: <span th:text="${customerData.ultimaCompra}"></span></p>
-                <p>Método de Pago: <span th:text="${customerData.metodoPago}"></span></p>
+                <p>Edad: <strong th:text="${customerData.edad}"></strong></p>
+                <p>Frecuencia de Compra: <strong th:text="${customerData.frecuenciaCompra}"></strong></p>
+                <p>Valor Total de Compra: <strong th:text="${#numbers.formatDecimal(customerData.valorTotalCompra, 1, 2, 'COMMA')}"></strong></p>
+                <p>Días desde Última Compra: <strong th:text="${customerData.ultimaCompra}"></strong></p>
+                <p>Método de Pago: <strong th:text="${customerData.metodoPago}"></strong></p>
             </div>
         </div>
     </main>
 
     <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
-    
     <script>
-        // Resaltar el enlace activo
         $(document).ready(function() {
-            const currentPath = window.location.pathname;
+            // Sidebar toggle functionality
+            const sidebar = $('#sidebar');
+            const mainContent = $('#main-content');
+            const toggleBtn = $('#toggle-sidebar');
+            
+            toggleBtn.on('click', function() {
+                sidebar.toggleClass('active hidden');
+                mainContent.toggleClass('full');
+                if (sidebar.hasClass('active')) {
+                    toggleBtn.html('<i class="fas fa-times"></i>');
+                } else {
+                    toggleBtn.html('<i class="fas fa-bars"></i>');
+                }
+            });
+
+            // Close sidebar when clicking outside on mobile
+            $(document).on('click', function(event) {
+                if ($(window).width() < 992 && sidebar.hasClass('active') && 
+                    !sidebar.is(event.target) && sidebar.has(event.target).length === 0 && 
+                    !toggleBtn.is(event.target) && toggleBtn.has(event.target).length === 0) {
+                    sidebar.removeClass('active').addClass('hidden');
+                    mainContent.addClass('full');
+                    toggleBtn.html('<i class="fas fa-bars"></i>');
+                }
+            });
+
+            // Highlight active link
+            const currentPath = '/clasificacion';
             $('.nav-link').each(function() {
                 if ($(this).attr('href') === currentPath) {
                     $(this).addClass('active');
+                } else {
+                    $(this).removeClass('active');
                 }
             });
         });

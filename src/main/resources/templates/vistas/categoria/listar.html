@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listado de Categorías</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
@@ -10,11 +11,12 @@
             --sidebar-bg: #e77547;
             --sidebar-text: white;
             --sidebar-active: rgba(255, 255, 255, 0.2);
-            --content-bg: #f8f9fa;
+            --content-bg: #f5f7fa; /* Aligned with previous pages */
             --card-bg: white;
             --primary-color: #3498db;
             --success-color: #28a745;
             --danger-color: #dc3545;
+            --warning-color: #ffc107; /* Added for consistency */
         }
         
         body {
@@ -24,23 +26,31 @@
             display: flex;
             min-height: 100vh;
             background-color: var(--content-bg);
+            overflow-x: hidden;
         }
         
         /* Sidebar Styles */
         .sidebar {
-            width: 250px;
+            width: 280px; /* Increased from 250px */
             background-color: var(--sidebar-bg);
             color: var(--sidebar-text);
             padding: 20px 0;
-            position: sticky;
+            position: fixed; /* Changed to fixed for toggle */
             top: 0;
+            left: 0;
             height: 100vh;
             overflow-y: auto;
             flex-shrink: 0;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .sidebar.hidden {
+            transform: translateX(-280px); /* Updated for new width */
         }
         
         .sidebar-header {
-            padding: 0 20px 20px;
+            padding: 0 25px 20px; /* Increased padding */
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
@@ -48,6 +58,15 @@
             color: var(--sidebar-text);
             margin-bottom: 0;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            font-size: 1.25rem;
+        }
+        
+        .sidebar-header h3 i {
+            margin-right: 12px;
+            color: var(--sidebar-active);
+            font-size: 1.2rem;
         }
         
         .sidebar-nav {
@@ -55,22 +74,24 @@
         }
         
         .nav-item {
-            margin-bottom: 5px;
+            margin-bottom: 8px; /* Increased spacing */
         }
         
         .nav-link {
             color: rgba(255, 255, 255, 0.85);
-            padding: 12px 20px;
+            padding: 12px 25px; /* Increased padding */
             border-radius: 4px;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
+            font-size: 0.95rem;
         }
         
         .nav-link i {
             margin-right: 12px;
             width: 20px;
             text-align: center;
+            font-size: 1rem;
         }
         
         .nav-link:hover {
@@ -87,27 +108,68 @@
         
         .logout-btn {
             margin-top: auto;
-            padding: 20px;
+            padding: 25px; /* Aligned with previous pages */
+        }
+        
+        /* Toolbar Styles */
+        .toolbar {
+            background-color: var(--card-bg);
+            padding: 15px 25px; /* Aligned with previous pages */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            margin-bottom: 30px; /* Aligned with previous pages */
+        }
+        
+        .toolbar .toggle-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+        
+        .toolbar .toggle-btn:hover {
+            color: #2980b9;
+        }
+        
+        .toolbar .title {
+            font-size: 1.3rem; /* Aligned with previous pages */
+            font-weight: 600;
+            color: #2c3e50;
+            letter-spacing: 0.5px;
         }
         
         /* Main Content */
         .main-content {
             flex: 1;
+            padding: 25px; /* Aligned with previous pages */
+            margin-left: 280px; /* Updated for new sidebar width */
+            transition: margin-left 0.3s ease;
             overflow-x: auto;
-            padding: 30px;
+        }
+        
+        .main-content.full {
+            margin-left: 0;
         }
         
         .card-container {
             background-color: var(--card-bg);
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            padding: 30px;
-            margin-bottom: 30px;
+            padding: 25px; /* Reduced padding */
+            margin-bottom: 25px; /* Aligned with previous pages */
         }
         
         h1 {
             color: #2c3e50;
             font-weight: 600;
+            font-size: 1.8rem; /* Reduced for balance */
             margin-bottom: 30px;
             display: flex;
             align-items: center;
@@ -116,6 +178,26 @@
         h1 i {
             margin-right: 15px;
             color: var(--primary-color);
+            font-size: 1.4rem; /* Slightly smaller */
+        }
+        
+        /* Search Form Styles */
+        .search-form {
+            margin-bottom: 30px; /* Increased for spacing */
+        }
+        
+        .search-form .input-group {
+            max-width: 400px;
+        }
+        
+        .search-form .form-control {
+            border-radius: 6px 0 0 6px;
+            font-size: 0.95rem;
+            padding: 8px 12px;
+        }
+        
+        .search-form .btn {
+            border-radius: 0 6px 6px 0;
         }
         
         /* Table Styles */
@@ -135,7 +217,7 @@
             color: #495057;
             border-bottom: none;
             font-weight: 600;
-            padding: 12px 15px;
+            padding: 14px 16px; /* Increased padding */
             vertical-align: middle;
         }
         
@@ -158,7 +240,7 @@
         
         .table td {
             vertical-align: middle;
-            padding: 12px 15px;
+            padding: 14px 16px; /* Increased padding */
             border-top: 1px solid #e9ecef;
         }
         
@@ -184,12 +266,12 @@
         
         .btn-primary:hover {
             background-color: #2188d9;
-            border-color: #1d7fcb;
+            border-color: #1d7cc7;
         }
         
         .btn-warning {
-            background-color: #ffc107;
-            border-color: #ffc107;
+            background-color: var(--warning-color);
+            border-color: var(--warning-color);
         }
         
         .btn-danger {
@@ -201,6 +283,7 @@
         .pagination {
             display: flex;
             gap: 5px;
+            justify-content: center;
         }
         
         .page-item.active .page-link {
@@ -211,68 +294,6 @@
         .page-link {
             color: var(--primary-color);
             border-radius: 6px;
-        }
-        
-        /* Search Form Styles */
-        .search-form {
-            margin-bottom: 25px;
-        }
-        
-        /* Responsive Adjustments */
-        @media (max-width: 992px) {
-            body {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
-            
-            .main-content {
-                padding: 20px;
-            }
-            
-            .card-container {
-                padding: 20px;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.5rem;
-            }
-            
-            .card-container {
-                padding: 20px 15px;
-                overflow-x: auto;
-            }
-            
-            .table {
-                display: block;
-                overflow-x: auto;
-                white-space: nowrap;
-            }
-            
-            .search-form .input-group {
-                max-width: 100%;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .main-content {
-                padding: 15px;
-            }
-            
-            .btn {
-                padding: 6px 12px;
-                font-size: 0.875rem;
-            }
-            
-            .btn i {
-                margin-right: 4px;
-            }
         }
         
         /* Empty state */
@@ -287,18 +308,116 @@
             width: 80px;
             display: inline-block;
         }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-280px);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .main-content.full {
+                margin-left: 0;
+            }
+            
+            .card-container {
+                padding: 20px;
+                overflow-x: auto;
+            }
+            
+            .table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .toolbar {
+                padding: 12px 20px;
+                margin-bottom: 20px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            h1 i {
+                font-size: 1.2rem;
+            }
+            
+            .card-container {
+                padding: 20px 15px;
+            }
+            
+            .search-form {
+                margin-bottom: 20px;
+            }
+            
+            .search-form .input-group {
+                max-width: 100%;
+            }
+            
+            .table td, .table th {
+                padding: 10px 12px; /* Adjusted for smaller screens */
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 15px;
+            }
+            
+            .toolbar {
+                padding: 10px 15px;
+                margin-bottom: 15px;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            h1 i {
+                font-size: 1rem;
+            }
+            
+            .card-container {
+                padding: 15px;
+            }
+            
+            .btn {
+                padding: 6px 12px;
+                font-size: 0.875rem;
+            }
+            
+            .btn i {
+                margin-right: 4px;
+            }
+            
+            .d-flex.gap-2 {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
     </style>
 </head>
 <body>
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <h3>Administrador</h3>
+            <h3><i class="fas fa-tools"></i>Administrador</h3>
         </div>
         <nav class="sidebar-nav">
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" th:href="@{/admin/dashboard}">
+                    <a class="nav-link" th:href="@{/admin/dashboard}">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Dashboard</span>
                     </a>
@@ -322,7 +441,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/categorias}">
+                    <a class="nav-link active" th:href="@{/categorias}">
                         <i class="fas fa-tags"></i>
                         <span>Categorías</span>
                     </a>
@@ -378,14 +497,22 @@
             </a>
         </div>
     </aside>
+    
     <!-- Main Content -->
-    <main class="main-content">
+    <main class="main-content" id="main-content">
+        <div class="toolbar">
+            <button class="toggle-btn" id="toggle-sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <span class="title">Listado de Categorías</span>
+        </div>
+        
         <div class="card-container">
-            <h1><i class="fas fa-tags"></i>Listado de Categorías</h1>
+            <h1><i class="fas fa-tags"></i> Listado de Categorías</h1>
             
             <div class="mb-4">
                 <a th:href="@{/categorias/crear}" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Nueva Categoria
+                    <i class="fas fa-plus"></i> Nueva Categoría
                 </a>
             </div>
             
@@ -393,7 +520,7 @@
             <form th:action="@{/categorias}" method="get" class="search-form">
                 <div class="input-group">
                     <input type="text" name="search" class="form-control" 
-                           placeholder="Buscar categoria" th:value="${search}" />
+                           placeholder="Buscar categoría" th:value="${search}" />
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-search"></i> Buscar
                     </button>
@@ -442,7 +569,7 @@
                 </div>
 
                 <!-- Paginación -->
-                <div th:if="${categoriasPage.totalPages > 1}" class="d-flex justify-content-between align-items-center">
+                <div th:if="${categoriasPage.totalPages > 1}" class="d-flex justify-content-between align-items-center mt-4">
                     <small class="text-muted">
                         Mostrando página [[${categoriasPage.number + 1}]] de [[${categoriasPage.totalPages}]]
                     </small>
@@ -494,14 +621,39 @@
 
     <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
-    
     <script>
-        // Resaltar el enlace activo
         $(document).ready(function() {
-            const currentPath = window.location.pathname;
+            // Sidebar toggle functionality
+            const sidebar = $('#sidebar');
+            const mainContent = $('#main-content');
+            const toggleBtn = $('#toggle-sidebar');
+            
+            toggleBtn.on('click', function() {
+                sidebar.toggleClass('active hidden');
+                mainContent.toggleClass('full');
+                if (sidebar.hasClass('active')) {
+                    toggleBtn.html('<i class="fas fa-times"></i>');
+                } else {
+                    toggleBtn.html('<i class="fas fa-bars"></i>');
+                }
+            });
+
+            // Close sidebar when clicking outside on mobile
+            $(document).on('click', function(event) {
+                if ($(window).width() < 992 && sidebar.hasClass('active') && !sidebar.is(event.target) && sidebar.has(event.target).length === 0 && !toggleBtn.is(event.target) && toggleBtn.has(event.target).length === 0) {
+                    sidebar.removeClass('active').addClass('hidden');
+                    mainContent.addClass('full');
+                    toggleBtn.html('<i class="fas fa-bars"></i>');
+                }
+            });
+
+            // Resaltar el enlace activo
+            const currentPath = '/categorias';
             $('.nav-link').each(function() {
                 if ($(this).attr('href') === currentPath) {
                     $(this).addClass('active');
+                } else {
+                    $(this).removeClass('active');
                 }
             });
         });

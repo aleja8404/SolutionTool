@@ -2,19 +2,22 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${vendedorProducto.idVendedorProducto} != null ? 'Editar Asignación' : 'Nueva Asignación'">Formulario Vendedor-Producto</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${vendedorProducto.idVendedorProducto != null} ? 'Editar Asignación' : 'Nueva Asignación'">Formulario Vendedor-Producto</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <style>
         :root {
+            --sidebar-width: 280px; /* Aligned with Listado de Compras */
             --sidebar-bg: #e77547;
             --sidebar-text: white;
             --sidebar-active: rgba(255, 255, 255, 0.2);
-            --content-bg: #f8f9fa;
+            --content-bg: #f5f7fa; /* Aligned with Listado de Compras */
             --card-bg: white;
             --primary-color: #3498db;
             --success-color: #28a745;
             --danger-color: #dc3545;
+            --warning-color: #ffc107;
         }
         
         body {
@@ -24,23 +27,32 @@
             display: flex;
             min-height: 100vh;
             background-color: var(--content-bg);
+            overflow-x: hidden;
         }
         
         /* Sidebar Styles */
         .sidebar {
-            width: 250px;
+            width: var(--sidebar-width);
             background-color: var(--sidebar-bg);
             color: var(--sidebar-text);
             padding: 20px 0;
-            position: sticky;
+            position: fixed; /* Changed to fixed for toggle */
             top: 0;
+            left: 0;
             height: 100vh;
             overflow-y: auto;
             flex-shrink: 0;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar.hidden {
+            transform: translateX(-280px);
         }
         
         .sidebar-header {
-            padding: 0 20px 20px;
+            padding: 0 25px 20px; /* Increased header padding */
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
@@ -48,6 +60,15 @@
             color: var(--sidebar-text);
             margin-bottom: 0;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            font-size: 1.25rem;
+        }
+        
+        .sidebar-header h3 i {
+            margin-right: 12px;
+            color: var(--sidebar-active);
+            font-size: 1.2rem;
         }
         
         .sidebar-nav {
@@ -55,28 +76,30 @@
         }
         
         .nav-item {
-            margin-bottom: 5px;
+            margin-bottom: 8px; /* Increased nav item spacing */
         }
         
         .nav-link {
             color: rgba(255, 255, 255, 0.85);
-            padding: 12px 20px;
+            padding: 12px 25px;
             border-radius: 4px;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
+            font-size: 0.95rem;
+            text-decoration: none;
         }
         
         .nav-link i {
             margin-right: 12px;
             width: 20px;
             text-align: center;
+            font-size: 1rem;
         }
         
         .nav-link:hover {
             color: var(--sidebar-text);
             background-color: rgba(255, 255, 255, 0.15);
-            text-decoration: none;
         }
         
         .nav-link.active {
@@ -87,14 +110,54 @@
         
         .logout-btn {
             margin-top: auto;
-            padding: 20px;
+            padding: 25px; /* Increased logout padding */
+        }
+        
+        /* Toolbar Styles */
+        .toolbar {
+            background-color: var(--card-bg);
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            margin-bottom: 30px;
+        }
+        
+        .toolbar .toggle-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+        
+        .toolbar .toggle-btn:hover {
+            color: #2980b9;
+        }
+        
+        .toolbar .title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            letter-spacing: 0.5px;
         }
         
         /* Main Content */
         .main-content {
             flex: 1;
-            overflow-x: auto;
             padding: 30px;
+            margin-left: 280px; /* Aligned with sidebar width */
+            transition: margin-left 0.3s ease;
+            overflow-x: auto;
+        }
+        
+        .main-content.full {
+            margin-left: 0;
         }
         
         .form-container {
@@ -110,6 +173,7 @@
             color: #2c3e50;
             font-weight: 600;
             margin-bottom: 30px;
+            font-size: 1.8rem;
             display: flex;
             align-items: center;
         }
@@ -117,6 +181,7 @@
         h1 i {
             margin-right: 15px;
             color: var(--primary-color);
+            font-size: 1.4rem;
         }
         
         /* Form Styles */
@@ -130,7 +195,7 @@
             padding: 12px 15px;
             border-radius: 6px;
             border: 1px solid #ced4da;
-            transition: all 0.3s ease;
+            transition: border-color 0.3s ease;
         }
         
         .form-control:focus, .form-select:focus {
@@ -138,10 +203,13 @@
             box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
         }
         
-        /* Input Group Styles */
         .input-group-text {
             background-color: #e9ecef;
             border: 1px solid #ced4da;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
         }
         
         /* Action Buttons */
@@ -186,19 +254,29 @@
             border-color: #545b62;
         }
         
+        /* Validation Styles */
+        .is-invalid {
+            border-color: var(--danger-color);
+        }
+        
+        .invalid-feedback {
+            color: var(--danger-color);
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+        }
+        
         /* Responsive Adjustments */
         @media (max-width: 992px) {
-            body {
-                flex-direction: column;
+            .sidebar {
+                transform: translateX(-280px);
             }
             
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
+            .sidebar.active {
+                transform: translateX(0);
             }
             
             .main-content {
+                margin-left: 0;
                 padding: 20px;
             }
             
@@ -208,8 +286,17 @@
         }
         
         @media (max-width: 768px) {
+            .toolbar {
+                padding: 12px 20px;
+                margin-bottom: 20px;
+            }
+            
             h1 {
                 font-size: 1.5rem;
+            }
+            
+            h1 i {
+                font-size: 1.2rem;
             }
             
             .form-container {
@@ -224,6 +311,10 @@
             .btn {
                 width: 100%;
             }
+            
+            .form-control, .form-select {
+                padding: 10px 12px;
+            }
         }
         
         @media (max-width: 576px) {
@@ -231,21 +322,23 @@
                 padding: 15px;
             }
             
-            .form-control, .form-select {
-                padding: 10px 12px;
+            .toolbar {
+                padding: 10px 15px;
+                margin-bottom: 15px;
             }
         }
     </style>
 </head>
+<body>
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <h3>Administrador</h3>
+            <h3><i class="fas fa-tools"></i>Administrador</h3>
         </div>
         <nav class="sidebar-nav">
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" th:href="@{/admin/dashboard}">
+                    <a class="nav-link" th:href="@{/admin/dashboard}">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Dashboard</span>
                     </a>
@@ -305,7 +398,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/vendedor-producto}">
+                    <a class="nav-link active" th:href="@{/vendedor-producto}">
                         <i class="fas fa-link"></i>
                         <span>Vendedor Artículo</span>
                     </a>
@@ -327,22 +420,26 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="main-content">
+    <main class="main-content" id="main-content">
+        <div class="toolbar">
+            <button class="toggle-btn" id="toggle-sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <span class="title" th:text="${vendedorProducto.idVendedorProducto != null} ? 'Editar Asignación' : 'Nueva Asignación'">Formulario Vendedor-Producto</span>
+        </div>
+        
         <div class="form-container">
             <h1>
-                <i class="fas" th:classappend="${vendedorProducto.idVendedorProducto} != null ? 'fa-edit' : 'fa-plus-circle'"></i>
-                <span th:text="${vendedorProducto.idVendedorProducto} != null ? 'Editar Asignación' : 'Nueva Asignación'"></span>
+                <i class="fas" th:classappend="${vendedorProducto.idVendedorProducto != null} ? 'fa-edit' : 'fa-plus-circle'"></i>
+                <span th:text="${vendedorProducto.idVendedorProducto != null} ? 'Editar Asignación' : 'Nueva Asignación'"></span>
             </h1>
             
-            <form th:action="${vendedorProducto.idVendedorProducto} != null ? @{/vendedor-producto/actualizar/{id}(id=${vendedorProducto.idVendedorProducto})} : @{/vendedor-producto}" 
-                  th:object="${vendedorProducto}" method="post">
-                
+            <form th:action="${vendedorProducto.idVendedorProducto != null} ? @{/vendedor-producto/actualizar/{id}(id=${vendedorProducto.idVendedorProducto})} : @{/vendedor-producto}" 
+                  th:object="${vendedorProducto}" method="post" class="needs-validation" novalidate>
                 <!-- Campo oculto para ID (solo en edición) -->
-                <div th:if="${vendedorProducto.idVendedorProducto} != null">
-                    <input type="hidden" th:field="*{idVendedorProducto}" />
-                </div>
+                <input type="hidden" th:if="${vendedorProducto.idVendedorProducto != null}" th:field="*{idVendedorProducto}" />
                 
-                <div class="mb-4">
+                <div class="form-group">
                     <label for="vendedor" class="form-label">Vendedor</label>
                     <select id="vendedor" th:field="*{vendedor}" class="form-select" required>
                         <option value="">Seleccione un vendedor</option>
@@ -352,9 +449,10 @@
                                 th:selected="${vendedorProducto.vendedor != null and vendedorProducto.vendedor.idVendedor == vendedor.idVendedor}">
                         </option>
                     </select>
+                    <div class="invalid-feedback">Por favor seleccione un vendedor</div>
                 </div>
                 
-                <div class="mb-4">
+                <div class="form-group">
                     <label for="producto" class="form-label">Producto</label>
                     <select id="producto" th:field="*{producto}" class="form-select" required>
                         <option value="">Seleccione un producto</option>
@@ -364,34 +462,36 @@
                                 th:selected="${vendedorProducto.producto != null and vendedorProducto.producto.idProducto == producto.idProducto}">
                         </option>
                     </select>
+                    <div class="invalid-feedback">Por favor seleccione un producto</div>
                 </div>
                 
-                <div class="mb-4">
+                <div class="form-group">
                     <label for="cantidad" class="form-label">Cantidad</label>
                     <div class="input-group">
                         <input type="number" id="cantidad" th:field="*{cantidad}" class="form-control" 
-                            placeholder="Ingrese la cantidad" min="1" required />
+                               placeholder="Ingrese la cantidad" min="1" required />
                         <span class="input-group-text">unidades</span>
+                        <div class="invalid-feedback">Por favor ingrese una cantidad mayor a 0</div>
                     </div>
                 </div>
                 
-                <div class="mb-4">
+                <div class="form-group">
                     <label for="precio" class="form-label">Precio</label>
                     <div class="input-group">
                         <span class="input-group-text">$</span>
                         <input type="number" id="precio" th:field="*{precio}" class="form-control" 
-                            placeholder="Ingrese el precio" step="0.01" min="0" required />
+                               placeholder="Ingrese el precio" step="0.01" min="0.01" required />
+                        <div class="invalid-feedback">Por favor ingrese un precio mayor a 0</div>
                     </div>
                 </div>
-
-                <!-- Action Buttons -->
-                <div class="d-flex justify-content-between mt-4">
+                
+                <div class="form-actions">
                     <a th:href="@{/vendedor-producto}" class="btn btn-secondary">
                         <i class="fas fa-times"></i> Cancelar
                     </a>
                     <button type="submit" class="btn btn-success">
-                        <i class="fas" th:classappend="${vendedorProducto.idVendedorProducto} != null ? 'fa-save' : 'fa-check'"></i>
-                        <span th:text="${vendedorProducto.idVendedorProducto} != null ? 'Actualizar Asignación' : 'Guardar Asignación'">Guardar Asignación</span>
+                        <i class="fas" th:classappend="${vendedorProducto.idVendedorProducto != null} ? 'fa-save' : 'fa-check'"></i>
+                        <span th:text="${vendedorProducto.idVendedorProducto != null} ? 'Actualizar Asignación' : 'Guardar Asignación'"></span>
                     </button>
                 </div>
             </form>
@@ -400,34 +500,56 @@
 
     <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
-    
     <script>
-        // Resaltar el enlace activo
         $(document).ready(function() {
-            const currentPath = window.location.pathname;
+            // Sidebar toggle functionality
+            const sidebar = $('#sidebar');
+            const mainContent = $('#main-content');
+            const toggleBtn = $('#toggle-sidebar');
+            
+            toggleBtn.on('click', function() {
+                sidebar.toggleClass('active hidden');
+                mainContent.toggleClass('full');
+                if (sidebar.hasClass('active')) {
+                    toggleBtn.html('<i class="fas fa-times"></i>');
+                } else {
+                    toggleBtn.html('<i class="fas fa-bars"></i>');
+                }
+            });
+
+            // Close sidebar when clicking outside on mobile
+            $(document).on('click', function(event) {
+                if ($(window).width() < 992 && sidebar.hasClass('active') && !sidebar.is(event.target) && sidebar.has(event.target).length === 0 && !toggleBtn.is(event.target) && toggleBtn.has(event.target).length === 0) {
+                    sidebar.removeClass('active').addClass('hidden');
+                    mainContent.addClass('full');
+                    toggleBtn.html('<i class="fas fa-bars"></i>');
+                }
+            });
+
+            // Resaltar el enlace activo
+            const currentPath = '/vendedor-producto';
             $('.nav-link').each(function() {
                 if ($(this).attr('href') === currentPath) {
                     $(this).addClass('active');
+                } else {
+                    $(this).removeClass('active');
                 }
             });
-            
-            // Validación adicional del formulario
-            $('form').submit(function() {
-                const cantidad = $('#cantidad').val();
-                const precio = $('#precio').val();
-                
-                if (cantidad <= 0) {
-                    alert('La cantidad debe ser mayor que cero');
-                    return false;
-                }
-                
-                if (precio <= 0) {
-                    alert('El precio debe ser mayor que cero');
-                    return false;
-                }
-                
-                return true;
-            });
+
+            // Validación de formulario
+            (function() {
+                'use strict';
+                var forms = document.querySelectorAll('.needs-validation');
+                Array.prototype.slice.call(forms).forEach(function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            })();
         });
     </script>
 </body>

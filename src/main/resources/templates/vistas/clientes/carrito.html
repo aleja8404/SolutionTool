@@ -560,102 +560,51 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        <div class="page-header">
-            <h1><i class="fas fa-shopping-cart"></i> Carrito de Compras</h1>
-        </div>
-        
-        <div th:if="${error}" class="alert alert-danger" role="alert">
-            <i class="fas fa-exclamation-circle me-2"></i>
-            <span th:text="${error}"></span>
-        </div>
-        
-        <div th:if="${success}" class="alert alert-success" role="alert">
-            <i class="fas fa-check-circle me-2"></i>
-            <span th:text="${success}"></span>
-        </div>
-        
+           <h1>Carrito de Compras</h1>
         <div th:if="${carrito == null or carrito.isEmpty()}">
-            <div class="empty-state">
-                <i class="fas fa-shopping-cart"></i>
-                <p>Tu carrito está vacío</p>
-                <a th:href="@{/cliente/productos}" class="btn btn-primary">
-                    <i class="fas fa-search"></i> Explorar Productos
-                </a>
-            </div>
+            <p class="text-muted">Tu carrito está vacío.</p>
+            <a th:href="@{/cliente/productos}" class="btn btn-continue">Explorar Productos</a>
         </div>
-        
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
         <div class="cart-items" th:unless="${carrito == null or carrito.isEmpty()}">
-            <!-- Ejemplo de producto en el carrito - Martillo -->
-            <div class="cart-item">
-                <div class="cart-item-img-container">
-                    <img src="https://m.media-amazon.com/images/I/71x+42WQn7L._AC_UF1000,1000_QL80_.jpg" alt="Martillo de carpintero" class="cart-item-img" />
+            <div class="cart-item" th:each="item : ${carrito}" th:if="${item != null}">
+                <div th:if="${item.producto?.foto}">
+                    <img th:src="@{${item.producto.foto}}" th:alt="'Foto de ' + ${item.producto.nombre}" class="cart-item-img" />
+                </div>
+                <div th:unless="${item.producto?.foto}" class="cart-item-no-img">
+                    Sin Imagen
                 </div>
                 <div class="cart-item-details">
-                    <h5 class="cart-item-title">Martillo de Carpintero 16 oz</h5>
-                    <p class="cart-item-price">12.99 USD</p>
-                    <div class="cart-item-actions">
-                        <form th:action="@{/cliente/carrito/actualizar}" method="post" class="d-flex align-items-center">
-                            <input type="hidden" name="productoId" value="1" />
-                            <input type="number" name="cantidad" min="1" value="2" class="form-control quantity-input me-2" />
-                            <button type="submit" class="btn btn-link">
-                                <i class="fas fa-sync-alt"></i> Actualizar
-                            </button>
+                    <h5 class="cart-item-title" th:text="${item.producto?.nombre ?: 'Producto no disponible'}"></h5>
+                    <p class="cart-item-price" th:text="${item.precio != null} ? ${#numbers.formatDecimal(item.precio, 1, 2)} + ' USD' : '0.00 USD'"></p>
+                    <div class="cart-item-quantity">
+                        <form th:action="@{/cliente/carrito/actualizar}" method="post" class="d-inline">
+                            <input type="hidden" name="productoId" th:value="${item.producto?.idProducto}" />
+                            <input type="number" name="cantidad" min="1" th:value="${item.cantidad}" class="form-control d-inline-block" style="width: 70px;" />
+                            <button type="submit" class="btn btn-link btn-sm">Actualizar</button>
                         </form>
-                        <form th:action="@{/cliente/carrito/eliminar}" method="post">
-                            <input type="hidden" name="productoId" value="1" />
-                            <button type="submit" class="btn btn-danger btn-sm">
-                                <i class="fas fa-trash-alt"></i> Eliminar
-                            </button>
+                        <form th:action="@{/cliente/carrito/eliminar}" method="post" class="d-inline">
+                            <input type="hidden" name="productoId" th:value="${item.producto?.idProducto}" />
+                            <button type="submit" class="btn btn-link btn-sm btn-delete">Eliminar</button>
                         </form>
                     </div>
                 </div>
-                <div class="cart-item-subtotal">25.98 USD</div>
-            </div>
-            
-            <!-- Ejemplo de producto en el carrito - Taladro -->
-            <div class="cart-item">
-                <div class="cart-item-img-container">
-                    <img src="https://m.media-amazon.com/images/I/61lK+1G5UIL._AC_UF1000,1000_QL80_.jpg" alt="Taladro inalámbrico" class="cart-item-img" />
-                </div>
-                <div class="cart-item-details">
-                    <h5 class="cart-item-title">Taladro Inalámbrico 20V</h5>
-                    <p class="cart-item-price">89.99 USD</p>
-                    <div class="cart-item-actions">
-                        <form th:action="@{/cliente/carrito/actualizar}" method="post" class="d-flex align-items-center">
-                            <input type="hidden" name="productoId" value="2" />
-                            <input type="number" name="cantidad" min="1" value="1" class="form-control quantity-input me-2" />
-                            <button type="submit" class="btn btn-link">
-                                <i class="fas fa-sync-alt"></i> Actualizar
-                            </button>
-                        </form>
-                        <form th:action="@{/cliente/carrito/eliminar}" method="post">
-                            <input type="hidden" name="productoId" value="2" />
-                            <button type="submit" class="btn btn-danger btn-sm">
-                                <i class="fas fa-trash-alt"></i> Eliminar
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                <div class="cart-item-subtotal">89.99 USD</div>
+                <div class="cart-item-subtotal" th:text="${item.cantidad != null and item.precio != null} ? ${#numbers.formatDecimal(item.cantidad * item.precio.doubleValue(), 1, 2)} + ' USD' : '0.00 USD'"></div>
             </div>
         </div>
-        
         <div class="summary-card" th:unless="${carrito == null or carrito.isEmpty()}">
-            <h2><i class="fas fa-receipt"></i> Resumen del Pedido</h2>
-            <p class="summary-total">115.97 USD</p>
+            <h2>Resumen del Pedido</h2>
+            <p class="summary-total" th:text="${totalCarrito != null} ? ${#numbers.formatDecimal(totalCarrito, 1, 2)} + ' USD' : '0.00 USD'"></p>
             <form th:action="@{/cliente/carrito/comprar}" method="post">
-                <button type="submit" class="btn btn-checkout">
-                    <i class="fas fa-credit-card"></i> Realizar Compra
-                </button>
+                <button type="submit" class="btn btn-checkout">Realizar Compra</button>
             </form>
-            <a th:href="@{/cliente/productos}" class="btn btn-continue">
-                <i class="fas fa-arrow-left"></i> Seguir Comprando
-            </a>
+            <a th:href="@{/cliente/productos}" class="btn btn-continue">Seguir Comprando</a>
         </div>
-        
-        <footer>
-            <p>© 2025 Ferretería Online - Todos los derechos reservados</p>
-        </footer>
+    </div>
+    <footer>
+        <p>© 2025 Ferretería Online</p>
+    </footer>
     </main>
 
     <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
@@ -685,3 +634,15 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+

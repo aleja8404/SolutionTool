@@ -2,7 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${usuario.id != null ? 'Editar Usuario' : 'Nuevo Usuario'}"></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${usuario.id != null ? 'Editar Usuario' : 'Nuevo Usuario'}">Formulario Usuario</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <style>
@@ -10,10 +11,10 @@
             --sidebar-bg: #e77547;
             --sidebar-text: white;
             --sidebar-active: rgba(255, 255, 255, 0.2);
-            --content-bg: #f8f9fa;
+            --content-bg: #f5f7fa; /* Aligned with previous pages */
             --card-bg: white;
             --primary-color: #3498db;
-            --success-color: #21a33d;
+            --success-color: #28a745; /* Aligned with previous pages */
             --danger-color: #dc3545;
             --warning-color: #ffc107;
         }
@@ -25,23 +26,31 @@
             display: flex;
             min-height: 100vh;
             background-color: var(--content-bg);
+            overflow-x: hidden;
         }
         
         /* Sidebar Styles */
         .sidebar {
-            width: 250px;
+            width: 280px; /* Increased from 250px */
             background-color: var(--sidebar-bg);
             color: var(--sidebar-text);
             padding: 20px 0;
-            position: sticky;
+            position: fixed; /* Changed to fixed for toggle */
             top: 0;
+            left: 0;
             height: 100vh;
             overflow-y: auto;
             flex-shrink: 0;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .sidebar.hidden {
+            transform: translateX(-280px); /* Updated for new width */
         }
         
         .sidebar-header {
-            padding: 0 20px 20px;
+            padding: 0 25px 20px; /* Increased padding */
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
@@ -49,6 +58,15 @@
             color: var(--sidebar-text);
             margin-bottom: 0;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            font-size: 1.25rem;
+        }
+        
+        .sidebar-header h3 i {
+            margin-right: 12px;
+            color: var(--sidebar-active);
+            font-size: 1.2rem;
         }
         
         .sidebar-nav {
@@ -56,22 +74,24 @@
         }
         
         .nav-item {
-            margin-bottom: 5px;
+            margin-bottom: 8px; /* Increased spacing */
         }
         
         .nav-link {
             color: rgba(255, 255, 255, 0.85);
-            padding: 12px 20px;
+            padding: 12px 25px; /* Increased padding */
             border-radius: 4px;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
+            font-size: 0.95rem;
         }
         
         .nav-link i {
             margin-right: 12px;
             width: 20px;
             text-align: center;
+            font-size: 1rem;
         }
         
         .nav-link:hover {
@@ -88,28 +108,68 @@
         
         .logout-btn {
             margin-top: auto;
-            padding: 20px;
+            padding: 25px; /* Aligned with previous pages */
+        }
+        
+        /* Toolbar Styles */
+        .toolbar {
+            background-color: var(--card-bg);
+            padding: 15px 25px; /* Aligned with previous pages */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            margin-bottom: 30px; /* Aligned with previous pages */
+        }
+        
+        .toolbar .toggle-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+        
+        .toolbar .toggle-btn:hover {
+            color: #2980b9;
+        }
+        
+        .toolbar .title {
+            font-size: 1.3rem; /* Aligned with previous pages */
+            font-weight: 600;
+            color: #2c3e50;
+            letter-spacing: 0.5px;
         }
         
         /* Main Content */
         .main-content {
             flex: 1;
-            overflow-x: auto;
-            padding: 30px;
+            padding: 25px; /* Aligned with previous pages */
+            margin-left: 280px; /* Updated for new sidebar width */
+            transition: margin-left 0.3s ease;
         }
         
-        .form-container {
+        .main-content.full {
+            margin-left: 0;
+        }
+        
+        /* Card Container */
+        .card-container {
             background-color: var(--card-bg);
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            padding: 30px;
-            max-width: 800px;
-            margin: 0 auto;
+            padding: 25px; /* Reduced padding */
+            margin-bottom: 25px; /* Aligned with previous pages */
         }
         
         h1 {
             color: #2c3e50;
             font-weight: 600;
+            font-size: 1.8rem; /* Reduced for balance */
             margin-bottom: 30px;
             display: flex;
             align-items: center;
@@ -118,25 +178,31 @@
         h1 i {
             margin-right: 15px;
             color: var(--primary-color);
+            font-size: 1.4rem; /* Slightly smaller */
         }
         
         /* Form Styles */
         .form-label {
             font-weight: 500;
-            color: #495057;
-            margin-bottom: 8px;
+            color: #2c3e50; /* Aligned with previous pages */
+            margin-bottom: 0.5rem;
         }
         
         .form-control, .form-select {
             padding: 10px 15px;
             border-radius: 6px;
             border: 1px solid #ced4da;
+            font-size: 0.95rem;
             transition: all 0.3s ease;
         }
         
         .form-control:focus, .form-select:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .mb-3 {
+            margin-bottom: 1.5rem !important; /* Increased for spacing */
         }
         
         /* Error message */
@@ -158,7 +224,7 @@
         }
         
         .btn {
-            padding: 10px 20px;
+            padding: 8px 16px; /* Aligned with previous pages */
             border-radius: 6px;
             font-weight: 500;
             transition: all 0.3s ease;
@@ -174,6 +240,16 @@
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2188d9;
+            border-color: #1d7cc7;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
         }
         
         .btn-success:hover {
@@ -193,32 +269,52 @@
         
         /* Responsive Adjustments */
         @media (max-width: 992px) {
-            body {
-                flex-direction: column;
+            .sidebar {
+                transform: translateX(-280px);
             }
             
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .main-content.full {
+                margin-left: 0;
+            }
+            
+            .card-container {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .toolbar {
+                padding: 12px 20px;
+                margin-bottom: 20px;
             }
             
             .main-content {
                 padding: 20px;
             }
             
-            .form-container {
-                padding: 20px;
-            }
-        }
-        
-        @media (max-width: 768px) {
             h1 {
                 font-size: 1.5rem;
             }
             
-            .form-container {
+            h1 i {
+                font-size: 1.2rem;
+            }
+            
+            .card-container {
                 padding: 20px 15px;
+            }
+            
+            .form-control, .form-select {
+                font-size: 0.9rem;
+                padding: 8px;
             }
             
             .form-actions {
@@ -227,6 +323,8 @@
             }
             
             .btn {
+                padding: 6px 12px;
+                font-size: 0.875rem;
                 width: 100%;
             }
         }
@@ -235,19 +333,44 @@
             .main-content {
                 padding: 15px;
             }
+            
+            .toolbar {
+                padding: 10px 15px;
+                margin-bottom: 15px;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            h1 i {
+                font-size: 1rem;
+            }
+            
+            .card-container {
+                padding: 15px;
+            }
+            
+            .form-label {
+                font-size: 0.9rem;
+            }
+            
+            .form-control, .form-select {
+                font-size: 0.85rem;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <h3>Administrador</h3>
+            <h3><i class="fas fa-tools"></i>Administrador</h3>
         </div>
         <nav class="sidebar-nav">
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" th:href="@{/admin/dashboard}">
+                    <a class="nav-link" th:href="@{/admin/dashboard}">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Dashboard</span>
                     </a>
@@ -259,7 +382,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/usuarios}">
+                    <a class="nav-link active" th:href="@{/usuarios}">
                         <i class="fas fa-user-cog"></i>
                         <span>Usuarios</span>
                     </a>
@@ -329,8 +452,15 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="main-content">
-        <div class="form-container">
+    <main class="main-content" id="main-content">
+        <div class="toolbar">
+            <button class="toggle-btn" id="toggle-sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <span class="title" th:text="${usuario.id != null ? 'Editar Usuario' : 'Nuevo Usuario'}">Formulario Usuario</span>
+        </div>
+        
+        <div class="card-container">
             <h1>
                 <i class="fas" th:classappend="${usuario.id != null} ? 'fa-user-edit' : 'fa-user-plus'"></i>
                 <span th:text="${usuario.id != null ? 'Editar Usuario' : 'Nuevo Usuario'}"></span>
@@ -341,31 +471,31 @@
             
             <!-- Formulario -->
             <form th:action="${usuario.id != null} ? @{/usuarios/actualizar/{id}(id=${usuario.id})} : @{/usuarios/guardar}" 
-                th:object="${usuario}" method="post">
+                  th:object="${usuario}" method="post">
                 <input type="hidden" th:field="*{id}" />
                 
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre</label>
                     <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required 
-                        placeholder="Ingrese el nombre del usuario"/>
+                           placeholder="Ingrese el nombre del usuario"/>
                 </div>
                 
                 <div class="mb-3">
                     <label for="apellido" class="form-label">Apellido</label>
                     <input type="text" class="form-control" id="apellido" th:field="*{apellido}" required 
-                        placeholder="Ingrese el apellido del usuario"/>
+                           placeholder="Ingrese el apellido del usuario"/>
                 </div>
                 
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
                     <input type="email" class="form-control" id="email" th:field="*{email}" required 
-                        placeholder="Ingrese el email del usuario"/>
+                           placeholder="Ingrese el email del usuario"/>
                 </div>
                 
                 <div class="mb-3" th:unless="${usuario.id != null}">
                     <label for="password" class="form-label">Contraseña</label>
                     <input type="password" class="form-control" id="password" th:field="*{password}" required 
-                        placeholder="Ingrese la contraseña del usuario"/>
+                           placeholder="Ingrese la contraseña del usuario"/>
                 </div>
                 
                 <div class="mb-3">
@@ -377,13 +507,14 @@
                         <option value="ROLE_PROVEEDOR">Proveedor</option>
                     </select>
                 </div>
+                
                 <!-- Action Buttons -->
-                <div class="d-flex justify-content-between">
+                <div class="form-actions">
                     <a th:href="@{/usuarios}" class="btn btn-secondary">
-                        <i class="fas fa-times me-1"></i> Cancelar
+                        <i class="fas fa-times"></i> Cancelar
                     </a>
                     <button type="submit" class="btn btn-success">
-                        <i class="fas fa-save me-1"></i>
+                        <i class="fas fa-save"></i>
                         <span th:text="${usuario.id != null} ? 'Actualizar Usuario' : 'Crear Usuario'">Guardar</span>
                     </button>
                 </div>
@@ -393,19 +524,44 @@
 
     <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
-    
     <script>
-        // Resaltar el enlace activo
         $(document).ready(function() {
-            const currentPath = window.location.pathname;
+            // Sidebar toggle functionality
+            const sidebar = $('#sidebar');
+            const mainContent = $('#main-content');
+            const toggleBtn = $('#toggle-sidebar');
+            
+            toggleBtn.on('click', function() {
+                sidebar.toggleClass('active hidden');
+                mainContent.toggleClass('full');
+                if (sidebar.hasClass('active')) {
+                    toggleBtn.html('<i class="fas fa-times"></i>');
+                } else {
+                    toggleBtn.html('<i class="fas fa-bars"></i>');
+                }
+            });
+
+            // Close sidebar when clicking outside on mobile
+            $(document).on('click', function(event) {
+                if ($(window).width() < 992 && sidebar.hasClass('active') && !sidebar.is(event.target) && sidebar.has(event.target).length === 0 && !toggleBtn.is(event.target) && toggleBtn.has(event.target).length === 0) {
+                    sidebar.removeClass('active').addClass('hidden');
+                    mainContent.addClass('full');
+                    toggleBtn.html('<i class="fas fa-bars"></i>');
+                }
+            });
+
+            // Resaltar el enlace activo
+            const currentPath = '/usuarios';
             $('.nav-link').each(function() {
                 if ($(this).attr('href') === currentPath) {
                     $(this).addClass('active');
+                } else {
+                    $(this).removeClass('active');
                 }
             });
-            
+
             // Seleccionar el rol actual del usuario en el dropdown
-            const currentRole = $('#role').data('current-role');
+            const currentRole = $('#role').data('current-role') || $('#role').val();
             if (currentRole) {
                 $('#role').val(currentRole);
             }

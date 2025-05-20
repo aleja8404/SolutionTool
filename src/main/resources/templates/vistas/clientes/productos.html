@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Productos Disponibles - Ferretería Online</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
@@ -497,139 +498,23 @@
         </div>
         
         <div class="products-grid" th:unless="${productos.isEmpty()}">
-            <!-- Martillo -->
-            <div class="product-card">
+            <div class="product-card" th:each="producto : ${productos}">
                 <div class="product-img-container">
-                    <img src="https://m.media-amazon.com/images/I/71x+42WQn7L._AC_UF1000,1000_QL80_.jpg" alt="Martillo de carpintero" class="product-img" />
+                    <img th:if="${producto.foto}" th:src="@{${producto.foto}}" th:alt="'Foto de ' + ${producto.nombre}" class="product-img" />
+                    <div th:unless="${producto.foto}" class="no-img">Sin Imagen</div>
                 </div>
-                <div class="card-body">
-                    <h5 class="card-title">Martillo de Carpintero 16 oz</h5>
-                    <p class="card-text">Martillo profesional con mango de fibra de vidrio y cabeza de acero forjado. Ideal para trabajos de carpintería y construcción.</p>
-                    <p class="card-price">12.990 COP</p>
-                    <div class="card-stock stock-normal">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Disponible: 25</span>
-                    </div>
-                    <form th:action="@{/cliente/carrito/agregar}" method="post" class="add-to-cart-form">
-                        <input type="hidden" name="productoId" value="1" />
-                        <input type="number" name="cantidad" min="1" max="25" value="1" class="form-control quantity-input" />
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-cart-plus"></i> Agregar
-                        </button>
-                    </form>
-                </div>
-            </div>
-            
-            <!-- Taladro -->
-            <div class="product-card">
-                <div class="product-img-container">
-                    <img src="https://m.media-amazon.com/images/I/61lK+1G5UIL._AC_UF1000,1000_QL80_.jpg" alt="Taladro inalámbrico" class="product-img" />
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">Taladro Inalámbrico 20V</h5>
-                    <p class="card-text">Taladro percutor con batería de litio, 2 velocidades y par máximo de 50 Nm. Incluye maletín y 2 baterías.</p>
-                    <p class="card-price">89.990 COP</p>
-                    <div class="card-stock stock-low">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <span>¡Solo 3 unidades!</span>
-                    </div>
-                    <form th:action="@{/cliente/carrito/agregar}" method="post" class="add-to-cart-form">
-                        <input type="hidden" name="productoId" value="2" />
-                        <input type="number" name="cantidad" min="1" max="3" value="1" class="form-control quantity-input" />
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-cart-plus"></i> Agregar
-                        </button>
-                    </form>
-                </div>
-            </div>
-            
-            <!-- Juego de llaves -->
-            <div class="product-card">
-                <div class="product-img-container">
-                    <img src="https://m.media-amazon.com/images/I/91Y1+0F0JQL._AC_UF1000,1000_QL80_.jpg" alt="Juego de llaves" class="product-img" />
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">Juego de Llaves Mixtas 10 Piezas</h5>
-                    <p class="card-text">Set profesional de llaves combinadas de 6 a 19 mm en estuche de plástico resistente. Acero al cromo vanadio.</p>
-                    <p class="card-price">24.500 COP</p>
-                    <div class="card-stock stock-normal">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Disponible: 18</span>
-                    </div>
-                    <form th:action="@{/cliente/carrito/agregar}" method="post" class="add-to-cart-form">
-                        <input type="hidden" name="productoId" value="3" />
-                        <input type="number" name="cantidad" min="1" max="18" value="1" class="form-control quantity-input" />
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-cart-plus"></i> Agregar
-                        </button>
-                    </form>
-                </div>
-            </div>
-            
-            <!-- Sierra circular -->
-            <div class="product-card">
-                <div class="product-img-container">
-                    <img src="https://m.media-amazon.com/images/I/71+U+6aGJEL._AC_UF1000,1000_QL80_.jpg" alt="Sierra circular" class="product-img" />
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">Sierra Circular 1200W</h5>
-                    <p class="card-text">Sierra circular profesional con motor de 1200W, profundidad de corte de 55mm y guía láser para cortes precisos.</p>
-                    <p class="card-price">129.990 COP</p>
-                    <div class="card-stock stock-out">
-                        <i class="fas fa-times-circle"></i>
-                        <span>Agotado</span>
-                    </div>
-                    <form th:action="@{/cliente/carrito/agregar}" method="post" class="add-to-cart-form">
-                        <input type="hidden" name="productoId" value="4" />
-                        <input type="number" name="cantidad" min="1" max="0" value="1" class="form-control quantity-input" disabled />
-                        <button type="submit" class="btn btn-primary" disabled>
-                            <i class="fas fa-cart-plus"></i> Agregar
-                        </button>
-                    </form>
-                </div>
-            </div>
-            
-            <!-- Pintura blanca -->
-            <div class="product-card">
-                <div class="product-img-container">
-                    <img src="https://m.media-amazon.com/images/I/81vJAgj0zQL._AC_UF1000,1000_QL80_.jpg" alt="Pintura blanca" class="product-img" />
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">Pintura Blanca Latex 4L</h5>
-                    <p class="card-text">Pintura de interior/exterior de alta calidad, acabado mate, cubre 14 m² por litro. Resistente a lavados y hongos.</p>
-                    <p class="card-price">310.750 COP</p>
-                    <div class="card-stock stock-normal">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Disponible: 12</span>
-                    </div>
-                    <form th:action="@{/cliente/carrito/agregar}" method="post" class="add-to-cart-form">
-                        <input type="hidden" name="productoId" value="5" />
-                        <input type="number" name="cantidad" min="1" max="12" value="1" class="form-control quantity-input" />
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-cart-plus"></i> Agregar
-                        </button>
-                    </form>
-                </div>
-            </div>
-            
-            <!-- Tornillos -->
-            <div class="product-card">
-                <div class="product-img-container">
-                    <img src="https://m.media-amazon.com/images/I/81+3+3VtJIL._AC_UF1000,1000_QL80_.jpg" alt="Tornillos" class="product-img" />
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">Set de Tornillos 200 Piezas</h5>
-                    <p class="card-text">Variedad de tornillos para madera y metal en diferentes tamaños. Incluye tornillos, tacos y clavos. Estuche organizador.</p>
-                    <p class="card-price">150.990 COP</p>
-                    <div class="card-stock stock-normal">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Disponible: 8</span>
-                    </div>
-                    <form th:action="@{/cliente/carrito/agregar}" method="post" class="add-to-cart-form">
-                        <input type="hidden" name="productoId" value="6" />
-                        <input type="number" name="cantidad" min="1" max="8" value="1" class="form-control quantity-input" />
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-cart-plus"></i> Agregar
+            <div class="card-body">
+                    <h5 class="card-title" th:text="${producto.nombre} ?: 'N/A'"></h5>
+                    <p class="card-text" th:text="${producto.descripcion} ?: 'Sin descripción'"></p>
+                    <p class="card-price" th:text="${producto.precio != null} ? ${#numbers.formatDecimal(producto.precio, 1, 2)} + ' USD' : '0.00 USD'"></p>
+                    <p class="card-stock" th:class="${producto.stock < 5} ? 'stock-low' : 'stock-normal'"
+                       th:text="${producto.stock != null} ? (${producto.stock < 5} ? '¡Solo ' + ${producto.stock} + ' unidades!' : 'Stock: ' + ${producto.stock}) : 'Sin stock'"></p>
+              <form th:action="@{/cliente/carrito/agregar}" method="post" class="add-to-cart-form">
+                        <input type="hidden" name="productoId" th:value="${producto.idProducto}" />
+                        <input type="number" name="cantidad" min="1" th:max="${producto.stock}" value="1" class="form-control"
+                               th:disabled="${producto.stock == 0}" />
+                        <button type="submit" class="btn btn-add-cart" th:disabled="${producto.stock == 0}">
+                            Agregar al Carrito
                         </button>
                     </form>
                 </div>
@@ -643,10 +528,9 @@
 
     <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
     <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
-    
     <script>
         $(document).ready(function() {
-            // Resaltar el enlace activo
+            // Highlight active link
             const currentPath = window.location.pathname;
             $('.nav-link').each(function() {
                 if ($(this).attr('href') === currentPath) {
@@ -654,7 +538,7 @@
                 }
             });
             
-            // Validar cantidad al agregar al carrito
+            // Validate quantity on add-to-cart form submission
             $('.add-to-cart-form').on('submit', function(e) {
                 const input = $(this).find('input[name="cantidad"]');
                 const max = parseInt(input.attr('max'));
